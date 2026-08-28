@@ -1,0 +1,29 @@
+熱門引擎 B 版 RC2｜正式網址路由與操作驗收
+日期：2026-08-29（Asia/Taipei）
+正式網址：https://trend-engine-b-review.pages.dev/review
+部署預覽：https://41e2de57.trend-engine-b-review.pages.dev
+
+正式網址 11 路由 × 桌面、平板、手機，共 33 組直接開啟及重新整理：PASS
+
+路由：
+- /review：PASS，RC2 審核入口。
+- /trends：PASS，預設高潛力前 5 名，可展開 22 題並收合。
+- /trends/search：PASS，基本／進階篩選與條件摘要。
+- /trends/trend-subscription-fatigue：PASS，分數拆解與來源證據。
+- /trends/watchlist：PASS，空狀態 CTA、加入及移出觀察。
+- /trends/excluded：PASS，空狀態 CTA、排除原因、取消排除。
+- /trends/sources：PASS，展示資料來源空狀態。
+- /trends/rules：PASS，權重與空狀態 CTA。
+- /onboarding：PASS，只顯示產品邊界頁。
+- /oauth/mock/callback：PASS，只顯示產品邊界頁。
+- /settings/connections：PASS，只顯示產品邊界頁。
+
+正式網址互動：
+- 首頁 5→22→5：PASS。
+- 進階篩選啟用 3 項、結果數及條件摘要：PASS。
+- 加入觀察、移出觀察：PASS（含 Safari 實測）。
+- 未選排除原因時確認停用：PASS。
+- 選擇原因後確認啟用、排除成功、撤銷恢復：PASS（含 Safari 實測）。
+- ReviewResetService 重設後顯示恢復 22 題／61 訊號：PASS（Safari 正式網址實測）。
+- 全站 Mock 標示：PASS。
+- A 版路由隔離：PASS。

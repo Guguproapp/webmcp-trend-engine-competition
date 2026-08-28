@@ -31,9 +31,9 @@ export function ReviewPage() {
   return <section className="review-page">
     <div className="review-hero">
       <div>
-        <span className="review-version">B版審核候選版 RC1</span>
+        <span className="review-version">B版審核候選版 RC2</span>
         <h1>熱門引擎B版｜MVP原型審核</h1>
-        <p>這個入口協助審核人員理解產品邊界，並依固定流程操作爆紅流量情報原型。</p>
+        <p>這個入口協助審核人員理解產品邊界，並用更清楚的步驟操作爆紅流量情報原型。</p>
       </div>
       <div className="review-mock-seal" aria-label="Mock審核資料，非即時熱門情報">
         <strong>Mock</strong><span>非即時情報</span>

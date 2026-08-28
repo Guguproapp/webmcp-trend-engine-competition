@@ -1,0 +1,11 @@
+熱門引擎 B 版 RC2｜reduced-motion 驗收
+日期：2026-08-29（Asia/Taipei）
+
+PASS
+- 原始 CSS 存在 @media (prefers-reduced-motion: reduce)。
+- animation 與 transition 在減少動畫模式下設為 none !important。
+- hover 位移與按壓縮放在減少動畫模式下取消。
+- Production Build CSS 保留 prefers-reduced-motion 規則。
+- 正式 pages.dev 網址瀏覽器檢查：媒體查詢可用，規則數 1。
+
+動畫時長：一般按鈕、卡片與結果淡入為 170～180ms；沒有閃爍、跑馬燈或持續循環動畫。

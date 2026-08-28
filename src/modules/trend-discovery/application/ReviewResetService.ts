@@ -9,12 +9,12 @@ export interface ReviewResetResult {
 
 export class ReviewResetService {
   constructor(
-    private readonly resetRepository: TrendReviewResetRepository,
+    private readonly resetStore: TrendReviewResetRepository,
     private readonly discoveryService: TrendDiscoveryService,
   ) {}
 
   async reset(): Promise<ReviewResetResult> {
-    this.resetRepository.clearReviewData();
+    this.resetStore.clearReviewData();
     const topics = await this.discoveryService.refresh();
     const refresh = this.discoveryService.getLatestRefresh();
     return {

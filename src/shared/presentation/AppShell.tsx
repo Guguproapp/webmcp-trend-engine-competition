@@ -30,7 +30,7 @@ export function AppShell() {
         </nav>
         <div className="sidebar-note">
           <span className="badge badge-lime">公開產品 B版</span>
-          <p>熱門蒐集、評分、證據與篩選 Mock 版。</p>
+          <p>熱門蒐集、評分、證據與篩選 RC2。</p>
         </div>
       </aside>
       <main className="main-content">

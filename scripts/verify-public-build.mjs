@@ -23,6 +23,17 @@ const forbidden = [
   'account-preview',
 ];
 
+const engineeringTerms = [
+  'MockTrendSourceProvider',
+  'TrendScoreCalculator',
+  'Repository',
+  '工作包 002',
+  '工作包002',
+  'infrastructure',
+  'application',
+  'domain',
+];
+
 async function filesUnder(directory) {
   const entries = await readdir(directory, { withFileTypes: true });
   const nested = await Promise.all(entries.map((entry) => {
@@ -45,9 +56,18 @@ for (const requiredFile of requiredStaticFiles) {
 
 for (const file of files) {
   const content = await readFile(file, 'utf8');
+  const publicTextScan = content
+    .replaceAll('application/x-www-form-urlencoded', '')
+    .replaceAll('application/json', '')
+    .replaceAll('application/octet-stream', '');
   for (const phrase of forbidden) {
     if (content.includes(phrase)) {
       throw new Error(`公開Build包含A版專屬內容：${phrase}（${file}）`);
+    }
+  }
+  for (const phrase of engineeringTerms) {
+    if (publicTextScan.includes(phrase)) {
+      throw new Error(`公開Build包含工程術語：${phrase}（${file}）`);
     }
   }
 }
@@ -61,4 +81,7 @@ for (const header of ['X-Robots-Tag:', 'X-Content-Type-Options: nosniff', 'Conte
   if (!headers.includes(header)) throw new Error(`安全headers缺少：${header}`);
 }
 
-console.log(`公開Build檢查通過：${files.length}個檔案未包含A版內容，且SPA fallback、robots與安全headers均存在。`);
+const builtCss = (await Promise.all(files.filter((file)=>file.endsWith('.css')).map((file)=>readFile(file,'utf8')))).join('\n');
+if (!builtCss.includes('prefers-reduced-motion')) throw new Error('公開Build缺少prefers-reduced-motion減少動畫設定。');
+
+console.log(`公開Build檢查通過：${files.length}個檔案未包含A版內容或公開工程術語，且SPA fallback、robots與安全headers均存在。`);

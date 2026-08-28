@@ -1,0 +1,11 @@
+熱門引擎 B 版 RC2｜A 版保護驗證
+日期：2026-08-29（Asia/Taipei）
+
+PASS
+- internal/operator-console -> acf9ee75b8c82819f7b3fb64488510e4bbbd5d5e
+- account-onboarding-mock-v0.1.0 -> acf9ee75b8c82819f7b3fb64488510e4bbbd5d5e
+- internal-console-v0.1.0 -> acf9ee75b8c82819f7b3fb64488510e4bbbd5d5e
+- feature/trend-discovery-mock -> 7b3f1ee3bebf003e50a77579519d33be744e1b85
+- b-trend-review-v0.2.0-rc1 -> 5488f304e4aca35a27ea39780ed06c9a62a01530
+
+本輪未修改、合併、刪除或移動以上分支、Commit 與 Tag；未部署 A 版。

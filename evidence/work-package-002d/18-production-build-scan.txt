@@ -1,0 +1,12 @@
+熱門引擎 B 版 RC2｜Production Build 掃描
+日期：2026-08-29（Asia/Taipei）
+
+PASS
+- Vite 8.2.2，44 個模組完成轉換。
+- dist/index.html：0.89 kB（gzip 0.62 kB）。
+- CSS：23.93 kB（gzip 5.77 kB）。
+- JavaScript：286.03 kB（gzip 89.97 kB）。
+- 6 個公開產物檔未包含 A 版內容或公開工程術語。
+- 禁止工程術語：MockTrendSourceProvider、TrendScoreCalculator、Repository、工作包002、infrastructure、application、domain。
+- SPA fallback、robots.txt、安全 headers 與 prefers-reduced-motion 均存在。
+- 22 個 Mock 議題、61 筆來源訊號未改變。

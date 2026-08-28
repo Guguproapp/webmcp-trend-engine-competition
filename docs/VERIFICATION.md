@@ -1,3 +1,38 @@
+# B 版 RC2 驗證結果
+
+驗證日期：2026-08-29（Asia/Taipei）
+
+## RC2 自動檢查
+
+| 項目 | 結果 | 實際結果 |
+| --- | --- | --- |
+| `npm install` | PASS | 稽核 282 個套件、0 個漏洞 |
+| `npm test` | PASS | 7 個測試檔、57 個測試全數通過 |
+| `npm run typecheck` | PASS | TypeScript 專案檢查無錯誤 |
+| `npm run lint` | PASS | ESLint 0 error、0 warning |
+| `npm run build` | PASS | Vite Production Build 成功，共轉換 44 個模組 |
+| 公開 Build 隔離掃描 | PASS | 6 個產物檔未包含 A 版內容或公開工程術語；SPA fallback、robots、安全 headers 及 reduced-motion 均存在 |
+| `git diff --check` | PASS | 無空白或 Patch 格式錯誤 |
+
+Production Build 產物：HTML 0.89 kB、CSS 23.93 kB、JavaScript 286.03 kB（壓縮前）。
+
+## RC2 正式網址驗收
+
+- Cloudflare Pages 專案：`trend-engine-b-review`。
+- 正式入口：<https://trend-engine-b-review.pages.dev/review>。
+- 本輪部署預覽：<https://41e2de57.trend-engine-b-review.pages.dev>。
+- 方案／付款：免費用量顯示 0 / 100,000 requests；部署未要求信用卡或付費。
+- 桌面 1440×900、平板 768×1024、手機 390×844，各 11 路由直接開啟並重新整理，共 33 組全數 PASS。
+- 正式網址 Console：0 error、0 warning、0 未捕捉例外；所有路由 0px 水平溢出。
+- 正式網址互動：5→22→5、基本／進階篩選、觀察加入／移出、排除原因停用／啟用、排除／撤銷、空狀態 CTA 全數 PASS。
+- Safari 正式網址實測：重設恢復 22 題／61 訊號、加入／移出觀察、排除／撤銷均 PASS。
+- 文字對比掃描：4 個主要頁面 0 項低於 WCAG AA 門檻；鍵盤焦點為 3px 實線亮藍焦點環。
+- 正式回應：HTTP 200；CSP、Permissions-Policy、Referrer-Policy、nosniff、DENY 與 X-Robots-Tag 均生效；`robots.txt` 為全站 `Disallow: /`。
+
+RC2 證據目錄：`evidence/work-package-002d/`，包含 14 張正式網址／Cloudflare 截圖及 8 份文字稽核證據。
+
+---
+
 # 工作包 002C 驗證結果
 
 驗證日期：2026-08-28（Asia/Taipei）

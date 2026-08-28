@@ -24,7 +24,7 @@ npm run dev
 
 開啟 Vite 顯示的本機網址，預設進入 `/review`。
 
-## B 版 RC1 公開審核
+## B 版 RC2 公開審核
 
 - 審核網址：<https://trend-engine-b-review.pages.dev/review>
 - 部署平台：Cloudflare Pages Direct Upload（免費方案）。
@@ -36,13 +36,13 @@ npm run dev
 
 ## B 版可驗收範圍
 
-- `/trends`：動態日期、更新統計、22 個 Mock 主題與高潛力排序。
-- `/trends/search`：完整搜尋、篩選與七種排序，重新整理後保留條件。
+- `/trends`：動態日期與摘要、高潛力前 5 名、22 題展開、分數環與既有時間序列趨勢線。
+- `/trends/search`：基本／進階搜尋篩選、有效條件摘要與七種排序，重新整理後保留條件。
 - `/trends/:topicId`：來源證據、熱度變化、分數拆解、加扣分與資料缺口。
 - `/trends/watchlist`：加入時間、加入時分數、目前分數與升降變化。
-- `/trends/excluded`：排除原因、取消排除與稽核紀錄。
+- `/trends/excluded`：排除原因、即時撤銷、取消排除與操作紀錄。
 - `/trends/rules`：保存與檢視篩選規則。
-- `/review`：RC1 範圍、Mock 聲明、審核步驟與資料重設入口。
+- `/review`：RC2 範圍、Mock 聲明、審核步驟與資料重設入口。
 
 非 B 版路由會顯示「此功能不屬於目前產品」，不會載入其他產品線頁面。
 
@@ -55,7 +55,7 @@ npm run lint
 npm run build
 ```
 
-`npm run build` 最後會執行公開 Build 隔離檢查；若產物包含 A 版專屬路由、頁面識別或文案，指令會失敗。
+`npm run build` 最後會執行公開 Build 隔離檢查；若產物包含 A 版專屬路由、頁面識別、公開工程術語或必要部署檔案缺漏，指令會失敗。
 
 ## 文件
 
