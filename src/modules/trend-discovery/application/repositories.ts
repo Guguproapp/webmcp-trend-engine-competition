@@ -12,4 +12,5 @@ export interface SavedTrendFilterRule { id: string; name: string; filters: Trend
 export interface TrendFilterRuleRepository { getCurrent(): TrendFilters; saveCurrent(filters: TrendFilters): void; listSaved(): SavedTrendFilterRule[]; saveRule(rule: SavedTrendFilterRule): void; }
 export interface TrendRefreshLog { id: string; refreshedAt: string; sourceCount: number; signalCount: number; topicCount: number; highPotentialCount: number; }
 export interface TrendRefreshLogRepository { list(): TrendRefreshLog[]; latest(): TrendRefreshLog | undefined; append(log: TrendRefreshLog): void; }
-export interface TrendAuditPort { append(entry: { id: string; action: string; platformCode?: string; detail: string; createdAt: string }): void; }
+export interface TrendAuditEntry { id: string; action: string; detail: string; createdAt: string; }
+export interface TrendAuditPort { append(entry: TrendAuditEntry): void; }

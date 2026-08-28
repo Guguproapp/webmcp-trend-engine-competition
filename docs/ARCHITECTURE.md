@@ -1,6 +1,15 @@
-# 架構說明
+# B 版架構與產品邊界
 
-本專案採「模組化單體」：目前是一個可部署單位，但程式依商業領域切成模組，每個模組再分成 domain、application、infrastructure、presentation、tests。
+本分支採模組化單體，並只組合「爆紅流量情報SaaS」需要的熱門領域。
+
+## A／B 版本
+
+| 版本 | 分支 | 狀態 |
+|---|---|---|
+| A 版 | `internal/operator-console` | 固定在封存基準，未來另行續作 |
+| B 版 | `product/trend-discovery-mvp` | 對外熱門情報產品，目前分支 |
+
+B 版不包含 A 版帳號、影音及發布功能；Git 分支與 Tag 是 A 版的恢復依據。
 
 ## 依賴方向
 
@@ -10,43 +19,26 @@ presentation → application → domain
              infrastructure
 ```
 
-- `domain`：型別、狀態與商業規則，不依賴 React 或瀏覽器儲存。
-- `application`：使用案例、Repository 與 Provider 介面。
-- `infrastructure`：Local Storage、Session Storage 與 Mock Provider 實作。
-- `presentation`：React 頁面、表單與畫面狀態。
-- `tests`：領域、Repository、流程與安全檢查。
+- `domain`：主題、分類、狀態、分數與自然事件門檻。
+- `application`：蒐集、合併、評分、清單流程及 Port。
+- `infrastructure`：Local Storage Repository 與 Mock Provider。
+- `presentation`：精選、搜尋、詳情、觀察、排除、規則與邊界頁。
+- `tests`：領域、保存、流程、路由與產品隔離。
 
-頁面不可直接存取 Local Storage；它只呼叫 Repository 或 Application Service。正式資料庫上線時可替換 Infrastructure 實作，不需重寫頁面。
-
-## 帳號開通資料流（工作包 001）
-
-1. 使用者在 onboarding 頁選擇帳號現況。
-2. Presentation 呼叫 `OnboardingProgressRepository` 保存選擇。
-3. `PlatformConnectionService` 統一改變連接狀態並寫入 Audit Log。
-4. `MockPlatformAuthorizationProvider` 建立站內模擬授權網址。
-5. Callback 驗證 `state`，回傳模擬結果並執行模擬連接測試。
-6. Repository 將品牌、進度、連接與稽核分開保存。
-
-## 熱門蒐集資料流（工作包 002）
+## 熱門資料流
 
 ```text
 MockTrendSourceProvider
   → TrendDiscoveryService（合併、評分、狀態判定）
-  → TrendTopicRepository／Watchlist／Exclusion／FilterRule／RefreshLog
+  → TrendTopic／Watchlist／Exclusion／FilterRule／RefreshLog／Audit Repository
   → React Presentation
 ```
 
-1. `TrendSourceProvider` 回傳來源訊號；本輪唯一實作是 `MockTrendSourceProvider`。
-2. `TrendDiscoveryService` 依 `canonicalKey` 合併相同主題，再交由 `TrendScoreCalculator` 計算。
-3. 分數權重與自然事件、高風險、證據不足規則只存在 Domain，不寫在 UI。
-4. 搜尋、篩選、排序、觀察、排除與重新整理保存都經由 Application Service 與 Repository。
-5. Local Storage 只由 Infrastructure 實作讀寫，未來換成 Supabase 時不需改頁面。
-6. 排除、取消排除、加入與移出觀察會寫入既有 Audit Log。
+頁面不直接存取 Local Storage。正式資料來源或資料庫上線時，只替換 Infrastructure 實作，不改寫 Domain 與 Presentation。
 
-## 安全預留
+## Build 隔離
 
-- `PlatformAuthorizationProvider` 要求授權 URL、callback、刷新、撤回、檢查與測試連接能力。
-- callback 輸入包含 `state` 與 `expectedState`。
-- 授權起始流程建立 PKCE verifier/challenge 預留欄位。本輪是明確標示的 Mock；正式接入必須在伺服器端使用 RFC 7636 S256。
-- 未來正式 Token 必須在伺服器加密保存，前端只能取得無敏感資訊的連接摘要。
-- 授權、撤回與狀態改變都透過 Service 留下稽核紀錄。
+- `App.tsx` 只註冊 `/trends` 路由。
+- 其他路徑由 `ProductBoundaryPage` 處理，不渲染其他產品線畫面。
+- A 版專屬原始碼模組已從 B 版工作樹移除。
+- `scripts/verify-public-build.mjs` 在每次 Production Build 後掃描產物；發現 A 版專屬路由、識別或文案即失敗。

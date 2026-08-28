@@ -1,4 +1,4 @@
-import { NavLink, Outlet, useLocation } from 'react-router-dom';
+import { NavLink, Outlet } from 'react-router-dom';
 
 const navItems = [
   { to: '/trends', icon: '⌁', label: '爆紅熱門精選', end:true },
@@ -7,13 +7,9 @@ const navItems = [
   { to: '/trends/excluded', icon: '⊘', label: '已排除主題' },
   { to: '/trends/sources', icon: '◫', label: '資料來源' },
   { to: '/trends/rules', icon: '⚙', label: '篩選規則' },
-  { to: '/onboarding', icon: '✓', label: '帳號開通管家' },
-  { to: '/settings/connections', icon: '↔', label: '系統設定' },
 ];
 
 export function AppShell() {
-  const location = useLocation();
-  const isTrend = location.pathname.startsWith('/trends') || location.pathname === '/';
   return (
     <div className="app-shell">
       <aside className="sidebar">
@@ -21,7 +17,7 @@ export function AppShell() {
           <div className="brand-mark" aria-hidden="true">熱</div>
           <div>
             <strong>熱門引擎</strong>
-            <span>AI 影音發布助手</span>
+            <span>爆紅流量情報SaaS</span>
           </div>
         </div>
         <nav aria-label="主要導覽">
@@ -32,14 +28,14 @@ export function AppShell() {
           ))}
         </nav>
         <div className="sidebar-note">
-          <span className="badge badge-lime">工作包 002</span>
-          <p>爆紅流量蒐集、評分與篩選 Mock 版。</p>
+          <span className="badge badge-lime">公開產品 B版</span>
+          <p>熱門蒐集、評分、證據與篩選 Mock 版。</p>
         </div>
       </aside>
       <main className="main-content">
         <header className="topbar">
           <div>
-            <span className="eyebrow">{isTrend ? 'TREND DISCOVERY · 爆紅流量雷達' : 'ACCOUNT ONBOARDING · 帳號開通管家'}</span>
+            <span className="eyebrow">TREND DISCOVERY · 爆紅流量情報</span>
           </div>
           <span className="mock-pill">● 模擬環境</span>
         </header>
