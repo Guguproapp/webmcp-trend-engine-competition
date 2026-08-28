@@ -1,0 +1,16 @@
+node_modules/
+dist/
+coverage/
+test-results/
+playwright-report/
+.vitest/
+.browser/
+.cache/
+.tmp/
+tmp/
+*.log
+.DS_Store
+.env
+.env.*
+!.env.example
+*.local
