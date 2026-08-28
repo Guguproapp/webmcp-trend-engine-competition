@@ -1,7 +1,5 @@
-@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;600;700;800&display=swap');
-
 :root {
-  font-family: 'Noto Sans TC', system-ui, sans-serif;
+  font-family: 'PingFang TC', 'Noto Sans TC', system-ui, sans-serif;
   color: #182536;
   background: #f7f1e7;
   font-synthesis: none;
@@ -215,6 +213,31 @@ details summary { color: var(--ink); font-weight: 700; cursor: pointer; }
 .product-boundary > span { display:block; color:#6f8b7d; font-size:3rem; }
 .product-boundary p { color:var(--muted); }
 
+/* 工作包 002C｜B版審核入口 */
+.review-page { max-width:1180px; margin:0 auto; }
+.review-hero { display:flex; justify-content:space-between; gap:28px; align-items:center; padding:34px; color:#f7fff3; background:linear-gradient(135deg,#12372d,#285f4e); border-radius:24px; box-shadow:0 16px 38px #183c3020; }
+.review-hero h1 { max-width:800px; margin:12px 0 10px; }
+.review-hero p { max-width:760px; margin:0; color:#d6e5df; }
+.review-version { display:inline-block; padding:5px 10px; color:#17352d; background:#d9ff57; border-radius:999px; font-size:.76rem; font-weight:800; }
+.review-mock-seal { flex:0 0 150px; min-height:150px; display:grid; place-content:center; text-align:center; color:#17352d; background:#d9ff57; border-radius:50%; transform:rotate(3deg); }
+.review-mock-seal strong,.review-mock-seal span { display:block; }
+.review-mock-seal strong { font-size:2rem; line-height:1.1; }
+.review-mock-seal span { font-size:.75rem; font-weight:800; }
+.review-disclosure { display:flex; gap:18px; align-items:flex-start; margin:20px 0; padding:18px 20px; color:#3f4e16; background:#f1f8d9; border:1px solid #cddd8a; border-radius:15px; }
+.review-disclosure strong { flex:0 0 auto; }
+.review-disclosure p { margin:0; }
+.review-scope-grid { display:grid; grid-template-columns:1fr 1fr; gap:16px; }
+.review-scope-grid article,.review-steps-card { padding:25px; background:#fff; border:1px solid var(--line); border-radius:18px; box-shadow:0 8px 24px #203d320b; }
+.review-scope-grid h2,.review-steps-card h2 { margin:9px 0 6px; font-size:1.2rem; }
+.review-scope-grid p,.review-steps-card p { margin:0; color:var(--muted); }
+.review-card-label { display:inline-block; padding:4px 9px; color:#315448; background:#e6eee9; border-radius:999px; font-size:.7rem; font-weight:800; }
+.review-card-label.excluded { color:#833a34; background:#f8e2df; }
+.review-steps-card { display:grid; grid-template-columns:minmax(220px,.7fr) 1.3fr; gap:30px; margin-top:16px; }
+.review-steps-card ol { display:grid; grid-template-columns:1fr 1fr; gap:10px 28px; margin:0; padding-left:25px; }
+.review-steps-card li { padding-left:5px; color:#46564f; }
+.review-actions { display:flex; flex-wrap:wrap; gap:10px; margin-top:20px; }
+.review-reset-notice { margin-top:15px; padding:13px 16px; color:#1b6958; background:#e2f4ec; border-radius:11px; font-weight:700; }
+
 @media (max-width:1100px) {
   .trend-stat-grid { grid-template-columns:repeat(3,1fr); }
   .trend-quick-filters { grid-template-columns:repeat(2,1fr); }
@@ -247,4 +270,11 @@ details summary { color: var(--ink); font-weight: 700; cursor: pointer; }
   .watch-snapshot { align-items:flex-start; flex-direction:column; gap:3px; }
   .sidebar nav { display:flex; overflow-x:auto; scrollbar-width:none; }
   .sidebar nav a { flex:0 0 92px; }
+  .mock-pill { max-width:238px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; font-size:.7rem; }
+  .review-hero { align-items:stretch; flex-direction:column; padding:24px 20px; }
+  .review-mock-seal { flex-basis:auto; width:120px; min-height:120px; align-self:center; }
+  .review-scope-grid,.review-steps-card,.review-steps-card ol { grid-template-columns:1fr; }
+  .review-steps-card { gap:20px; }
+  .review-actions { flex-direction:column; }
+  .review-actions .button { width:100%; }
 }

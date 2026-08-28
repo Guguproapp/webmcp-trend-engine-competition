@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.2.0-rc1 - 2026-08-28
+
+- 新增 `/review` 審核入口、B 版 RC1 說明、操作步驟與全站 Mock 標示。
+- 新增 `ReviewResetService`，只重設 B 版熱門情報 namespace 並恢復 22 題／61 訊號。
+- 加入 Cloudflare Pages SPA fallback、搜尋引擎阻擋與安全回應標頭。
+- 加入審核指南、審核清單、部署產物檢查與正式網址驗收證據。
+- 以 Cloudflare Pages Direct Upload 提供免費 `pages.dev` 公開審核網址。
+
 ## 0.2.1 - 2026-08-28
 
 - 建立 A 版永久分支 `internal/operator-console` 與封存 Tag `internal-console-v0.1.0`。

@@ -1,0 +1,16 @@
+熱門引擎 B 版 RC1｜正式回應標頭證據
+檢查時間：2026-08-28 20:47:26 CST
+網址：https://trend-engine-b-review.pages.dev/review
+
+HTTP/2 200
+content-type: text/html; charset=utf-8
+cache-control: public, max-age=0, must-revalidate
+content-security-policy: default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; font-src 'self'; connect-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'; manifest-src 'self'; worker-src 'none'; upgrade-insecure-requests
+permissions-policy: camera=(), microphone=(), geolocation=(), payment=(), usb=(), browsing-topics=()
+referrer-policy: no-referrer
+x-content-type-options: nosniff
+x-frame-options: DENY
+x-robots-tag: noindex, nofollow, noarchive, nosnippet
+server: cloudflare
+
+結果：PASS。noindex 與指定安全標頭均由正式 Cloudflare Pages 回應。

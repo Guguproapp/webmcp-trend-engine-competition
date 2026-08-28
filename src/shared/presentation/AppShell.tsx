@@ -1,6 +1,7 @@
 import { NavLink, Outlet } from 'react-router-dom';
 
 const navItems = [
+  { to: '/review', icon: '✓', label: '審核說明' },
   { to: '/trends', icon: '⌁', label: '爆紅熱門精選', end:true },
   { to: '/trends/search', icon: '⌕', label: '主題搜尋' },
   { to: '/trends/watchlist', icon: '☆', label: '觀察清單' },
@@ -37,7 +38,7 @@ export function AppShell() {
           <div>
             <span className="eyebrow">TREND DISCOVERY · 爆紅流量情報</span>
           </div>
-          <span className="mock-pill">● 模擬環境</span>
+          <span className="mock-pill">● Mock審核資料｜非即時熱門情報</span>
         </header>
         <div className="page-container"><Outlet /></div>
       </main>

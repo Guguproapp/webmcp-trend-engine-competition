@@ -22,7 +22,17 @@ npm install
 npm run dev
 ```
 
-開啟 Vite 顯示的本機網址，預設進入 `/trends`。
+開啟 Vite 顯示的本機網址，預設進入 `/review`。
+
+## B 版 RC1 公開審核
+
+- 審核網址：<https://trend-engine-b-review.pages.dev/review>
+- 部署平台：Cloudflare Pages Direct Upload（免費方案）。
+- 公開方式：知道網址即可開啟，不需要登入。
+- 收錄限制：HTML、`robots.txt` 與回應標頭均要求搜尋引擎不要建立索引；此限制不是存取控制，網址仍可由取得連結的人開啟。
+- 資料聲明：全站均顯示「Mock審核資料｜非即時熱門情報」。
+
+審核前可在 `/review` 按「重設審核資料」，只會清除 B 版熱門情報使用的 Local Storage namespace，再恢復 22 個 Mock 主題與 61 筆來源訊號。
 
 ## B 版可驗收範圍
 
@@ -32,6 +42,7 @@ npm run dev
 - `/trends/watchlist`：加入時間、加入時分數、目前分數與升降變化。
 - `/trends/excluded`：排除原因、取消排除與稽核紀錄。
 - `/trends/rules`：保存與檢視篩選規則。
+- `/review`：RC1 範圍、Mock 聲明、審核步驟與資料重設入口。
 
 非 B 版路由會顯示「此功能不屬於目前產品」，不會載入其他產品線頁面。
 
@@ -55,10 +66,12 @@ npm run build
 - [驗證結果](docs/VERIFICATION.md)
 - [未來熱門來源接入點](docs/FUTURE-INTEGRATIONS.md)
 - [限制與停止點](docs/LIMITATIONS.md)
+- [B 版審核操作指南](docs/B_REVIEW_GUIDE.md)
+- [B 版審核清單](docs/B_REVIEW_CHECKLIST.md)
 
 ## 安全邊界
 
 - Local Storage 只由 Infrastructure Repository 封裝。
 - 頁面只呼叫 `TrendDiscoveryService`，不直接讀取 Mock 資料或瀏覽器儲存。
 - `.env.example` 沒有正式密鑰。
-- 未連接正式來源、未建立會員、未部署。
+- 未連接正式來源或會員；公開網址只部署 B 版靜態 `dist` 產物。

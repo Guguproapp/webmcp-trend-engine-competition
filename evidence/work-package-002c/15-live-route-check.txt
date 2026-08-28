@@ -1,0 +1,33 @@
+熱門引擎 B 版 RC1｜正式網址路由與操作驗收
+檢查日期：2026-08-28（Asia/Taipei）
+主網址：https://trend-engine-b-review.pages.dev/
+
+HTTP 與深層路由（全部 HTTP 200）：
+- / → /review 正常
+- /review 正常
+- /trends 正常
+- /trends/search 正常
+- /trends/watchlist 正常
+- /trends/excluded 正常
+- /trends/rules 正常
+- /trends/trend-subscription-fatigue 正常
+- /onboarding 顯示 B 版產品邊界頁
+- /oauth/mock/callback 顯示 B 版產品邊界頁
+- /settings/connections 顯示 B 版產品邊界頁
+
+直接開啟與重新整理：PASS（33 / 33 組路由／尺寸）。
+水平溢出：0。
+全站 Mock 標示：PASS。
+A 版公開入口：0。
+
+正式互動驗收：
+- 重設資料：恢復 22 個 Mock 主題、61 筆來源訊號。
+- 搜尋／篩選：AI、YouTube、最近 24 小時、最低 50 分、排除高風險。
+- 排序：增長最快；結果 1 筆。
+- 重新整理保存：查詢、來源、時間、最低分、風險與排序均保留。
+- 儲存篩選規則：PASS。
+- 加入觀察、移出觀察：PASS。
+- 排除原因「風險太高」、取消排除：PASS。
+- 詳情分數拆解、來源證據、風險與資料缺口：PASS。
+
+結果：PASS。

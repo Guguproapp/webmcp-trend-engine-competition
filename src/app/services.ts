@@ -1,6 +1,7 @@
 import { BrowserStorage } from '../shared/infrastructure/storage';
+import { ReviewResetService } from '../modules/trend-discovery/application/ReviewResetService';
 import { TrendDiscoveryService } from '../modules/trend-discovery/application/TrendDiscoveryService';
-import { LocalTrendAuditRepository, LocalTrendExclusionRepository, LocalTrendFilterRuleRepository, LocalTrendRefreshLogRepository, LocalTrendTopicRepository, LocalTrendWatchlistRepository } from '../modules/trend-discovery/infrastructure/LocalTrendRepositories';
+import { LocalTrendAuditRepository, LocalTrendExclusionRepository, LocalTrendFilterRuleRepository, LocalTrendRefreshLogRepository, LocalTrendReviewResetRepository, LocalTrendTopicRepository, LocalTrendWatchlistRepository } from '../modules/trend-discovery/infrastructure/LocalTrendRepositories';
 import { MockTrendSourceProvider } from '../modules/trend-discovery/infrastructure/MockTrendSourceProvider';
 
 const localStorageAdapter = new BrowserStorage();
@@ -14,4 +15,8 @@ export const trendAuditRepository = new LocalTrendAuditRepository(localStorageAd
 export const trendDiscoveryService = new TrendDiscoveryService(
   new MockTrendSourceProvider(), trendTopicRepository, trendWatchlistRepository, trendExclusionRepository,
   trendFilterRuleRepository, trendRefreshLogRepository, trendAuditRepository,
+);
+export const reviewResetService = new ReviewResetService(
+  new LocalTrendReviewResetRepository(localStorageAdapter),
+  trendDiscoveryService,
 );

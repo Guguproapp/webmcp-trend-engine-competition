@@ -1,0 +1,14 @@
+熱門引擎 B 版 RC1｜正式 Console 驗收
+檢查日期：2026-08-28（Asia/Taipei）
+來源：https://trend-engine-b-review.pages.dev/
+
+使用全新瀏覽器分頁驗收，依序直接開啟並重新整理 11 個路由，分別使用：
+- 桌面 1440 × 900
+- 平板 768 × 1024
+- 手機 390 × 844
+
+合計：33 組路由／尺寸。
+Console error：0
+Console warning：0
+未捕捉例外：0
+結果：PASS。

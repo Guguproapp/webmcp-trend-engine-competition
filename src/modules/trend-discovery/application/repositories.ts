@@ -14,3 +14,4 @@ export interface TrendRefreshLog { id: string; refreshedAt: string; sourceCount:
 export interface TrendRefreshLogRepository { list(): TrendRefreshLog[]; latest(): TrendRefreshLog | undefined; append(log: TrendRefreshLog): void; }
 export interface TrendAuditEntry { id: string; action: string; detail: string; createdAt: string; }
 export interface TrendAuditPort { append(entry: TrendAuditEntry): void; }
+export interface TrendReviewResetRepository { clearReviewData(): void; }

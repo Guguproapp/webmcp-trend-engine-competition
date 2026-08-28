@@ -1,0 +1,8 @@
+熱門引擎 B 版 RC1｜正式 robots.txt 證據
+檢查時間：2026-08-28 20:47:26 CST
+網址：https://trend-engine-b-review.pages.dev/robots.txt
+
+User-agent: *
+Disallow: /
+
+結果：PASS。正式網址可讀取 robots.txt，並要求所有搜尋引擎不要爬取。
