@@ -1,0 +1,4 @@
+# 僅供說明變數名稱；請在本機 .dev.vars 或 Cloudflare Pages 加密秘密中設定實際值。
+# 不得將實際值提交到 Git，亦不得傳到 React 前端。
+YOUTUBE_API_KEY=
+REFRESH_ADMIN_TOKEN=

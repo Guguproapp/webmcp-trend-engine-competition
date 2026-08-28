@@ -1,0 +1,16 @@
+驗證網址：https://trend-engine-b-review.pages.dev
+驗證時間：2026-08-29 Asia/Taipei
+
+PASS /review：熱門引擎｜真實熱門情報審核
+PASS /trends：爆紅熱門精選
+PASS /trends/search：主題搜尋
+PASS /trends/:topicId：真實題目詳情與2筆原始來源
+PASS /trends/watchlist：觀察清單
+PASS /trends/excluded：已排除主題
+PASS /trends/sources：資料來源
+PASS /trends/rules：篩選規則
+
+以上路由均完成直接開啟與重新整理，HTTP 200、無白畫面、水平溢出0px。
+PASS /onboarding：只顯示「此功能不屬於目前產品」
+PASS /oauth/mock/callback：只顯示產品邊界頁
+PASS /settings/connections：只顯示產品邊界頁

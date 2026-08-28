@@ -6,6 +6,8 @@ export function publicTopicTitle(title: string) {
     .replace(/\bAI\b\s*/gu, '人工智慧');
 }
 
+export function publicSourceTitle(title:string){return publicTopicTitle(title).replace(/｜(?:threads|youtube|google_trends|gdelt_news)\s*Mock\s*證據/gu,'｜來源證據');}
+
 export function publicCategoryLabel(category: TrendCategory) {
   return category === '科技與AI' ? '科技與人工智慧' : category;
 }

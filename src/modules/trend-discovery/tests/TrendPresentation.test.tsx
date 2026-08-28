@@ -1,12 +1,12 @@
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
 import { App } from '../../../app/App';
-import { reviewResetService, trendDiscoveryService } from '../../../app/services';
+import { trendDiscoveryService } from '../../../app/services';
 import styles from '../../../styles.css?raw';
 import { publicTopicTitle } from '../presentation/publicLabels';
 
 async function resetReviewData() {
-  await reviewResetService.reset();
+  await trendDiscoveryService.refresh();
 }
 
 function renderRoute(path:string) {
@@ -37,9 +37,9 @@ describe('RC2熱門精選使用性', () => {
   it('今日白話摘要使用實際高潛力數量與最高分', async () => {
     renderRoute('/trends');
     const topics=trendDiscoveryService.listAll();
-    const count=topics.filter((topic)=>topic.status==='high_potential').length;
+    const count=topics.filter((topic)=>topic.growthStatus==='measured'&&(topic.tier==='viral'||topic.tier==='rising')).length;
     const highest=Math.max(...topics.map((topic)=>topic.totalScore));
-    expect(await screen.findByText(`今天有 ${count} 個話題正在快速爆紅，最高潛力 ${highest} 分。`)).toBeInTheDocument();
+    expect(await screen.findByText(`今天有 ${count} 個話題正在快速上升，最高潛力 ${highest} 分。`)).toBeInTheDocument();
   });
 
   it('首頁保留四項重要統計與第一名主要資訊', async () => {
@@ -143,13 +143,13 @@ describe('RC2清單、排除與公開文案', () => {
 
   it.each(['/review','/trends','/trends/search','/trends/watchlist','/trends/excluded','/trends/sources','/trends/rules'])('%s公開畫面不顯示工程術語', async (path) => {
     const { container }=renderRoute(path);
-    await screen.findByText('● 展示審核資料｜非即時熱門情報');
+    await screen.findByText(/● 真實來源資料｜最後更新/);
     expect(container.textContent).not.toMatch(/MockTrendSourceProvider|TrendScoreCalculator|Repository|工作包\s*002|infrastructure|application|domain/);
   });
 
   it.each(['/review','/trends','/trends/search','/trends/watchlist','/trends/excluded','/trends/sources','/trends/rules','/trends/trend-subscription-fatigue','/onboarding'])('%s公開文字完成中文化', async (path) => {
     const { container }=renderRoute(path);
-    await screen.findByText('● 展示審核資料｜非即時熱門情報');
+    await screen.findByText(/● 真實來源資料｜最後更新/);
     const publicText=container.textContent ?? '';
     for (const forbidden of ['Mock','SaaS','TREND DISCOVERY','RC2','MVP','trend-score','google_trends','news_rss','competitor_tracking']) {
       expect(publicText).not.toContain(forbidden);

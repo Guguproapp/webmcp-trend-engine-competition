@@ -1,3 +1,41 @@
+# 工作包003真實熱門來源候選版驗證結果
+
+驗證日期：2026-08-29（Asia/Taipei）
+
+## 自動檢查
+
+| 項目 | 結果 | 實際結果 |
+| --- | --- | --- |
+| `npm install` | PASS | 稽核283個套件、0個漏洞 |
+| `npm test` | PASS | 8個測試檔、90個測試全數通過 |
+| `npm run typecheck` | PASS | TypeScript前端與Pages Functions型別檢查無錯誤 |
+| `npm run lint` | PASS | ESLint 0 error、0 warning |
+| `npm run build` | PASS | 45個模組；HTML 0.89 kB、CSS 28.23 kB、JavaScript 284.58 kB |
+| 公開Build掃描 | PASS | 不含22個展示題目、秘密變數名稱、A版路由或A版模組 |
+
+## 真實資料與D1
+
+- GDELT取得98筆官方新聞索引，正規化後保存36筆來源訊號、30個候選主題。
+- D1 `TREND_DB` 位於APAC，資料庫196 kB；30個主題、36筆訊號、36筆關聯、90筆快照、6筆來源執行紀錄、0個殘留更新鎖。
+- 第一次快照顯示建立增速基準；後續真實快照均標示 `measured`。本次來源數未變，因此30個主題的真實增速為0%，不是推估值。
+- YouTube提供者已完成但沒有 `YOUTUBE_API_KEY`，正式狀態為等待授權、0筆；沒有回退展示資料。
+- GDELT官方HTTPS憑證在取得時異常，伺服器使用同一官方主機HTTP公開索引並顯示降級提示。
+
+## 正式網址驗收
+
+- 正式入口：<https://trend-engine-b-review.pages.dev/review>
+- 八個B版路由可直接開啟及重新整理，三個A版路由只顯示產品邊界頁。
+- 桌面1440×900第一張卡頂端466px；平板768×1024及手機390×844水平溢出均為0。
+- 手機導覽固定4項；更多選單焦點進入／Escape關閉回焦通過。
+- 搜尋、來源／時間／排序篩選、觀察加入／移出、排除原因停用／啟用、排除／撤銷／取消排除均實際通過。
+- Console 0 error、0 warning；正式來源CNA與自由財經原始連結均回應HTTP 200。
+- 50次正式網址抽查：50/50 HTTP 200，min 0.098s、p50 0.145s、p95 1.802s、max 2.205s、平均0.485s。
+- CSP、Permissions-Policy、Referrer-Policy、nosniff、DENY、X-Robots-Tag及`robots.txt Disallow: /`均生效。
+
+證據目錄：`evidence/work-package-003/`。
+
+---
+
 # B 版 RC2 驗證結果
 
 驗證日期：2026-08-29（Asia/Taipei）

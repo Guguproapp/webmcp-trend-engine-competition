@@ -1,8 +1,8 @@
 # 熱門引擎｜爆紅流量情報服務
 
-蒐集正在快速上升的熱門議題，透過熱度、增速、社會共鳴、跨平台程度與風險進行評分及篩選。
+蒐集正在快速上升的熱門議題，依真實來源證據計算熱度、增速、社會共鳴、跨來源程度、資料信心與風險。
 
-本分支是準備對外測試的公開測試版，只包含熱門蒐集、評分、搜尋、篩選、證據、觀察及排除。所有題目均為明確標示的展示資料，不代表真實新聞或外部資料來源結果。
+目前公開候選版由 Cloudflare Pages Functions 透過同網域 `/api` 取得資料，並以 D1 保存主題、來源訊號、快照與提供者執行紀錄。前端不持有外部服務金鑰，也不在來源失敗時切回展示題目。
 
 ## A／B 產品線
 
@@ -11,51 +11,47 @@
 | A 版 | `internal/operator-console` | 宗億自用營運工作台，未來另行續作 | 否；由獨立分支與 Tag 保存 |
 | B 版 | `product/trend-discovery-mvp` | 對外爆紅流量情報產品 | 是 |
 
-A 版封存 Tag：`account-onboarding-mock-v0.1.0`、`internal-console-v0.1.0`。B 版不包含 A 版的帳號、影音及發布功能。
+A 版封存 Tag：`account-onboarding-mock-v0.1.0`、`internal-console-v0.1.0`。本分支不包含 A 版的帳號、授權、影音、發布或金流功能。
 
-## 啟動
+## 已接入與保留邊界
+
+- GDELT全球新聞資料：已接入官方公開 DOC API，只保存標題、媒體、發布時間、原始網址、取得時間及衍生指標，不保存新聞全文。
+- YouTube影音平台：伺服器提供者已完成；需由宗億本人建立官方 API 金鑰，再以 Cloudflare 加密秘密 `YOUTUBE_API_KEY` 設定。沒有金鑰時顯示「等待授權」，不建立假資料。
+- Google熱門搜尋趨勢：只保留停用邊界，等待 Google 官方 API Alpha 存取資格。
+- Threads社群討論：只保留可插拔介面，不申請權限、不爬取網站。
+- Facebook、Instagram、TikTok：本輪不接入，亦不使用非官方爬蟲。
+
+## 本機啟動與驗證
 
 需求：Node.js 22 以上、npm 10 以上。
 
 ```bash
 npm install
-npm run dev
-```
-
-開啟 Vite 顯示的本機網址，預設進入 `/review`。
-
-## 公開測試版第二次測試候選版
-
-- 審核網址：<https://trend-engine-b-review.pages.dev/review>
-- 部署平台：Cloudflare Pages Direct Upload（免費方案）。
-- 公開方式：知道網址即可開啟，不需要登入。
-- 收錄限制：HTML、`robots.txt` 與回應標頭均要求搜尋引擎不要建立索引；此限制不是存取控制，網址仍可由取得連結的人開啟。
-- 資料聲明：全站均顯示「展示審核資料｜非即時熱門情報」。
-
-審核前可在 `/review` 按「重設審核資料」，只會清除公開測試版熱門情報使用的瀏覽器本機保存空間，再恢復 22 個展示題目與 61 筆來源訊號。
-
-## B 版可驗收範圍
-
-- `/trends`：動態日期與摘要、高潛力前 5 名、22 題展開、分數環與既有時間序列趨勢線。
-- `/trends/search`：基本／進階搜尋篩選、有效條件摘要與七種排序，重新整理後保留條件。
-- `/trends/:topicId`：來源證據、熱度變化、分數拆解、加扣分與資料缺口。
-- `/trends/watchlist`：加入時間、加入時分數、目前分數與升降變化。
-- `/trends/excluded`：排除原因、即時撤銷、取消排除與操作紀錄。
-- `/trends/rules`：保存與檢視篩選規則。
-- `/review`：第二次測試候選版範圍、展示資料聲明、審核步驟與資料重設入口。
-
-非 B 版路由會顯示「此功能不屬於目前產品」，不會載入其他產品線頁面。
-
-## 驗證指令
-
-```bash
 npm test
 npm run typecheck
 npm run lint
 npm run build
+npx wrangler pages dev dist
 ```
 
-`npm run build` 最後會執行公開 Build 隔離檢查；若產物包含 A 版專屬路由、頁面識別、公開工程術語或必要部署檔案缺漏，指令會失敗。
+本機需要 D1 時，先執行 `npx wrangler d1 migrations apply trend-engine-b-review --local`。
+
+`.dev.vars.example` 只列出秘密變數名稱。請將實際秘密放在未追蹤的 `.dev.vars` 或 Cloudflare Pages 加密秘密；不得使用 `VITE_` 前綴。
+
+## 同網域 API
+
+- `GET /api/trends`：回傳新鮮快取；過期時由單一鎖更新，其他請求可取得最近一次成功結果。
+- `GET /api/trends/:topicId`：回傳主題與完整來源證據。
+- `GET /api/sources/status`：回傳來源啟用、失敗、配額及重試狀態。
+- `POST /api/admin/refresh`：以 `Authorization: Bearer …` 驗證 `REFRESH_ADMIN_TOKEN`，只供管理更新。
+
+## 資料與安全
+
+- `TREND_DB` 是 Cloudflare D1 綁定，不是前端環境變數。
+- `YOUTUBE_API_KEY` 與 `REFRESH_ADMIN_TOKEN` 只存在 Pages Functions 執行環境。
+- Production Build 掃描會拒絕展示題目、秘密變數名稱、A 版路由與A版專屬模組。
+- 觀察、排除與篩選偏好仍由 Infrastructure 層封裝在目前瀏覽器，外部來源證據與快照保存在 D1。
+- HTML、`robots.txt` 與安全回應標頭持續要求搜尋引擎不要建立索引；這不是登入或存取控制。
 
 ## 文件
 
@@ -64,14 +60,7 @@ npm run build
 - [熱門來源 Provider](docs/ADAPTERS.md)
 - [測試方式](docs/TESTING.md)
 - [驗證結果](docs/VERIFICATION.md)
-- [未來熱門來源接入點](docs/FUTURE-INTEGRATIONS.md)
+- [未來來源接入點](docs/FUTURE-INTEGRATIONS.md)
 - [限制與停止點](docs/LIMITATIONS.md)
-- [B 版審核操作指南](docs/B_REVIEW_GUIDE.md)
-- [B 版審核清單](docs/B_REVIEW_CHECKLIST.md)
-
-## 安全邊界
-
-- Local Storage 只由 Infrastructure Repository 封裝。
-- 頁面只呼叫 `TrendDiscoveryService`，不直接讀取 Mock 資料或瀏覽器儲存。
-- `.env.example` 沒有正式密鑰。
-- 未連接正式來源或會員；公開網址只部署 B 版靜態 `dist` 產物。
+- [公開測試操作指南](docs/B_REVIEW_GUIDE.md)
+- [公開測試清單](docs/B_REVIEW_CHECKLIST.md)

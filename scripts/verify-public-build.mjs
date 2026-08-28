@@ -48,14 +48,23 @@ const untranslatedPublicTerms = [
 
 const requiredLocalizedCopy = [
   '熱門引擎｜爆紅流量情報服務',
-  '熱門引擎｜初步產品審核',
-  '第二次測試候選版',
-  '展示審核資料｜非即時熱門情報',
+  '熱門引擎｜真實熱門情報審核',
+  '真實來源候選版 0.3',
+  '取得最新情報',
+  'GDELT全球新聞資料',
   'Threads社群討論',
   'YouTube影音平台',
   'Google熱門搜尋趨勢',
-  '新聞訂閱來源',
   '熱點評分版本1.0.0',
+];
+
+const forbiddenProductionData = [
+  'Mock 測試｜訂閱服務悄悄漲價',
+  'Mock 測試｜上班族挑戰',
+  'MockTrendSourceProvider',
+  'YOUTUBE_API_KEY',
+  'REFRESH_ADMIN_TOKEN',
+  '展示審核資料｜非即時熱門情報',
 ];
 
 async function filesUnder(directory) {
@@ -127,6 +136,9 @@ const builtCss = (await Promise.all(files.filter((file)=>file.endsWith('.css')).
 if (!builtCss.includes('prefers-reduced-motion')) throw new Error('公開Build缺少prefers-reduced-motion減少動畫設定。');
 
 const builtAssets = (await Promise.all(files.filter((file)=>/\.(?:html|js)$/u.test(file)).map((file)=>readFile(file,'utf8')))).join('\n');
+for (const phrase of forbiddenProductionData) {
+  if (builtAssets.includes(phrase)) throw new Error(`公開Build包含展示資料或秘密識別：${phrase}`);
+}
 for (const phrase of requiredLocalizedCopy) {
   if (!builtAssets.includes(phrase)) throw new Error(`公開Build缺少中文介面文字：${phrase}`);
 }

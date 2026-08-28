@@ -1,0 +1,9 @@
+正式網址反應時間抽查，共50次：
+- HTTP 200：50/50
+- 最快：0.098秒
+- 中位數：0.145秒
+- 第95百分位：1.802秒
+- 最慢：2.205秒
+- 平均：0.485秒
+
+輪流檢查 /review、/trends、/api/trends、/api/sources/status 與一個 /trends/:topicId。

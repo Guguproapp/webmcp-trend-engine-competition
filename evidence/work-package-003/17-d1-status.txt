@@ -1,0 +1,14 @@
+D1綁定：TREND_DB
+資料庫：trend-engine-b-review
+區域：APAC
+大小：196 kB
+
+trend_topics：30
+trend_signals：36
+trend_topic_signals：36
+trend_snapshots：90
+trend_provider_runs：6
+trend_refresh_locks：0
+
+最新GDELT執行：enabled，取得98筆，2026-08-29 07:43（Asia/Taipei），tls_fallback降級提示已公開顯示。
+最新YouTube執行：waiting_authorization，0筆，缺少官方加密金鑰，不建立假資料。

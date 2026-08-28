@@ -6,7 +6,8 @@ export const TREND_CATEGORIES = [
 export type TrendCategory = (typeof TREND_CATEGORIES)[number];
 export type TrendStatus = 'candidate' | 'high_potential' | 'watching' | 'excluded' | 'expired' | 'insufficient_evidence' | 'high_risk';
 export type TrendTier = 'viral' | 'rising' | 'observe' | 'not_recommended';
-export type TrendSourcePlatform = 'threads' | 'youtube' | 'google_trends' | 'news_rss' | 'authorized_account' | 'competitor_tracking';
+export type TrendSourcePlatform = 'gdelt_news' | 'youtube' | 'google_trends' | 'threads' | 'authorized_account' | 'competitor_tracking';
+export type TrendGrowthStatus = 'baseline_pending' | 'measured';
 
 export interface TrendHeatPoint { at: string; value: number; }
 
@@ -14,13 +15,20 @@ export interface TrendSourceItem {
   id: string;
   platform: TrendSourcePlatform;
   title: string;
+  publisher: string;
   discoveredAt: string;
   publishedAt: string;
-  engagementCount: number;
-  growthDelta: number;
-  isMock: true;
+  fetchedAt: string;
+  viewCount: number | null;
+  likeCount: number | null;
+  commentCount: number | null;
+  reportCount: number | null;
+  engagementCount: number | null;
+  growthDelta: number | null;
+  growthStatus: TrendGrowthStatus;
+  isMock: boolean;
   confidence: number;
-  originalUrl?: string;
+  originalUrl: string;
   heatHistory: TrendHeatPoint[];
 }
 
@@ -61,6 +69,7 @@ export interface TrendTopic {
   lastSeenAt: string;
   currentHeat: number;
   growthRate: number;
+  growthStatus: TrendGrowthStatus;
   freshness: number;
   crossPlatformResonance: number;
   socialResonance: number;
@@ -90,6 +99,7 @@ export interface RawTrendSignal {
   sourceItem: TrendSourceItem;
   currentHeat: number;
   growthRate: number;
+  growthStatus: TrendGrowthStatus;
   freshness: number;
   crossPlatformResonance: number;
   socialResonance: number;
@@ -114,6 +124,6 @@ export const TREND_STATUS_LABELS: Record<TrendStatus, string> = {
 };
 
 export const SOURCE_LABELS: Record<TrendSourcePlatform, string> = {
-  threads: 'Threads社群討論', youtube: 'YouTube影音平台', google_trends: 'Google熱門搜尋趨勢', news_rss: '新聞訂閱來源',
+  gdelt_news: 'GDELT全球新聞資料', youtube: 'YouTube影音平台', google_trends: 'Google熱門搜尋趨勢', threads: 'Threads社群討論',
   authorized_account: '客戶授權資料', competitor_tracking: '競爭者與關鍵字追蹤',
 };

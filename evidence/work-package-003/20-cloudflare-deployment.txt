@@ -1,0 +1,9 @@
+Cloudflare Pages專案：trend-engine-b-review
+Production分支：product/trend-discovery-mvp
+正式網址：https://trend-engine-b-review.pages.dev/review
+部署方式：Pages Direct Upload，dist與Functions bundle
+方案：既有免費額度
+信用卡：本輪未要求
+購買網域：否
+Push：否
+A版部署：否
