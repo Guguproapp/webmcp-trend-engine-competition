@@ -2,7 +2,7 @@
 
 ## Supabase
 
-將四個 Local Repository 分別改成 Supabase 實作：
+將既有 Local Repository 分別改成 Supabase 實作；工作包 001 包含：
 
 - `BrandProfileRepository` → `brand_profiles`。
 - `OnboardingProgressRepository` → `onboarding_progress`。
@@ -10,6 +10,16 @@
 - `AuditLogRepository` → append-only `audit_logs`。
 
 在組合根 `src/app/services.ts` 改注入實作即可；Presentation 與 Domain 不變。正式 Token 應放在受 Row Level Security 與伺服器金鑰保護的獨立加密資料表，瀏覽器不可讀取。
+
+工作包 002 可替換為：
+
+- `TrendTopicRepository` → `trend_topics` 與 `trend_source_items`。
+- `TrendWatchlistRepository` → `trend_watchlist_entries`。
+- `TrendExclusionRepository` → `trend_exclusions`。
+- `TrendFilterRuleRepository` → `trend_filter_rules`。
+- `TrendRefreshLogRepository` → `trend_refresh_logs`。
+
+正式來源 Provider 必須在後端執行、保留來源時間與信心，不可由頁面直接呼叫。Threads、YouTube、Google Trends、RSS 與客戶授權來源分別實作 `TrendSourceProvider`，再由 `TrendDiscoveryService` 統一合併與評分。
 
 ## Google／YouTube
 

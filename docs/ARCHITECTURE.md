@@ -18,7 +18,7 @@ presentation → application → domain
 
 頁面不可直接存取 Local Storage；它只呼叫 Repository 或 Application Service。正式資料庫上線時可替換 Infrastructure 實作，不需重寫頁面。
 
-## 本輪資料流
+## 帳號開通資料流（工作包 001）
 
 1. 使用者在 onboarding 頁選擇帳號現況。
 2. Presentation 呼叫 `OnboardingProgressRepository` 保存選擇。
@@ -26,6 +26,22 @@ presentation → application → domain
 4. `MockPlatformAuthorizationProvider` 建立站內模擬授權網址。
 5. Callback 驗證 `state`，回傳模擬結果並執行模擬連接測試。
 6. Repository 將品牌、進度、連接與稽核分開保存。
+
+## 熱門蒐集資料流（工作包 002）
+
+```text
+MockTrendSourceProvider
+  → TrendDiscoveryService（合併、評分、狀態判定）
+  → TrendTopicRepository／Watchlist／Exclusion／FilterRule／RefreshLog
+  → React Presentation
+```
+
+1. `TrendSourceProvider` 回傳來源訊號；本輪唯一實作是 `MockTrendSourceProvider`。
+2. `TrendDiscoveryService` 依 `canonicalKey` 合併相同主題，再交由 `TrendScoreCalculator` 計算。
+3. 分數權重與自然事件、高風險、證據不足規則只存在 Domain，不寫在 UI。
+4. 搜尋、篩選、排序、觀察、排除與重新整理保存都經由 Application Service 與 Repository。
+5. Local Storage 只由 Infrastructure 實作讀寫，未來換成 Supabase 時不需改頁面。
+6. 排除、取消排除、加入與移出觀察會寫入既有 Audit Log。
 
 ## 安全預留
 

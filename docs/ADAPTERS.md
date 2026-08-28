@@ -12,7 +12,7 @@
 - `VideoRenderProvider`：字幕、聲音、版本轉檔、工作狀態。
 - `BillingProvider`：訂閱、付款、定期通知、取消、扣款失敗。
 
-## 本輪唯一實作
+## 已實作的 Mock Provider
 
 `MockPlatformAuthorizationProvider` 只回傳站內網址與模擬狀態，不呼叫外部平台，不建立帳號，不產生或保存真實 Token。
 
@@ -23,3 +23,14 @@ Mock callback 結果：
 - `permission_incomplete` → `permission_incomplete`。
 - `token_expired` → `token_expired`。
 - `platform_error` → `connection_error`。
+
+`MockTrendSourceProvider` 回傳明確標示為 Mock 的來源訊號，不連線、不爬蟲、不冒充即時熱門新聞。Provider 邊界已可替換為：
+
+- Threads Keyword Search API。
+- YouTube Data API。
+- Google Trends。
+- 新聞 RSS。
+- 客戶授權帳號資料。
+- 客戶指定競爭者與關鍵字。
+
+正式 Provider 只負責取得並正規化來源訊號；合併、評分、自然事件門檻與狀態判定仍由 `TrendDiscoveryService`／Domain 處理，避免各來源產生不同標準。

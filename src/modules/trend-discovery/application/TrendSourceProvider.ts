@@ -1,5 +1,9 @@
+import type { RawTrendSignal } from '../domain/TrendTopic';
+
+export interface TrendCollectionRequest { refreshedAt: string; }
+
 export interface TrendSourceProvider {
-  searchKeywords(query: string): Promise<unknown[]>;
-  getTrendingItems(): Promise<unknown[]>;
-  getMomentum(itemId: string): Promise<{ score: number; growthRate: number }>;
+  collectSignals(request: TrendCollectionRequest): Promise<RawTrendSignal[]>;
+  searchSignals(query: string, request: TrendCollectionRequest): Promise<RawTrendSignal[]>;
+  getProviderNames(): string[];
 }

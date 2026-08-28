@@ -1,0 +1,8 @@
+import { trendDiscoveryService } from '../../../app/services';
+import { DEFAULT_TREND_WEIGHTS } from '../domain/TrendScoreCalculator';
+
+export function TrendRulesPage() {
+  const rules=trendDiscoveryService.listSavedRules(); const weights=trendDiscoveryService.getWeights();
+  return <section className="trend-page"><div className="trend-title-row"><div><div className="trend-date">規則與透明度</div><h1>篩選規則</h1><p>查看目前分數權重與已儲存的 Mock 篩選條件。</p></div></div><div className="mock-trend-banner"><strong>工作包 002 固定權重</strong><span>權重集中於 TrendScoreCalculator；後續可替換為後台設定，本輪不提供正式管理後台。</span></div><section className="detail-card"><h2>TrendScoreCalculator 權重</h2><div className="weights-grid">{Object.entries(weights).map(([key,value])=><div key={key}><span>{weightLabel(key)}</span><strong>{key.includes('Penalty')?`最高扣 ${value} 分`:`${Math.round(Number(value)*100)}%`}</strong></div>)}</div><p className="weight-version">計算版本：trend-score-v1.0.0；預設設定一致：{JSON.stringify(weights)===JSON.stringify(DEFAULT_TREND_WEIGHTS)?'是':'否'}</p></section><section className="detail-card"><h2>已儲存篩選規則</h2>{rules.length?<div className="saved-rules">{rules.map((rule)=><article key={rule.id}><strong>{rule.name}</strong><span>{new Intl.DateTimeFormat('zh-TW').format(new Date(rule.savedAt))}</span><p>最低分數 {rule.filters.minimumScore}、分類 {rule.filters.category === 'all'?'全部':rule.filters.category}、排序 {rule.filters.sortBy}</p></article>)}</div>:<p className="muted">尚未儲存規則。請到主題搜尋使用「儲存篩選規則」。</p>}</section></section>;
+}
+const weightLabel=(key:string)=>({currentHeat:'目前熱度',growthRate:'熱度增速',socialResonance:'社會共鳴',crossPlatformResonance:'跨平台共振',freshness:'新鮮度',taiwanRelevance:'台灣相關性',estimatedLifeHours:'預估生命週期',competitionPenaltyMax:'競爭飽和',riskPenaltyMax:'風險',confidencePenaltyMax:'資料信心不足'}[key]??key);
