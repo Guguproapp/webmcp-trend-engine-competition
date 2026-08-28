@@ -21,9 +21,10 @@ const confidenceMatches = (topic: TrendTopic, level: TrendFilters['confidenceLev
 
 export function filterAndSortTopics(topics: TrendTopic[], filters: TrendFilters, now = new Date()) {
   const cutoff = now.getTime() - filters.timeRangeHours * 3600000;
-  const query = filters.query.trim().toLocaleLowerCase('zh-TW');
+  const normalizeSearchText = (value: string) => value.toLocaleLowerCase('zh-TW').replaceAll('人工智慧', 'ai').replace(/\s+/gu, '');
+  const query = normalizeSearchText(filters.query.trim());
   const filtered = topics.filter((topic) => {
-    const searchable = `${topic.title} ${topic.summary} ${topic.keywords.join(' ')}`.toLocaleLowerCase('zh-TW');
+    const searchable = normalizeSearchText(`${topic.title} ${topic.summary} ${topic.keywords.join(' ')}`);
     return (!query || searchable.includes(query)) && (filters.category === 'all' || topic.category === filters.category)
       && (filters.source === 'all' || topic.sourcePlatforms.includes(filters.source)) && new Date(topic.lastSeenAt).getTime() >= cutoff
       && topic.currentHeat >= filters.minimumHeat && topic.growthRate >= filters.minimumGrowth && topic.totalScore >= filters.minimumScore

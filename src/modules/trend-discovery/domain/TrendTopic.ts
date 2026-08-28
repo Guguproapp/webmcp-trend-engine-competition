@@ -114,6 +114,6 @@ export const TREND_STATUS_LABELS: Record<TrendStatus, string> = {
 };
 
 export const SOURCE_LABELS: Record<TrendSourcePlatform, string> = {
-  threads: 'Threads 關鍵字', youtube: 'YouTube', google_trends: 'Google Trends', news_rss: '新聞 RSS',
-  authorized_account: '授權帳號', competitor_tracking: '競爭者追蹤',
+  threads: 'Threads社群討論', youtube: 'YouTube影音平台', google_trends: 'Google熱門搜尋趨勢', news_rss: '新聞訂閱來源',
+  authorized_account: '客戶授權資料', competitor_tracking: '競爭者與關鍵字追蹤',
 };

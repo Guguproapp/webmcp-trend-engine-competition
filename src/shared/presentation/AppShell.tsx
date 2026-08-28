@@ -18,7 +18,7 @@ export function AppShell() {
           <div className="brand-mark" aria-hidden="true">熱</div>
           <div>
             <strong>熱門引擎</strong>
-            <span>爆紅流量情報SaaS</span>
+            <span>爆紅流量情報服務</span>
           </div>
         </div>
         <nav aria-label="主要導覽">
@@ -29,16 +29,16 @@ export function AppShell() {
           ))}
         </nav>
         <div className="sidebar-note">
-          <span className="badge badge-lime">公開產品 B版</span>
-          <p>熱門蒐集、評分、證據與篩選 RC2。</p>
+          <span className="badge badge-lime">公開測試版</span>
+          <p>熱門蒐集、評分、證據與篩選第二次測試候選版。</p>
         </div>
       </aside>
       <main className="main-content">
         <header className="topbar">
           <div>
-            <span className="eyebrow">TREND DISCOVERY · 爆紅流量情報</span>
+            <span className="eyebrow">熱門情報探索 · 爆紅流量情報</span>
           </div>
-          <span className="mock-pill">● Mock審核資料｜非即時熱門情報</span>
+          <span className="mock-pill">● 展示審核資料｜非即時熱門情報</span>
         </header>
         <div className="page-container"><Outlet /></div>
       </main>

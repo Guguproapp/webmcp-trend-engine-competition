@@ -22,7 +22,7 @@ export function ReviewPage() {
     setNotice('');
     try {
       const result = await reviewResetService.reset();
-      setNotice(`審核資料已重設：恢復 ${result.topicCount} 個 Mock 主題與 ${result.signalCount} 筆來源訊號。`);
+      setNotice(`審核資料已重設：恢復 ${result.topicCount} 個展示題目與 ${result.signalCount} 筆來源訊號。`);
     } finally {
       setResetting(false);
     }
@@ -31,30 +31,30 @@ export function ReviewPage() {
   return <section className="review-page">
     <div className="review-hero">
       <div>
-        <span className="review-version">B版審核候選版 RC2</span>
-        <h1>熱門引擎B版｜MVP原型審核</h1>
+        <span className="review-version">第二次測試候選版</span>
+        <h1>熱門引擎｜初步產品審核</h1>
         <p>這個入口協助審核人員理解產品邊界，並用更清楚的步驟操作爆紅流量情報原型。</p>
       </div>
-      <div className="review-mock-seal" aria-label="Mock審核資料，非即時熱門情報">
-        <strong>Mock</strong><span>非即時情報</span>
+      <div className="review-mock-seal" aria-label="展示資料，非即時熱門情報">
+        <strong>展示資料</strong><span>非即時情報</span>
       </div>
     </div>
 
     <div className="review-disclosure" role="note">
-      <strong>資料聲明</strong>
-      <p>目前所有熱門議題、來源訊號、熱度分數及成長數據均為Mock審核資料，不代表即時市場情報。</p>
+      <strong>展示資料｜非即時熱門情報</strong>
+      <p>目前所有熱門議題、來源訊號、熱度分數及成長數據均為展示審核資料，不代表即時市場情報。</p>
     </div>
 
     <div className="review-scope-grid">
       <article>
         <span className="review-card-label">產品範圍</span>
         <h2>本次要驗證</h2>
-        <p>本版本只驗證爆紅議題蒐集、評分、搜尋、篩選、證據、觀察及排除流程。</p>
+        <p>本版本驗證熱門議題蒐集、評分、搜尋、篩選、證據、觀察及排除流程。</p>
       </article>
       <article>
         <span className="review-card-label excluded">不包含</span>
         <h2>本次不驗證</h2>
-        <p>AI文案、圖片生成、影片生成、社群帳號授權、自動發布、藍新金流及正式即時資料來源。</p>
+        <p>人工智慧文案、圖片生成及影片生成、社群帳號授權、自動發布、藍新金流及正式即時資料來源。</p>
       </article>
     </div>
 

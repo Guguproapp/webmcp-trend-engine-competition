@@ -34,6 +34,30 @@ const engineeringTerms = [
   'domain',
 ];
 
+const untranslatedPublicTerms = [
+  'Mock',
+  'SaaS',
+  'TREND DISCOVERY',
+  'RC2',
+  'MVP',
+  'trend-score',
+  'google_trends',
+  'news_rss',
+  'competitor_tracking',
+];
+
+const requiredLocalizedCopy = [
+  '熱門引擎｜爆紅流量情報服務',
+  '熱門引擎｜初步產品審核',
+  '第二次測試候選版',
+  '展示審核資料｜非即時熱門情報',
+  'Threads社群討論',
+  'YouTube影音平台',
+  'Google熱門搜尋趨勢',
+  '新聞訂閱來源',
+  '熱點評分版本1.0.0',
+];
+
 async function filesUnder(directory) {
   const entries = await readdir(directory, { withFileTypes: true });
   const nested = await Promise.all(entries.map((entry) => {
@@ -46,6 +70,24 @@ async function filesUnder(directory) {
 const files = await filesUnder(fileURLToPath(new URL('../dist', import.meta.url)));
 const distDirectory = fileURLToPath(new URL('../dist', import.meta.url));
 const requiredStaticFiles = ['_redirects', '_headers', 'robots.txt'];
+
+const publicUiSourceDirectories = [
+  fileURLToPath(new URL('../src/shared/presentation', import.meta.url)),
+  fileURLToPath(new URL('../src/modules/trend-discovery/presentation', import.meta.url)),
+];
+const publicUiSourceFiles = [
+  ...(await Promise.all(publicUiSourceDirectories.map(filesUnder))).flat(),
+  fileURLToPath(new URL('../src/app/App.tsx', import.meta.url)),
+  fileURLToPath(new URL('../index.html', import.meta.url)),
+].filter((file) => !file.endsWith('publicLabels.ts'));
+
+for (const file of publicUiSourceFiles) {
+  const content = await readFile(file, 'utf8');
+  for (const phrase of untranslatedPublicTerms) {
+    if (content.includes(phrase)) throw new Error(`公開介面仍包含未中文化術語：${phrase}（${file}）`);
+  }
+  if (/(^|[^A-Z])AI([^A-Z]|$)/u.test(content)) throw new Error(`公開介面仍包含未中文化術語：AI（${file}）`);
+}
 
 for (const requiredFile of requiredStaticFiles) {
   const requiredPath = join(distDirectory, requiredFile);
@@ -84,4 +126,9 @@ for (const header of ['X-Robots-Tag:', 'X-Content-Type-Options: nosniff', 'Conte
 const builtCss = (await Promise.all(files.filter((file)=>file.endsWith('.css')).map((file)=>readFile(file,'utf8')))).join('\n');
 if (!builtCss.includes('prefers-reduced-motion')) throw new Error('公開Build缺少prefers-reduced-motion減少動畫設定。');
 
-console.log(`公開Build檢查通過：${files.length}個檔案未包含A版內容或公開工程術語，且SPA fallback、robots與安全headers均存在。`);
+const builtAssets = (await Promise.all(files.filter((file)=>/\.(?:html|js)$/u.test(file)).map((file)=>readFile(file,'utf8')))).join('\n');
+for (const phrase of requiredLocalizedCopy) {
+  if (!builtAssets.includes(phrase)) throw new Error(`公開Build缺少中文介面文字：${phrase}`);
+}
+
+console.log(`公開Build檢查通過：${files.length}個檔案未包含A版內容或公開工程術語，公開介面已全中文化，且SPA fallback、robots與安全headers均存在。`);

@@ -89,7 +89,7 @@ details summary { min-height: 44px; width: fit-content; padding-block: 10px; col
 .subtle-data-note, .mock-trend-banner { display: flex; gap: 14px; align-items: center; margin-bottom: 20px; padding: 14px 17px; color: #315b4d; background: var(--soft-green); border: 1px solid #c9d9d1; border-radius: 14px; }
 .subtle-data-note strong, .mock-trend-banner strong { flex: 0 0 auto; color: var(--brand-green); }
 .subtle-data-note span, .mock-trend-banner span { font-size: .87rem; }
-.trend-stat-grid { display: grid; grid-template-columns: repeat(5,minmax(0,1fr)); gap: 11px; margin-bottom: 20px; }
+.trend-stat-grid { display: grid; grid-template-columns: repeat(4,minmax(0,1fr)); gap: 11px; margin-bottom: 20px; }
 .trend-stat-grid article { padding: 15px 17px; background: white; border: 1px solid var(--line); border-radius: 14px; box-shadow: 0 5px 16px rgb(35 67 54 / 5%); }
 .trend-stat-grid span, .trend-stat-grid strong { display: block; }
 .trend-stat-grid span { color: var(--muted); font-size: .73rem; }
@@ -142,6 +142,7 @@ details summary { min-height: 44px; width: fit-content; padding-block: 10px; col
 .watching-flag { color: #513b00; background: var(--watch-amber); }
 .risk-flag { color: #8c2929; background: var(--soft-red); border: 1px solid #e3a3a3; }
 .evidence-flag { color: #654b04; background: var(--soft-amber); }
+.trend-growth-label { color: #123f73; background: var(--soft-blue); }
 .mock-data-label { color: #52405c; background: #eee7f2; }
 .score-ring { --score: 0; flex: 0 0 92px; width: 92px; height: 92px; padding: 7px; display: grid; place-items: center; background: conic-gradient(var(--viral-coral) calc(var(--score) * 1%), #ece8e1 0); border-radius: 50%; }
 .score-ring > div { width: 100%; height: 100%; display: grid; place-content: center; text-align: center; color: var(--brand-green); background: white; border-radius: 50%; }
@@ -258,6 +259,30 @@ details summary { min-height: 44px; width: fit-content; padding-block: 10px; col
 .review-steps-card li { padding-left: 5px; color: #3d554c; }
 .review-actions { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 20px; }
 .review-reset-notice { margin-top: 15px; padding: 13px 16px; color: #0e574b; background: #e1f5ee; border-radius: 11px; font-weight: 800; }
+
+@media (min-width: 1101px) {
+  .trend-page--overview { margin-top: -24px; }
+  .trend-page--overview .trend-title-row { margin-bottom: 12px; }
+  .trend-page--overview .trend-title-row h1 { margin-bottom: 4px; font-size: clamp(2rem, 3vw, 2.55rem); }
+  .trend-page--overview .trend-title-row p { font-size: .94rem; }
+  .trend-page--overview .trend-date { margin-bottom: 3px; }
+  .trend-page--overview .trend-daily-summary { min-height: 76px; margin-bottom: 12px; padding: 12px 18px; border-radius: 16px; }
+  .trend-page--overview .trend-daily-summary strong { font-size: 1.13rem; line-height: 1.32; }
+  .trend-page--overview .trend-stat-grid { margin-bottom: 12px; }
+  .trend-page--overview .trend-stat-grid article { padding: 9px 13px; }
+  .trend-page--overview .trend-stat-grid strong { margin-top: 1px; font-size: 1rem; }
+  .trend-page--overview .trend-filter-panel { margin-bottom: 10px; padding: 11px 14px; border-radius: 15px; }
+  .trend-page--overview .advanced-filters { margin-top: 7px; padding-top: 2px; }
+  .trend-page--overview .trend-filter-actions { margin-top: 7px; }
+  .trend-page--overview .trend-results-heading { margin: 10px 0 8px; }
+  .trend-page--overview .trend-topic-card { padding: 17px 20px; }
+  .trend-page--overview .trend-topic-card h2 { margin: 4px 0 2px; }
+  .trend-page--overview .trend-summary { margin-bottom: 6px; font-size: .88rem; }
+  .trend-page--overview .trend-card-actions { margin: 5px 0 8px; }
+  .trend-page--overview .trend-primary-metrics > div { padding-block: 7px; }
+  .trend-page--overview .trend-sparkline { margin-top: 7px; }
+  .trend-page--overview .topic-more { margin-top: 5px; }
+}
 
 @media (max-width: 1100px) {
   .trend-stat-grid { grid-template-columns: repeat(3,1fr); }

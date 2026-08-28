@@ -1,5 +1,6 @@
 import { DEFAULT_TREND_FILTERS, type TrendFilters } from '../domain/TrendFilters';
 import { SOURCE_LABELS, TREND_STATUS_LABELS } from '../domain/TrendTopic';
+import { publicCategoryLabel } from './publicLabels';
 
 const ADVANCED_FILTER_KEYS: Array<keyof TrendFilters> = [
   'source', 'minimumHeat', 'minimumGrowth', 'minimumScore', 'minimumTaiwanRelevance',
@@ -14,7 +15,7 @@ export function getAdvancedFilterCount(filters: TrendFilters) {
 export function getActiveFilterLabels(filters: TrendFilters) {
   const labels: string[] = [];
   if (filters.query) labels.push(`關鍵字「${filters.query}」`);
-  if (filters.category !== 'all') labels.push(`分類：${filters.category}`);
+  if (filters.category !== 'all') labels.push(`分類：${publicCategoryLabel(filters.category)}`);
   if (filters.timeRangeHours !== DEFAULT_TREND_FILTERS.timeRangeHours) labels.push(`最近 ${filters.timeRangeHours} 小時`);
   if (filters.sortBy !== 'score') labels.push(`排序：${sortLabel(filters.sortBy)}`);
   if (filters.source !== 'all') labels.push(`來源：${SOURCE_LABELS[filters.source]}`);
