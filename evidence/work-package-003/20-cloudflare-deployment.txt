@@ -1,8 +1,8 @@
 Cloudflare Pages專案：trend-engine-b-review
 Production分支：product/trend-discovery-mvp
 正式網址：https://trend-engine-b-review.pages.dev/review
-最新部署：b272a03a-8fad-4df3-b4a5-771845e00bbe
-部署Commit：855242a
+最新程式部署Commit：172a3840372528488a9e6e0367af81a6803b767a
+候選Tag：b-trend-review-v0.3.0-rc2
 部署方式：Pages Direct Upload，dist與Functions bundle
 方案：既有免費額度
 信用卡：本輪未要求
