@@ -1,0 +1,21 @@
+正式驗收時間：2026-08-29 13:54（Asia/Taipei）
+正式網址：https://trend-engine-b-review.pages.dev/
+
+PASS YouTube Data API v3已在Google Cloud專案啟用。
+PASS API金鑰只限制使用YouTube Data API v3。
+PASS Cloudflare Production秘密變數YOUTUBE_API_KEY顯示Value Encrypted。
+PASS 正式API來源狀態為enabled，本輪取得1筆。
+PASS 正式主題詳情顯示YouTube影音平台、頻道、發布時間、取得時間、觀看、按讚、留言及來源信心。
+PASS 只有第一次快照，畫面顯示「正在建立增速基準」且狀態為證據不足，未虛構增速或爆紅高分。
+PASS 「查看原始來源」在Mac Safari新分頁開啟官方YouTube影片頁。
+PASS 正式Build與Git掃描未發現API金鑰格式。
+
+候選主題：新竹棒球場案相關YouTube來源
+頻道：中天新聞
+API取得時公開統計：觀看371、按讚18、留言16
+原始來源：https://www.youtube.com/watch?v=gayTKa5Ww24
+
+截圖：
+- 21-youtube-source-enabled-safari.jpg
+- 22-youtube-evidence-detail-safari.jpg
+- 23-youtube-original-source-safari.jpg
