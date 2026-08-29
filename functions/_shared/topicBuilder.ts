@@ -88,7 +88,16 @@ export function clusterSourceRecords(records: RealSourceRecord[]) {
     });
     if (match) match.records.push(entry.record); else clusters.push({records:[entry.record],anchorTokens:entry.tokens});
   }
-  return clusters.map((cluster)=>cluster.records).sort((a,b)=>b.length-a.length || new Date(b[0].publishedAt).getTime()-new Date(a[0].publishedAt).getTime()).slice(0, 30);
+  const sortedClusters = clusters.map((cluster)=>cluster.records)
+    .sort((a,b)=>b.length-a.length || new Date(b[0].publishedAt).getTime()-new Date(a[0].publishedAt).getTime());
+  const selected: RealSourceRecord[][] = [];
+  const include = (cluster: RealSourceRecord[] | undefined) => {
+    if (cluster && !selected.includes(cluster) && selected.length < 30) selected.push(cluster);
+  };
+  const providers = new Set(sortedClusters.flatMap((cluster)=>cluster.map((record)=>record.provider)));
+  providers.forEach((provider)=>include(sortedClusters.find((cluster)=>cluster.some((record)=>record.provider===provider))));
+  sortedClusters.forEach(include);
+  return selected;
 }
 
 function sourceItem(record: RealSourceRecord, topicReportCount: number, growth: number | null, growthStatus: TrendGrowthStatus, confidence: number, history: TrendHeatPoint[]): TrendSourceItem {
