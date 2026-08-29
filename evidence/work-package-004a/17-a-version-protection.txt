@@ -1,0 +1,9 @@
+工作包004A A版保護結果
+日期：2026-08-29（Asia/Taipei）
+
+PASS internal/operator-console = acf9ee75b8c82819f7b3fb64488510e4bbbd5d5e
+PASS account-onboarding-mock-v0.1.0 = acf9ee75b8c82819f7b3fb64488510e4bbbd5d5e
+PASS internal-console-v0.1.0 = acf9ee75b8c82819f7b3fb64488510e4bbbd5d5e
+PASS feature/trend-discovery-mock = 7b3f1ee3bebf003e50a77579519d33be744e1b85
+
+未切換、修改、合併或部署A版；B版公開Build不含A版帳號開通、模擬授權、影音生成、發布或金流入口。

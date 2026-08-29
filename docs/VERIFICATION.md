@@ -1,3 +1,43 @@
+# 工作包004A四大平台爆款影音搜尋合規驗證結果
+
+驗證日期：2026-08-29（Asia/Taipei）
+
+## 自動檢查
+
+| 項目 | 結果 | 實際結果 |
+| --- | --- | --- |
+| `npm install` | PASS | 稽核283個套件、0個漏洞 |
+| `npm test` | PASS | 10個測試檔、137個測試全數通過 |
+| `npm run typecheck` | PASS | TypeScript前端與Pages Functions型別檢查無錯誤 |
+| `npm run lint` | PASS | ESLint 0 error、0 warning |
+| `npm run build` | PASS | 50個模組；HTML 0.89 kB、CSS 34.04 kB、JavaScript 308.76 kB |
+| `npm audit --audit-level=high` | PASS | 0個漏洞 |
+| 正式Build掃描 | PASS | 不含API金鑰、管理Token、A版程式、展示題目或「四平台全部自動搜尋」宣稱 |
+
+## 四平台實際狀態
+
+- YouTube：官方API自動取得已啟用；正式站可顯示官方影片、觀看、按讚、留言與第一次快照「正在建立增速基準」。
+- Facebook：官方網站搜尋與公開網址匯入可用；Meta公開內容權限尚未申請，不回傳假資料。
+- Instagram：官方網站搜尋與Reels／公開貼文網址匯入可用；專業帳號及公開內容權限尚未申請，不宣稱全平台搜尋。
+- TikTok：官方搜尋、官方熱門創意中心與公開影片網址匯入可用；沒有全平台自動API，人工匯入不標示為官方熱門排名。
+- GDELT：維持補充新聞來源；新聞篇數不當成影音互動數。
+- 搜尋引擎：只產生限定官方網域的輔助搜尋入口；未啟用自動搜尋、不爬取搜尋結果頁。
+
+## 正式網址驗收
+
+- 正式入口：<https://trend-engine-b-review.pages.dev/trends/video-search>
+- `/review`、熱門列表、搜尋、影音搜尋、觀察、排除、來源、規則、議題詳情與產品邊界頁均可直接開啟及重新整理，HTTP 200、沒有白畫面。
+- 桌面1440×900、平板768×1024、手機390×844水平溢出均為0；可見控制項最小高度44px。
+- 手機底部導覽固定4項、沒有水平捲動；更多選單開啟後焦點進入，Escape關閉後焦點回到「更多」。
+- 四平台網址均可匯入；YouTube短網址與長網址會正規化及去重，追蹤參數會移除。
+- `tiktok.com.evil.example`及`javascript:`均被拒絕，候選數不增加。
+- 正式站Console為0 error、0 warning；外部證據連結使用新分頁及`noopener noreferrer`。
+- CSP、Permissions-Policy、Referrer-Policy、nosniff、DENY、X-Robots-Tag及`robots.txt Disallow: /`均生效。
+
+證據目錄：`evidence/work-package-004a/`。
+
+---
+
 # 工作包003真實熱門來源候選版驗證結果
 
 驗證日期：2026-08-29（Asia/Taipei）

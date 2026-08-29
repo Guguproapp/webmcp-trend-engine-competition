@@ -1,0 +1,16 @@
+工作包004A正式路由驗收
+日期：2026-08-29（Asia/Taipei）
+網址：https://trend-engine-b-review.pages.dev
+
+PASS / 200 /review
+PASS / 200 /trends
+PASS / 200 /trends/search
+PASS / 200 /trends/video-search
+PASS / 200 /trends/watchlist
+PASS / 200 /trends/excluded
+PASS / 200 /trends/sources
+PASS / 200 /trends/rules
+PASS / 200 /trends/:topicId（真實議題詳情）
+PASS / 200 /onboarding（只顯示B版產品邊界頁）
+
+上述路由皆完成直接開啟與重新整理，沒有白畫面，水平溢出為0。
