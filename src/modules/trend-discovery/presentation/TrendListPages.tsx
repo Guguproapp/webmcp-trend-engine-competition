@@ -30,7 +30,6 @@ function TrendListPage({ fullFilters = false }: { fullFilters?: boolean }) {
   const [undo, setUndo] = useState<ExclusionUndo | null>(null);
   const topics = trendDiscoveryService.listAll();
   const results = trendDiscoveryService.listFiltered(filters);
-  const latest = trendDiscoveryService.getLatestRefresh();
   const metadata=trendDiscoveryService.getApiMetadata();
   const today = new Intl.DateTimeFormat('zh-TW', { year:'numeric', month:'long', day:'numeric', weekday:'long' }).format(new Date());
   const risingTopics=topics.filter((topic)=>topic.growthStatus==='measured'&&(topic.tier==='viral'||topic.tier==='rising'));
@@ -66,7 +65,7 @@ function TrendListPage({ fullFilters = false }: { fullFilters?: boolean }) {
     <Stat key="updated" label="最後更新" value={metadata?.lastSuccessAt ? formatDateTime(metadata.lastSuccessAt) : '蒐集中'} />,
   ];
   const searchStats = [
-    <Stat key="updated" label="上次更新" value={latest ? formatDateTime(latest.refreshedAt) : '準備中'} />,
+    <Stat key="updated" label="上次更新" value={metadata?.lastSuccessAt ? formatDateTime(metadata.lastSuccessAt) : '準備中'} />,
     <Stat key="sources" label="正常運作來源" value={`${metadata?.sourceStatuses.filter((source)=>source.state==='enabled').length??0}`} />,
     <Stat key="topics" label="蒐集主題數" value={`${topics.length}`} />,
     <Stat key="results" label="目前結果數" value={`${results.length}`} highlight />,
