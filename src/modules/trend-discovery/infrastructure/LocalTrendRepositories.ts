@@ -4,7 +4,7 @@ import { JsonStore, type KeyValueStorage } from '../../../shared/infrastructure/
 import type { SavedTrendFilterRule, TrendAuditEntry, TrendAuditPort, TrendExclusion, TrendExclusionRepository, TrendFilterRuleRepository, TrendRefreshLog, TrendRefreshLogRepository, TrendReviewResetRepository, TrendTopicRepository, TrendWatchItem, TrendWatchlistRepository } from '../application/repositories';
 
 export const TREND_STORAGE_KEYS = {
-  topics: 'trend-engine.topics.v1',
+  topics: 'trend-engine.real-topics.v1',
   watchlist: 'trend-engine.watchlist.v1',
   exclusions: 'trend-engine.exclusions.v1',
   filterRules: 'trend-engine.filter-rules.v1',

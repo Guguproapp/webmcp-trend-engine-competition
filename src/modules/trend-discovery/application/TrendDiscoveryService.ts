@@ -14,7 +14,8 @@ export function mergeTrendSignals(signals: RawTrendSignal[], calculator: TrendSc
     const sourceItems = items.map((item) => item.sourceItem);
     const merged: RawTrendSignal = {
       ...first,
-      currentHeat: average(items, 'currentHeat'), growthRate: average(items, 'growthRate'), freshness: average(items, 'freshness'),
+      currentHeat: average(items, 'currentHeat'), growthRate: average(items, 'growthRate'),
+      growthStatus: items.some((item) => item.growthStatus === 'measured') ? 'measured' : 'baseline_pending', freshness: average(items, 'freshness'),
       crossPlatformResonance: average(items, 'crossPlatformResonance'), socialResonance: average(items, 'socialResonance'),
       taiwanRelevance: average(items, 'taiwanRelevance'), competitionSaturation: average(items, 'competitionSaturation'),
       riskScore: average(items, 'riskScore'), estimatedLifeHours: average(items, 'estimatedLifeHours'), sourceConfidence: average(items, 'sourceConfidence'),
@@ -26,7 +27,7 @@ export function mergeTrendSignals(signals: RawTrendSignal[], calculator: TrendSc
       sourcePlatforms: [...new Set(sourceItems.map((item) => item.platform))],
       firstSeenAt: sourceItems.map((item) => item.discoveredAt).sort()[0],
       lastSeenAt: sourceItems.map((item) => item.discoveredAt).sort().at(-1)!,
-      currentHeat: merged.currentHeat, growthRate: merged.growthRate, freshness: merged.freshness,
+      currentHeat: merged.currentHeat, growthRate: merged.growthRate, growthStatus: merged.growthStatus, freshness: merged.freshness,
       crossPlatformResonance: merged.crossPlatformResonance, socialResonance: merged.socialResonance,
       taiwanRelevance: merged.taiwanRelevance, competitionSaturation: merged.competitionSaturation,
       riskScore: merged.riskScore, estimatedLifeHours: merged.estimatedLifeHours, sourceConfidence: merged.sourceConfidence,
@@ -38,6 +39,7 @@ export function mergeTrendSignals(signals: RawTrendSignal[], calculator: TrendSc
 }
 
 export class TrendDiscoveryService {
+  private readonly listeners = new Set<() => void>();
   constructor(
     private readonly provider: TrendSourceProvider,
     private readonly topics: TrendTopicRepository,
@@ -54,11 +56,12 @@ export class TrendDiscoveryService {
     const topics = mergeTrendSignals(signals, this.calculator, now).sort((a, b) => b.totalScore - a.totalScore);
     this.topics.replaceAll(topics);
     this.refreshLogs.append({ id: crypto.randomUUID(), refreshedAt: now.toISOString(), sourceCount: this.provider.getProviderNames().length, signalCount: signals.length, topicCount: topics.length, highPotentialCount: topics.filter((topic) => topic.status === 'high_potential').length });
-    this.record('trend.refresh', `重新彙整 ${signals.length} 筆 Mock 訊號，產生 ${topics.length} 個主題。`);
+    this.record('trend.refresh', `重新彙整 ${signals.length} 筆真實來源訊號，產生 ${topics.length} 個主題。`);
+    this.listeners.forEach((listener) => listener());
     return topics;
   }
 
-  async ensureData() { return this.topics.list().length ? this.topics.list() : this.refresh(); }
+  async ensureData() { return this.provider.isRemote ? this.refresh() : (this.topics.list().length ? this.topics.list() : this.refresh()); }
   listAll() { return this.topics.list(); }
   find(id: string) { return this.topics.find(id); }
   getLatestRefresh() { return this.refreshLogs.latest(); }
@@ -87,5 +90,7 @@ export class TrendDiscoveryService {
   getExcluded() { return this.exclusions.list().map((item) => { const topic = this.topics.find(item.topicId); return topic ? { ...item, topic } : null; }).filter(Boolean) as Array<{ topicId: string; reason: ExclusionReason; excludedAt: string; topic: TrendTopic }>; }
   getWeights() { return this.calculator.getWeights(); }
   getProviderNames() { return this.provider.getProviderNames(); }
+  getApiMetadata() { return this.provider.getMetadata?.() ?? null; }
+  subscribe(listener: () => void) { this.listeners.add(listener); return () => { this.listeners.delete(listener); }; }
   private record(action: string, detail: string) { this.audit.append({ id: crypto.randomUUID(), action, detail, createdAt: new Date().toISOString() }); }
 }

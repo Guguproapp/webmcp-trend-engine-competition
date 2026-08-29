@@ -1,0 +1,16 @@
+D1綁定：TREND_DB
+資料庫：trend-engine-b-review
+區域：APAC
+大小：479232 bytes
+
+目前API候選主題：30
+trend_topics累積版本列：106
+trend_signals：120
+trend_topic_signals：121
+trend_snapshots：270
+trend_provider_runs：18
+trend_refresh_locks：0
+
+最新GDELT執行：enabled，取得100筆，2026-08-29 13:52（Asia/Taipei）。
+最新YouTube執行：enabled，取得1筆，2026-08-29 13:52（Asia/Taipei）。
+YouTube證據已保存頻道、發布時間、取得時間、觀看、按讚、留言及官方原始網址；第一次快照維持「正在建立增速基準」。

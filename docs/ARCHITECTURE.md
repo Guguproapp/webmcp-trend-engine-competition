@@ -1,63 +1,48 @@
-# B 版架構與產品邊界
+# B 版真實熱門情報架構
 
-本分支採模組化單體，並只組合「爆紅流量情報服務」需要的熱門領域。
-
-## A／B 版本
+## 產品線邊界
 
 | 版本 | 分支 | 狀態 |
 |---|---|---|
-| A 版 | `internal/operator-console` | 固定在封存基準，未來另行續作 |
-| B 版 | `product/trend-discovery-mvp` | 對外熱門情報產品，目前分支 |
+| A 版 | `internal/operator-console` | 封存並獨立續作 |
+| B 版 | `product/trend-discovery-mvp` | 對外熱門情報產品 |
 
-B 版不包含 A 版帳號、影音及發布功能；Git 分支與 Tag 是 A 版的恢復依據。
+B 版不註冊或打包 A 版帳號、授權、影音、發布及金流頁面。
 
-## 依賴方向
-
-```text
-presentation → application → domain
-                    ↑
-             infrastructure
-```
-
-- `domain`：主題、分類、狀態、分數與自然事件門檻。
-- `application`：蒐集、合併、評分、清單流程及 Port。
-- `infrastructure`：Local Storage Repository 與 Mock Provider。
-- `presentation`：審核入口、精選、搜尋、詳情、觀察、排除、規則與邊界頁。
-- `tests`：領域、保存、流程、路由與產品隔離。
-
-## 熱門資料流
+## 資料流與責任
 
 ```text
-MockTrendSourceProvider
-  → TrendDiscoveryService（合併、評分、狀態判定）
-  → TrendTopic／Watchlist／Exclusion／FilterRule／RefreshLog／Audit Repository
-  → React Presentation
+React Presentation
+  → TrendDiscoveryService
+  → ApiTrendSourceProvider
+  → 同網域 Pages Functions /api
+  → GDELT／YouTube Provider
+  → 主題合併與 TrendScoreCalculator 1.0.0
+  → D1TrendRepository（TREND_DB）
 ```
 
-頁面不直接存取 Local Storage。正式資料來源或資料庫上線時，只替換 Infrastructure 實作，不改寫 Domain 與 Presentation。
+- `domain`：`TrendTopic`、來源證據、資料信心、增速基準狀態與既有評分規則。
+- `application`：服務流程與可替換的 `TrendSourceProvider`。
+- `infrastructure`：前端同網域 API Adapter、瀏覽器偏好 Repository；正式建置不匯入展示 Provider。
+- `functions/_shared`：伺服器提供者、事件合併、快照評分、更新鎖及 D1 Repository。
+- `presentation`：真實資料狀態、精選、搜尋、詳情、觀察、排除、來源狀態及響應式導覽。
 
-## 審核資料重設
+## 快取與更新
 
-```text
-ReviewPage
-  → ReviewResetService
-  → TrendReviewResetRepository（只刪除 trend-discovery namespace）
-  → TrendDiscoveryService.refresh（重建 22 題／61 訊號）
-```
+1. 新鮮資料直接從 D1 回傳。
+2. 資料過期或資料庫為空時，取得 `trend_refresh_locks` 更新鎖。
+3. 鎖持有者呼叫外部來源、合併事件、建立快照並批次寫入。
+4. 其他請求取得最近一次成功結果；來源失敗不切回展示題目。
+5. 每個提供者的嘗試、成功、筆數、錯誤與下次重試時間寫入 `trend_provider_runs`。
 
-重設流程不使用 `localStorage.clear()`，也不直接由 Presentation 操作瀏覽器儲存。
+## 真實增速與證據不足
 
-## Cloudflare Pages 邊界
+第一次取得只建立基準，`growthStatus=baseline_pending` 且畫面顯示「正在建立增速基準」。第二次以相同主題識別碼的前次快照與經過時間計算速率差。單一來源、單次快照或完整度不足時，主題維持「證據不足／資料蒐集中」，不顯示虛構高潛力。
 
-- 只上傳 Vite 的 `dist` 靜態產物，不上傳原始碼或 A 版。
-- `public/_redirects` 提供 React Router 深層路由 fallback。
-- `public/_headers` 提供 noindex 與安全回應標頭。
-- `public/robots.txt` 阻擋搜尋引擎爬取；這不是登入或 Access 控制。
-- `/` 導向 `/review`，非 B 版路由一律顯示產品邊界頁。
+## 安全邊界
 
-## Build 隔離
-
-- `App.tsx` 只註冊 `/review` 與 `/trends` 路由。
-- 其他路徑由 `ProductBoundaryPage` 處理，不渲染其他產品線畫面。
-- A 版專屬原始碼模組已從 B 版工作樹移除。
-- `scripts/verify-public-build.mjs` 在每次 Production Build 後掃描產物；發現 A 版專屬路由、識別或文案即失敗。
+- 外部 API 金鑰只存在 Pages Functions 加密秘密，不進入 Vite。
+- 公開按鈕只讀取伺服器快取；強制更新需 `REFRESH_ADMIN_TOKEN`。
+- 新聞只保存索引欄位，不保存或轉載全文。
+- 原始外部連結以新分頁開啟並使用 `rel="noopener noreferrer"`。
+- `scripts/verify-public-build.mjs` 掃描 A 版識別、展示題目及秘密變數名稱。

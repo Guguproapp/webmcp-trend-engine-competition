@@ -48,14 +48,26 @@ const untranslatedPublicTerms = [
 
 const requiredLocalizedCopy = [
   '熱門引擎｜爆紅流量情報服務',
-  '熱門引擎｜初步產品審核',
-  '第二次測試候選版',
-  '展示審核資料｜非即時熱門情報',
+  '熱門引擎｜公開測試審核',
+  '真實來源技術測試版 0.3',
+  '公開測試版',
+  '取得最新情報',
+  'GDELT全球新聞資料',
   'Threads社群討論',
   'YouTube影音平台',
   'Google熱門搜尋趨勢',
-  '新聞訂閱來源',
   '熱點評分版本1.0.0',
+];
+
+const forbiddenProductionData = [
+  'Mock 測試｜訂閱服務悄悄漲價',
+  'Mock 測試｜上班族挑戰',
+  'MockTrendSourceProvider',
+  'YOUTUBE_API_KEY',
+  'REFRESH_ADMIN_TOKEN',
+  '展示審核資料｜非即時熱門情報',
+  'YouTube 需完成官方金鑰設定後才會啟用',
+  '展示資料',
 ];
 
 async function filesUnder(directory) {
@@ -125,8 +137,17 @@ for (const header of ['X-Robots-Tag:', 'X-Content-Type-Options: nosniff', 'Conte
 
 const builtCss = (await Promise.all(files.filter((file)=>file.endsWith('.css')).map((file)=>readFile(file,'utf8')))).join('\n');
 if (!builtCss.includes('prefers-reduced-motion')) throw new Error('公開Build缺少prefers-reduced-motion減少動畫設定。');
+for (const oldColor of ['#12372d', '#1e5142', '#cfff3d']) {
+  if (builtCss.toLowerCase().includes(oldColor)) throw new Error(`公開Build仍包含舊版主要綠色或萊姆色：${oldColor}`);
+}
+for (const releaseColor of ['#15243b', '#243b63', '#ff6b57', '#3d8bff', '#f5f7fb', '#172033']) {
+  if (!builtCss.toLowerCase().includes(releaseColor)) throw new Error(`公開Build缺少正式藍橘配色：${releaseColor}`);
+}
 
 const builtAssets = (await Promise.all(files.filter((file)=>/\.(?:html|js)$/u.test(file)).map((file)=>readFile(file,'utf8')))).join('\n');
+for (const phrase of forbiddenProductionData) {
+  if (builtAssets.includes(phrase)) throw new Error(`公開Build包含展示資料或秘密識別：${phrase}`);
+}
 for (const phrase of requiredLocalizedCopy) {
   if (!builtAssets.includes(phrase)) throw new Error(`公開Build缺少中文介面文字：${phrase}`);
 }

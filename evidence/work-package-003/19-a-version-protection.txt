@@ -1,0 +1,6 @@
+PASS internal/operator-console -> acf9ee75b8c82819f7b3fb64488510e4bbbd5d5e
+PASS account-onboarding-mock-v0.1.0 -> acf9ee75b8c82819f7b3fb64488510e4bbbd5d5e
+PASS internal-console-v0.1.0 -> acf9ee75b8c82819f7b3fb64488510e4bbbd5d5e
+PASS feature/trend-discovery-mock -> 7b3f1ee3bebf003e50a77579519d33be744e1b85
+PASS RC1、RC2、RC3既有Tag未移動。
+PASS A版未部署、未合併、未Push。

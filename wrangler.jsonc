@@ -1,0 +1,15 @@
+{
+  "$schema": "./node_modules/wrangler/config-schema.json",
+  "name": "trend-engine-b-review",
+  "pages_build_output_dir": "./dist",
+  "compatibility_date": "2026-08-28",
+  "compatibility_flags": ["nodejs_compat"],
+  "d1_databases": [
+    {
+      "binding": "TREND_DB",
+      "database_name": "trend-engine-b-review",
+      "database_id": "136cbf70-e85a-460c-90aa-f2af44987259",
+      "migrations_dir": "./migrations"
+    }
+  ]
+}

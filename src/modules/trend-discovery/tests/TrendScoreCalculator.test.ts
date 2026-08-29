@@ -4,8 +4,8 @@ import type { RawTrendSignal } from '../domain/TrendTopic';
 function signal(overrides: Partial<RawTrendSignal> = {}): RawTrendSignal {
   const now = new Date().toISOString();
   return { canonicalKey:'test', title:'Mock 測試', summary:'測試', category:'科技與AI', keywords:['測試'],
-    sourceItem:{id:'source',platform:'threads',title:'Mock',discoveredAt:now,publishedAt:now,engagementCount:1000,growthDelta:50,isMock:true,confidence:90,heatHistory:[]},
-    currentHeat:90,growthRate:90,freshness:90,crossPlatformResonance:90,socialResonance:90,taiwanRelevance:90,
+    sourceItem:{id:'source',platform:'threads',title:'Mock',publisher:'測試來源',discoveredAt:now,publishedAt:now,fetchedAt:now,viewCount:null,likeCount:null,commentCount:null,reportCount:null,engagementCount:1000,growthDelta:50,growthStatus:'measured',isMock:true,confidence:90,originalUrl:'https://example.invalid',heatHistory:[]},
+    currentHeat:90,growthRate:90,growthStatus:'measured',freshness:90,crossPlatformResonance:90,socialResonance:90,taiwanRelevance:90,
     competitionSaturation:10,riskScore:10,estimatedLifeHours:72,sourceConfidence:90,businessOpportunity:null,isNaturalDisaster:false,isPolitical:false,...overrides };
 }
 
