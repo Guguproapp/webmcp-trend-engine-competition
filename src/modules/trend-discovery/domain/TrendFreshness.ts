@@ -31,3 +31,16 @@ export function evaluateTrendFreshness(lastSuccessAt: string | null, hasData: bo
 export function retainLastSuccessfulTopics<T>(previous: T[], incoming: T[]) {
   return incoming.length ? incoming : previous;
 }
+
+export function retainedExclusiveTopicIds(
+  previous: Array<{ id: string; sourcePlatforms: string[] }>,
+  incoming: Array<{ id: string }>,
+  refreshedPlatforms: Set<string>,
+) {
+  const incomingIds = new Set(incoming.map((topic) => topic.id));
+  return previous
+    .filter((topic) => !incomingIds.has(topic.id))
+    .filter((topic) => topic.sourcePlatforms.length > 0)
+    .filter((topic) => topic.sourcePlatforms.every((platform) => !refreshedPlatforms.has(platform)))
+    .map((topic) => topic.id);
+}

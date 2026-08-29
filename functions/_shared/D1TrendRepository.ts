@@ -63,6 +63,11 @@ export class D1TrendRepository {
     if (statements.length) await this.db.batch(statements);
   }
 
+  async retainTopics(topicIds: string[], updatedAt: string) {
+    if (!topicIds.length) return;
+    await this.db.batch(topicIds.map((topicId) => this.db.prepare('UPDATE trend_topics SET updated_at=? WHERE id=?').bind(updatedAt, topicId)));
+  }
+
   async saveProviderRun(run: ProviderCollectionResult, addedCount:number, mergedCount:number) {
     await this.db.prepare('INSERT INTO trend_provider_runs (id,provider,state,attempted_at,completed_at,fetched_count,added_count,merged_count,error_type,error_message,next_retry_at) VALUES (?,?,?,?,?,?,?,?,?,?,?)')
       .bind(crypto.randomUUID(),run.provider,run.state,run.attemptedAt,run.completedAt,run.records.length,addedCount,mergedCount,run.errorType,run.message,run.nextRetryAt).run();
