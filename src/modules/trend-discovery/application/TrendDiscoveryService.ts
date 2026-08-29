@@ -40,6 +40,7 @@ export function mergeTrendSignals(signals: RawTrendSignal[], calculator: TrendSc
 
 export class TrendDiscoveryService {
   private readonly listeners = new Set<() => void>();
+  private pendingEnsure: Promise<TrendTopic[]> | null = null;
   constructor(
     private readonly provider: TrendSourceProvider,
     private readonly topics: TrendTopicRepository,
@@ -61,7 +62,11 @@ export class TrendDiscoveryService {
     return topics;
   }
 
-  async ensureData() { return this.provider.isRemote ? this.refresh() : (this.topics.list().length ? this.topics.list() : this.refresh()); }
+  async ensureData() {
+    if (!this.provider.isRemote) return this.topics.list().length ? this.topics.list() : this.refresh();
+    this.pendingEnsure ??= this.refresh().finally(() => { this.pendingEnsure = null; });
+    return this.pendingEnsure;
+  }
   listAll() { return this.topics.list(); }
   find(id: string) { return this.topics.find(id); }
   getLatestRefresh() { return this.refreshLogs.latest(); }

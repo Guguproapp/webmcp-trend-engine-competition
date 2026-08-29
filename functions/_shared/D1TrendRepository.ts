@@ -38,7 +38,8 @@ export class D1TrendRepository {
         sourceItems:signals.results.map((signal)=>({ id:signal.id,platform:sourcePlatform(signal.provider),title:signal.original_title,publisher:signal.publisher,originalUrl:signal.original_url,
           discoveredAt:signal.fetched_at,publishedAt:signal.published_at,fetchedAt:signal.fetched_at,viewCount:signal.view_count,likeCount:signal.like_count,commentCount:signal.comment_count,
           reportCount:signal.report_count,engagementCount:signal.engagement_count,growthDelta:signal.growth_delta,growthStatus:signal.growth_status as TrendTopic['growthStatus'],isMock:false,
-          confidence:signal.confidence,heatHistory:JSON.parse(signal.heat_history_json) as TrendTopic['sourceItems'][number]['heatHistory'] })),
+          confidence:signal.confidence,heatHistory:JSON.parse(signal.heat_history_json) as TrendTopic['sourceItems'][number]['heatHistory'],
+          acquisitionMethod:signal.provider==='youtube'?'official_api':'public_news' })),
         status:row.status as TrendTopic['status'],tier:row.tier as TrendTopic['tier'],scoreDetails,firstSeenAt:row.first_seen_at,lastSeenAt:row.last_seen_at,calculatedAt:row.calculated_at,
       });
     }

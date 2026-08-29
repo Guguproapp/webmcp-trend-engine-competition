@@ -19,11 +19,21 @@ React Presentation
   → GDELT／YouTube Provider
   → 主題合併與 TrendScoreCalculator 1.0.0
   → D1TrendRepository（TREND_DB）
+
+爆款影音搜尋 Presentation
+  → VideoDiscoveryService
+  → VideoCandidateRepository
+  → LocalVideoCandidateRepository（B版專用命名空間）
+
+平台官方搜尋／合法搜尋引擎頁
+  → 使用者在官方頁面選擇候選
+  → 回到熱門引擎貼入網址
+  → HTTPS與官方主機驗證／正規化／重複合併
 ```
 
 - `domain`：`TrendTopic`、來源證據、資料信心、增速基準狀態與既有評分規則。
-- `application`：服務流程與可替換的 `TrendSourceProvider`。
-- `infrastructure`：前端同網域 API Adapter、瀏覽器偏好 Repository；正式建置不匯入展示 Provider。
+- `application`：服務流程與可替換的 `TrendSourceProvider`、四平台內容Provider、`WebSearchProvider`及影音候選Repository邊界。
+- `infrastructure`：前端同網域 API Adapter、瀏覽器偏好與影音候選Repository、未授權平台的空結果Provider；正式建置不匯入展示 Provider。
 - `functions/_shared`：伺服器提供者、事件合併、快照評分、更新鎖及 D1 Repository。
 - `presentation`：真實資料狀態、精選、搜尋、詳情、觀察、排除、來源狀態及響應式導覽。
 
@@ -46,3 +56,5 @@ React Presentation
 - 新聞只保存索引欄位，不保存或轉載全文。
 - 原始外部連結以新分頁開啟並使用 `rel="noopener noreferrer"`。
 - `scripts/verify-public-build.mjs` 掃描 A 版識別、展示題目及秘密變數名稱。
+- 使用者貼入網址不由伺服器抓取；只接受四平台HTTPS官方主機，避免伺服器端請求偽造與危險協定。
+- Facebook、Instagram及TikTok未取得正式權限時只回傳空結果；人工資料標示未驗證且不直接加入熱點分數。

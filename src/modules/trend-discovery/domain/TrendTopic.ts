@@ -30,6 +30,7 @@ export interface TrendSourceItem {
   confidence: number;
   originalUrl: string;
   heatHistory: TrendHeatPoint[];
+  acquisitionMethod?: SourceAcquisitionMethod;
 }
 
 export interface NaturalPhenomenonEvidence {
@@ -127,3 +128,4 @@ export const SOURCE_LABELS: Record<TrendSourcePlatform, string> = {
   gdelt_news: 'GDELT全球新聞資料', youtube: 'YouTube影音平台', google_trends: 'Google熱門搜尋趨勢', threads: 'Threads社群討論',
   authorized_account: '客戶授權資料', competitor_tracking: '競爭者與關鍵字追蹤',
 };
+import type { SourceAcquisitionMethod } from './VideoDiscovery';

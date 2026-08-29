@@ -49,14 +49,20 @@ const untranslatedPublicTerms = [
 const requiredLocalizedCopy = [
   '熱門引擎｜爆紅流量情報服務',
   '熱門引擎｜公開測試審核',
-  '真實來源技術測試版 0.3',
+  '四平台搜尋候選版 0.4 RC1',
   '公開測試版',
   '取得最新情報',
   'GDELT全球新聞資料',
   'Threads社群討論',
   'YouTube影音平台',
+  'Facebook社群平台',
+  'Instagram圖文與短影音平台',
+  'TikTok短影音平台',
   'Google熱門搜尋趨勢',
   '熱點評分版本1.0.0',
+  '爆款影音搜尋',
+  '官方API自動取得',
+  '官方網站輔助取得',
 ];
 
 const forbiddenProductionData = [
@@ -65,6 +71,10 @@ const forbiddenProductionData = [
   'MockTrendSourceProvider',
   'YOUTUBE_API_KEY',
   'REFRESH_ADMIN_TOKEN',
+  'BEGIN PRIVATE KEY',
+  'PRIVATE KEY',
+  '四平台全部自動搜尋',
+  '四大平台全部自動搜尋',
   '展示審核資料｜非即時熱門情報',
   'YouTube 需完成官方金鑰設定後才會啟用',
   '展示資料',

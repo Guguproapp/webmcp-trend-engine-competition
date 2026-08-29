@@ -6,6 +6,7 @@ import { EXCLUSION_REASONS, type ExclusionReason } from '../application/reposito
 import { formatDateTime, growthPresentation } from './formatters';
 import { getAdvancedFilterCount } from './TrendFilterUi';
 import { publicCategoryLabel, publicTopicTitle } from './publicLabels';
+import { SOURCE_ACQUISITION_LABELS, sourceAcquisitionForPlatform } from '../domain/VideoDiscovery';
 
 export function TrendFilterPanel({ filters, onApply, onClear, onSave, compact=false }: { filters: TrendFilters; onApply: (filters: TrendFilters) => void; onClear: () => void; onSave: (filters: TrendFilters) => void; compact?:boolean }) {
   const [draft, setDraft] = useState(filters);
@@ -57,7 +58,7 @@ export function TrendTopicCard({ topic, rank, watching, onWatch, onRemoveWatch, 
     <div className="trend-primary-metrics"><Metric label="熱度增速" value={topic.growthRate} text={growthText} /><Metric label="社會共鳴" value={topic.socialResonance} /><Metric label="跨來源數" value={topic.sourcePlatforms.length} suffix=" 個" /><Metric label="風險" value={topic.riskScore} text={riskLabel} /></div>
     <TrendSparkline series={series} summary={trendSummary} />
     {excludedReason && <p className="excluded-reason">排除原因：{excludedReason}</p>}
-    <details className="topic-more"><summary>查看更多資料</summary><div className="topic-more-content"><div className="trend-secondary-metrics"><Metric label="目前熱度" value={topic.currentHeat} /><Metric label="台灣相關" value={topic.taiwanRelevance} /><Metric label="資料信心" value={topic.sourceConfidence} suffix="%" /><Metric label="競爭飽和" value={topic.competitionSaturation} /></div><div className="trend-card-meta"><span>首次發現 {formatDateTime(topic.firstSeenAt)}</span><span>預估生命 {topic.estimatedLifeHours} 小時</span></div><div><strong className="source-heading">資料來源</strong><div className="trend-source-pills">{topic.sourcePlatforms.map((source)=><span key={source}>{SOURCE_LABELS[source]}</span>)}</div></div></div></details>
+    <details className="topic-more"><summary>查看更多資料</summary><div className="topic-more-content"><div className="trend-secondary-metrics"><Metric label="目前熱度" value={topic.currentHeat} /><Metric label="台灣相關" value={topic.taiwanRelevance} /><Metric label="資料信心" value={topic.sourceConfidence} suffix="%" /><Metric label="競爭飽和" value={topic.competitionSaturation} /></div><div className="trend-card-meta"><span>首次發現 {formatDateTime(topic.firstSeenAt)}</span><span>預估生命 {topic.estimatedLifeHours} 小時</span></div><div><strong className="source-heading">資料來源與取得方式</strong><div className="trend-source-pills">{topic.sourceItems.map((source)=><span key={source.id}>{SOURCE_LABELS[source.platform]}｜{SOURCE_ACQUISITION_LABELS[source.acquisitionMethod??sourceAcquisitionForPlatform(source.platform==='youtube'?'youtube':'gdelt_news')]}</span>)}</div></div></div></details>
   </article>;
 }
 

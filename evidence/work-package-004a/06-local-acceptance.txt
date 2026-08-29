@@ -1,0 +1,20 @@
+工作包004A本機瀏覽器驗收
+日期：2026-08-29（Asia/Taipei）
+
+執行環境：Cloudflare Pages本機執行環境（127.0.0.1:8788）
+
+- 桌面1440×900：PASS；水平溢出0px，四平台皆顯示，主要控制最小44px。
+- 平板768×1024：PASS；水平溢出0px，手機導覽維持4項，主要控制最小44px。
+- 手機390×844：PASS；水平溢出0px，底部導覽4項且自身溢出0px，主要控制最小44px。
+- 手機捲至頁尾：最後候選卡與底部導覽間距136.20px，未被遮擋。
+- 手機更多選單：PASS；開啟後焦點進入第一項，Escape關閉後焦點回到「更多」。
+- 四平台匯入：PASS；YouTube、Facebook、Instagram、TikTok各保存1筆。
+- 重複網址：PASS；YouTube不同分享參數正規化後合併，候選維持4筆。
+- 正規化連結：PASS；追蹤參數已移除。
+- 偽造網域：PASS；tiktok.com.evil.example被拒絕，候選仍維持4筆。
+- 增速基準：PASS；單一快照顯示「正在建立增速基準」。
+- 深層路由與重新整理：PASS；review、trends、search、detail、watchlist、excluded、sources、rules皆有內容且溢出0px。
+- A版路由：PASS；/onboarding只顯示產品邊界頁。
+- 全新完整本機分頁Console：0 error、0 warning。
+
+注意：單獨使用Vite開發伺服器不會載入Pages Functions，因此正式功能驗收以Cloudflare Pages本機執行環境為準。

@@ -107,6 +107,7 @@ function sourceItem(record: RealSourceRecord, topicReportCount: number, growth: 
     viewCount:record.viewCount, likeCount:record.likeCount, commentCount:record.commentCount, reportCount:record.provider==='gdelt'?topicReportCount:null,
     engagementCount:record.provider==='youtube'?(record.viewCount ?? 0)+(record.likeCount ?? 0)+(record.commentCount ?? 0):null,
     growthDelta:growth, growthStatus, isMock:false, confidence, originalUrl:record.url, heatHistory:history,
+    acquisitionMethod:record.provider==='youtube'?'official_api':'public_news',
   };
 }
 

@@ -5,10 +5,10 @@ import { formatDateTime } from '../../modules/trend-discovery/presentation/forma
 
 const navItems = [
   { to:'/review',icon:'✓',label:'審核說明' }, { to:'/trends',icon:'⌁',label:'爆紅熱門精選',end:true }, { to:'/trends/search',icon:'⌕',label:'主題搜尋' },
-  { to:'/trends/watchlist',icon:'☆',label:'觀察清單' }, { to:'/trends/excluded',icon:'⊘',label:'已排除主題' }, { to:'/trends/sources',icon:'◫',label:'資料來源' }, { to:'/trends/rules',icon:'⚙',label:'篩選規則' },
+  { to:'/trends/video-search',icon:'▶',label:'爆款影音搜尋' }, { to:'/trends/watchlist',icon:'☆',label:'觀察清單' }, { to:'/trends/excluded',icon:'⊘',label:'已排除主題' }, { to:'/trends/sources',icon:'◫',label:'資料來源' }, { to:'/trends/rules',icon:'⚙',label:'篩選規則' },
 ];
 const mobilePrimary=navItems.filter((item)=>['/trends','/trends/search','/trends/watchlist'].includes(item.to));
-const mobileMore=navItems.filter((item)=>['/review','/trends/excluded','/trends/sources','/trends/rules'].includes(item.to));
+const mobileMore=navItems.filter((item)=>['/review','/trends/video-search','/trends/excluded','/trends/sources','/trends/rules'].includes(item.to));
 
 export function AppShell() {
   const [,setRevision]=useState(0); const [moreOpen,setMoreOpen]=useState(false); const firstMore=useRef<HTMLAnchorElement>(null); const moreButton=useRef<HTMLButtonElement>(null);
