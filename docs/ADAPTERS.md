@@ -20,13 +20,22 @@
 - 最多三組查詢、每組10筆，結果寫入快照後才計算真實增速。
 - 金鑰只讀取 `YOUTUBE_API_KEY` 加密秘密；沒有金鑰、超過配額及暫時失敗都有獨立狀態。
 
-## 四平台影音來源
+## 八平台影音來源
 
 - YouTube：沿用正式API與D1快照；`/trends/video-search`只搜尋已由伺服器合法取得的快取，不讓公開使用者任意消耗外部配額。
 - Facebook：`PlatformContentProvider`邊界、官方搜尋與網址匯入已完成；未取得Meta公開內容權限前回傳空集合。
 - Instagram：`PlatformContentProvider`邊界、專業帳號／公開內容狀態、官方搜尋與Reels網址匯入已完成；不宣稱全平台搜尋。
 - TikTok：官方搜尋、官方熱門創意中心與網址匯入已完成；目前標示官方網站輔助或使用者分享，不是全平台API。
+- 抖音、快手、小紅書、B站：Provider邊界、官方網站入口、限定網域搜尋與安全網址匯入已完成；沒有正式介面或權限時回傳空集合，不產生假互動或假排名。
 - 網頁搜尋：`WebSearchProvider`邊界已建立但停用；目前只產生限定官方網域的搜尋入口，不抓取結果頁。
+
+## 地區與熱搜來源邊界
+
+- 台灣：Google熱門搜尋趨勢、Google新聞、YouTube搜尋趨勢等待或使用正式資格；GDELT與台灣可信新聞RSS只作新聞佐證。
+- 香港：Google熱門搜尋趨勢、Google新聞及YouTube搜尋趨勢等待正式資格；GDELT只作新聞佐證。
+- 澳門：Google熱門搜尋趨勢、百度搜尋趨勢等待正式資格；GDELT與可信新聞來源只作新聞佐證。
+- 中國大陸：百度熱搜、百度指數、微博熱搜及抖音熱榜均以停用Provider邊界呈現實際資格狀態，不使用登入爬蟲或Cookie。
+- `RegionalSearchPreferencesRepository`只保存市場、情報類型、平台、時間及YouTube內容形式，不修改既有熱門篩選規則保存格式。
 
 ## 尚未啟用
 

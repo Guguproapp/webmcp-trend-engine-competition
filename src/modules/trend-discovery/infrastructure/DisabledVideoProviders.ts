@@ -3,7 +3,7 @@ import type { VideoPlatform } from '../domain/VideoDiscovery';
 
 export class AwaitingPlatformContentProvider implements PlatformContentProvider {
   constructor(
-    readonly platform: Extract<VideoPlatform, 'facebook' | 'instagram' | 'tiktok'>,
+    readonly platform: Exclude<VideoPlatform, 'youtube'>,
     private readonly state: PlatformPermissionState = 'not_applied',
   ) {}
   getPermissionState() { return this.state; }

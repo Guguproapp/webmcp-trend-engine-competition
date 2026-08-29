@@ -1,4 +1,5 @@
 import { normalizeVideoUrl, type SourceAcquisitionMethod, type VideoCandidate, type VideoCandidateMetrics } from '../domain/VideoDiscovery';
+import { inferYouTubeContentForm, type SpecificMarketRegion, type VideoContentForm } from '../domain/RegionalDiscovery';
 import type { VideoCandidateRepository } from './VideoCandidateRepository';
 
 export interface ImportVideoCandidateInput {
@@ -8,6 +9,8 @@ export interface ImportVideoCandidateInput {
   metrics?: Partial<VideoCandidateMetrics>;
   acquisitionMethod: Extract<SourceAcquisitionMethod, 'official_site_assisted' | 'user_shared' | 'search_engine_candidate'>;
   notes?: string;
+  region?: SpecificMarketRegion;
+  contentForm?: VideoContentForm;
 }
 
 const metricValue = (value: number | null | undefined) => value === undefined || value === null || !Number.isFinite(value) ? null : Math.max(0, Math.round(value));
@@ -27,14 +30,22 @@ export class VideoDiscoveryService {
     };
     const existing = this.repository.findByNormalizedUrl(normalized.normalizedUrl);
     const snapshot = hasMetrics(metrics) ? [{ ...metrics, capturedAt:timestamp, source:'user_provided' as const }] : [];
+    const inferredContentForm = normalized.platform === 'youtube' ? inferYouTubeContentForm(input.url) : 'short_video';
+    const selectedContentForm = input.contentForm && input.contentForm !== 'unknown' ? input.contentForm : inferredContentForm;
     const candidate: VideoCandidate = existing ? {
       ...existing, originalUrl:input.url.trim(), title:input.title.trim() || existing.title,
       author:input.author?.trim() || existing.author, acquisitionMethod:input.acquisitionMethod,
       notes:input.notes?.trim() || existing.notes, updatedAt:timestamp, snapshots:[...existing.snapshots, ...snapshot],
+      region:input.region ?? existing.region ?? 'taiwan', intelligenceType:'insufficient_evidence',
+      contentForm:normalized.platform==='youtube'
+        ? selectedContentForm === 'unknown' ? existing.contentForm ?? 'unknown' : selectedContentForm
+        : existing.contentForm ?? 'short_video',
     } : {
       id:crypto.randomUUID(), platform:normalized.platform, originalUrl:input.url.trim(), normalizedUrl:normalized.normalizedUrl,
       title:input.title.trim() || '尚未命名的影音候選', author:input.author?.trim() ?? '', acquiredAt:timestamp, updatedAt:timestamp,
       acquisitionMethod:input.acquisitionMethod, evidenceConfidence:'low', verified:false, notes:input.notes?.trim() ?? '', snapshots:snapshot,
+      region:input.region ?? 'taiwan', intelligenceType:'insufficient_evidence',
+      contentForm:selectedContentForm,
     };
     this.repository.save(candidate);
     return { candidate, merged:Boolean(existing) };

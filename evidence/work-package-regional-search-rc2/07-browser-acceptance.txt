@@ -1,0 +1,39 @@
+熱門引擎B版｜地區、熱搜與爆紅影音來源RC2｜本機Production瀏覽器驗收
+日期：2026-08-30（Asia/Taipei）
+網址：http://127.0.0.1:4173
+執行方式：Cloudflare Wrangler Pages本機環境＋Production dist
+
+桌面 1440×900：PASS
+- /trends/video-search：五個地區、六種情報類型、八平台及YouTube內容形式均可見。
+- /trends/sources：熱搜來源、爆紅影音來源、新聞佐證來源三組均可見。
+- 水平溢出：無。
+- Console error／warning：0／0。
+
+平板 768×1024：PASS
+- 三維搜尋表單會依平板寬度重排。
+- 台灣預設YouTube、TikTok、Instagram Reels、Facebook Reels。
+- 水平溢出：無。
+- Console error／warning：0／0。
+
+手機 390×844：PASS
+- 三維搜尋表單單欄顯示。
+- 主要文字輸入、選單與按鈕最小高度：46px。
+- 底部導覽：熱門、搜尋、觀察、更多；無水平滑動。
+- 水平溢出：無。
+- Console error／warning：0／0。
+
+互動流程：PASS
+- 香港預設平台：YouTube、Instagram Reels、Facebook Reels、小紅書；TikTok未預設。
+- 中國大陸預設平台：抖音、快手、小紅書、B站。
+- 地區、情報類型與平台條件重新整理後保留。
+- B站網址可正規化並保存為使用者分享候選。
+- 重貼同一B站網址會合併，候選仍為1筆。
+- 偽造主機www.bilibili.com.evil.example被拒絕。
+- 未驗證候選顯示「證據不足」「正在建立增速基準」，沒有假增速。
+- YouTube標準watch網址自動分類為長影音，Shorts網址自動分類為Shorts短影音；正規化後仍保留正確內容形式。
+- /trends/video-search及/trends/sources深層網址重新整理正常。
+- 手機來源頁沒有A版帳號開通或OAuth入口。
+
+限制：
+- 本機環境未載入Cloudflare正式加密秘密，因此YouTube本機狀態可顯示等待授權；本輪未讀取、顯示或修改正式秘密。
+- 本工作包依指示不部署，正式pages.dev驗收為NOT RUN。

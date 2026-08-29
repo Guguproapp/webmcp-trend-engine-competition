@@ -2,7 +2,7 @@
 
 蒐集正在快速上升的熱門議題，依真實來源證據計算熱度、增速、社會共鳴、跨來源程度、資料信心與風險。
 
-目前功能分支是「四平台搜尋候選版 0.4 RC1／公開測試版」。Cloudflare Pages Functions透過同網域`/api`取得GDELT與YouTube資料，並以D1保存主題、來源訊號、快照與提供者執行紀錄。Facebook、Instagram與TikTok採權限狀態、官方網站輔助及使用者網址匯入；前端不持有外部服務金鑰，也不在來源失敗時切回測試題目。
+目前功能分支是「地區熱搜與八平台候選版 0.4 RC2／公開測試版」。Cloudflare Pages Functions透過同網域`/api`取得GDELT與YouTube資料，並以D1保存主題、來源訊號、快照與提供者執行紀錄。搜尋介面將市場地區、情報類型與來源平台分成三個獨立維度；未取得正式權限的平台只提供官方網站輔助或使用者分享入口，不回傳假資料。
 
 ## A／B 產品線
 
@@ -22,6 +22,7 @@ A 版封存 Tag：`account-onboarding-mock-v0.1.0`、`internal-console-v0.1.0`�
 - Facebook社群平台：正式Provider邊界與Meta權限狀態已建立；尚未送審時只提供官方搜尋與公開網址匯入，不回傳假資料。
 - Instagram圖文與短影音平台：正式Provider邊界與專業帳號／公開內容權限狀態已建立；尚未取得權限時只提供官方搜尋與公開網址匯入。
 - TikTok短影音平台：提供官方搜尋、官方熱門創意中心與公開影片網址匯入；不是全平台自動API搜尋。
+- 抖音、快手、小紅書及B站：固定列入中國大陸與跨地區候選平台；本輪只提供官方網站輔助、合法限定網域搜尋與使用者分享網址，沒有官方權限時不產生平台統計。
 - 合法搜尋引擎輔助：只產生限定官方網域的搜尋連結，不爬取結果頁，也未購買付費服務。
 
 ## 本機啟動與驗證
@@ -48,7 +49,7 @@ npx wrangler pages dev dist
 - `GET /api/sources/status`：回傳來源啟用、失敗、配額及重試狀態。
 - `POST /api/admin/refresh`：以 `Authorization: Bearer …` 驗證 `REFRESH_ADMIN_TOKEN`，只供管理更新。
 
-公開頁面另提供`/trends/video-search`，從目前伺服器快取搜尋YouTube官方證據，並讓使用者以官方網站或搜尋引擎輔助找到候選，再安全貼回四平台網址。網址候選只保存在瀏覽器的B版命名空間；沒有官方數據或第二次快照時，不會判定為爆紅。
+公開頁面另提供`/trends/video-search`，依中國大陸、台灣、香港、澳門或全部地區，搭配六種情報類型與八個影音平台搜尋。YouTube可再分長影音與Shorts短影音，兩者分開建立比較基準；網址候選只保存在瀏覽器的B版命名空間，沒有搜尋量、官方平台數據或第二次快照時，不會判定為熱搜上升、雙重爆紅或真實增速。
 
 ## 資料與安全
 
@@ -72,7 +73,8 @@ npx wrangler pages dev dist
 - [B版最終交接](docs/B_FINAL_HANDOFF.md)
 - [公開測試計畫](docs/B_PUBLIC_TEST_PLAN.md)
 - [封存清單](docs/B_RELEASE_CHECKLIST.md)
-- [四平台來源矩陣](docs/FOUR_PLATFORM_SOURCE_MATRIX.md)
+- [地區、熱搜與八平台來源矩陣](docs/REGIONAL_SOURCE_MATRIX.md)
+- [四平台RC1來源矩陣（歷史文件）](docs/FOUR_PLATFORM_SOURCE_MATRIX.md)
 - [Meta申請準備](docs/META_APPLICATION_CHECKLIST.md)
 - [TikTok輔助來源政策](docs/TIKTOK_ASSISTED_SOURCE_POLICY.md)
 - [合法網頁搜尋供應商決策](docs/WEB_SEARCH_PROVIDER_DECISION.md)

@@ -25,14 +25,18 @@ React Presentation
   → VideoCandidateRepository
   → LocalVideoCandidateRepository（B版專用命名空間）
 
+地區搜尋偏好 Presentation
+  → RegionalSearchPreferencesRepository
+  → LocalRegionalSearchPreferencesRepository（獨立、向後相容的B版命名空間）
+
 平台官方搜尋／合法搜尋引擎頁
   → 使用者在官方頁面選擇候選
   → 回到熱門引擎貼入網址
   → HTTPS與官方主機驗證／正規化／重複合併
 ```
 
-- `domain`：`TrendTopic`、來源證據、資料信心、增速基準狀態與既有評分規則。
-- `application`：服務流程與可替換的 `TrendSourceProvider`、四平台內容Provider、`WebSearchProvider`及影音候選Repository邊界。
+- `domain`：`TrendTopic`、市場地區、情報類型、八平台、YouTube內容形式、來源證據、資料信心、增速基準狀態與既有評分規則。
+- `application`：服務流程與可替換的 `TrendSourceProvider`、八平台內容Provider、`WebSearchProvider`、影音候選及地區搜尋偏好Repository邊界。
 - `infrastructure`：前端同網域 API Adapter、瀏覽器偏好與影音候選Repository、未授權平台的空結果Provider；正式建置不匯入展示 Provider。
 - `functions/_shared`：伺服器提供者、事件合併、快照評分、更新鎖及 D1 Repository。
 - `presentation`：真實資料狀態、精選、搜尋、詳情、觀察、排除、來源狀態及響應式導覽。
@@ -56,5 +60,7 @@ React Presentation
 - 新聞只保存索引欄位，不保存或轉載全文。
 - 原始外部連結以新分頁開啟並使用 `rel="noopener noreferrer"`。
 - `scripts/verify-public-build.mjs` 掃描 A 版識別、展示題目及秘密變數名稱。
-- 使用者貼入網址不由伺服器抓取；只接受四平台HTTPS官方主機，避免伺服器端請求偽造與危險協定。
+- 使用者貼入網址不由伺服器抓取；只接受八平台HTTPS官方主機，避免伺服器端請求偽造與危險協定。
 - Facebook、Instagram及TikTok未取得正式權限時只回傳空結果；人工資料標示未驗證且不直接加入熱點分數。
+- GDELT只屬新聞佐證，不能產生搜尋熱度；雙重爆紅必須同時具有可靠搜尋訊號與可靠影音訊號。
+- YouTube長影音與Shorts短影音共用平台識別碼，但比較基準依內容形式隔離。

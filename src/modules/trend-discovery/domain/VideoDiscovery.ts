@@ -1,11 +1,17 @@
-export const VIDEO_PLATFORMS = ['youtube', 'facebook', 'instagram', 'tiktok'] as const;
+import type { IntelligenceType, SpecificMarketRegion, VideoContentForm } from './RegionalDiscovery';
+
+export const VIDEO_PLATFORMS = ['youtube', 'tiktok', 'instagram', 'facebook', 'douyin', 'kuaishou', 'xiaohongshu', 'bilibili'] as const;
 export type VideoPlatform = (typeof VIDEO_PLATFORMS)[number];
 
 export const VIDEO_PLATFORM_LABELS: Record<VideoPlatform, string> = {
-  youtube: 'YouTube影音平台',
-  facebook: 'Facebook社群平台',
-  instagram: 'Instagram圖文與短影音平台',
-  tiktok: 'TikTok短影音平台',
+  youtube: 'YouTube',
+  tiktok: 'TikTok',
+  instagram: 'Instagram Reels',
+  facebook: 'Facebook Reels',
+  douyin: '抖音',
+  kuaishou: '快手',
+  xiaohongshu: '小紅書',
+  bilibili: 'B站',
 };
 
 export const SOURCE_ACQUISITION_METHODS = [
@@ -59,6 +65,9 @@ export interface VideoCandidate {
   verified: false;
   notes: string;
   snapshots: VideoCandidateSnapshot[];
+  region?: SpecificMarketRegion;
+  intelligenceType?: IntelligenceType;
+  contentForm?: VideoContentForm;
 }
 
 export interface NormalizedVideoUrl {
@@ -131,6 +140,54 @@ function normalizeTikTok(url: URL): NormalizedVideoUrl | null {
   return { platform:'tiktok', originalUrl:url.toString(), normalizedUrl };
 }
 
+function normalizeDouyin(url: URL): NormalizedVideoUrl | null {
+  if (!allowedHost(url.hostname, 'douyin.com') && !allowedHost(url.hostname, 'iesdouyin.com')) return null;
+  const video = url.pathname.match(/^\/(?:share\/)?video\/([0-9]+)\/?/u);
+  const short = url.hostname === 'v.douyin.com' ? url.pathname.match(/^\/([A-Za-z0-9_-]+)\/?/u) : null;
+  if (!video && !short) throw new VideoUrlValidationError('請貼上抖音公開影片的完整網址。');
+  cleanTracking(url);
+  return {
+    platform:'douyin', originalUrl:url.toString(),
+    normalizedUrl: video ? `https://www.douyin.com/video/${video[1]}` : `https://v.douyin.com/${short![1]}/`,
+  };
+}
+
+function normalizeKuaishou(url: URL): NormalizedVideoUrl | null {
+  if (!allowedHost(url.hostname, 'kuaishou.com')) return null;
+  const video = url.pathname.match(/^\/(?:short-video|f)\/([A-Za-z0-9_-]+)\/?/u);
+  const short = url.hostname === 'v.kuaishou.com' ? url.pathname.match(/^\/([A-Za-z0-9_-]+)\/?/u) : null;
+  if (!video && !short) throw new VideoUrlValidationError('請貼上快手公開影片的完整網址。');
+  cleanTracking(url);
+  return {
+    platform:'kuaishou', originalUrl:url.toString(),
+    normalizedUrl: video ? `https://www.kuaishou.com/short-video/${video[1]}` : `https://v.kuaishou.com/${short![1]}/`,
+  };
+}
+
+function normalizeXiaohongshu(url: URL): NormalizedVideoUrl | null {
+  if (!allowedHost(url.hostname, 'xiaohongshu.com') && !allowedHost(url.hostname, 'xhslink.com')) return null;
+  const item = url.pathname.match(/^\/(?:explore|discovery\/item)\/([A-Za-z0-9]+)\/?/u);
+  const short = allowedHost(url.hostname, 'xhslink.com') ? url.pathname.match(/^\/(?:a\/)?([A-Za-z0-9_-]+)\/?/u) : null;
+  if (!item && !short) throw new VideoUrlValidationError('請貼上小紅書公開筆記或影片的完整網址。');
+  cleanTracking(url);
+  return {
+    platform:'xiaohongshu', originalUrl:url.toString(),
+    normalizedUrl:item ? `https://www.xiaohongshu.com/explore/${item[1]}` : `https://xhslink.com/${short![1]}`,
+  };
+}
+
+function normalizeBilibili(url: URL): NormalizedVideoUrl | null {
+  if (!allowedHost(url.hostname, 'bilibili.com') && url.hostname !== 'b23.tv') return null;
+  const video = url.pathname.match(/^\/video\/((?:BV|av)[A-Za-z0-9]+)\/?/u);
+  const short = url.hostname === 'b23.tv' ? url.pathname.match(/^\/([A-Za-z0-9]+)\/?/u) : null;
+  if (!video && !short) throw new VideoUrlValidationError('請貼上B站公開影片的完整網址。');
+  cleanTracking(url);
+  return {
+    platform:'bilibili', originalUrl:url.toString(),
+    normalizedUrl:video ? `https://www.bilibili.com/video/${video[1]}` : `https://b23.tv/${short![1]}`,
+  };
+}
+
 export function normalizeVideoUrl(input: string): NormalizedVideoUrl {
   const trimmed = input.trim();
   if (!trimmed) throw new VideoUrlValidationError('請貼上影音網址。');
@@ -139,8 +196,9 @@ export function normalizeVideoUrl(input: string): NormalizedVideoUrl {
   ensureSafeHttps(url);
   const host = url.hostname.toLocaleLowerCase('en-US').replace(/\.$/u, '');
   url.hostname = host;
-  const normalized = normalizeYouTube(url) ?? normalizeFacebook(url) ?? normalizeInstagram(url) ?? normalizeTikTok(url);
-  if (!normalized) throw new VideoUrlValidationError('只接受YouTube、Facebook、Instagram及TikTok官方網域。');
+  const normalized = normalizeYouTube(url) ?? normalizeFacebook(url) ?? normalizeInstagram(url) ?? normalizeTikTok(url)
+    ?? normalizeDouyin(url) ?? normalizeKuaishou(url) ?? normalizeXiaohongshu(url) ?? normalizeBilibili(url);
+  if (!normalized) throw new VideoUrlValidationError('只接受八個指定影音平台的官方網域。');
   return { ...normalized, originalUrl: trimmed };
 }
 
@@ -157,16 +215,24 @@ export function buildPlatformSearchLinks(keyword: string): PlatformSearchLinks {
   return {
     official: {
       youtube: `https://www.youtube.com/results?search_query=${encoded}`,
-      facebook: `https://www.facebook.com/search/videos/?q=${encoded}`,
-      instagram: `https://www.instagram.com/explore/search/keyword/?q=${encoded}`,
       tiktok: `https://www.tiktok.com/search/video?q=${encoded}`,
+      instagram: `https://www.instagram.com/explore/search/keyword/?q=${encoded}`,
+      facebook: `https://www.facebook.com/search/videos/?q=${encoded}`,
+      douyin: `https://www.douyin.com/search/${encoded}`,
+      kuaishou: `https://www.kuaishou.com/search/video?searchKey=${encoded}`,
+      xiaohongshu: `https://www.xiaohongshu.com/search_result?keyword=${encoded}`,
+      bilibili: `https://search.bilibili.com/all?keyword=${encoded}`,
     },
     creativeCenter: 'https://ads.tiktok.com/creative/creativeCenter/trends',
     webSearch: {
       youtube: web('youtube.com/watch'),
-      facebook: web('facebook.com', '影片'),
-      instagram: web('instagram.com/reel', 'Reels'),
       tiktok: web('tiktok.com', 'video'),
+      instagram: web('instagram.com/reel', 'Reels'),
+      facebook: web('facebook.com', '影片'),
+      douyin: web('douyin.com/video', '影片'),
+      kuaishou: web('kuaishou.com/short-video', '影片'),
+      xiaohongshu: web('xiaohongshu.com/explore', '影片'),
+      bilibili: web('bilibili.com/video', '影片'),
     },
   };
 }

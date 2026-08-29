@@ -1,0 +1,18 @@
+熱門引擎B版RC2品質結果｜2026-08-30
+
+npm install：PASS；283 packages audited，0 vulnerabilities。
+npm test -- --run：PASS；11 test files，160 tests。
+npm run typecheck：PASS；TypeScript 0 errors。
+npm run lint：PASS；ESLint 0 errors，0 warnings。
+npm run build：PASS；52 modules transformed；Production Build掃描通過。
+npm audit --audit-level=high：PASS；0 vulnerabilities。
+git diff --check：PASS。
+
+Production Build掃描：
+- A版路由及專屬內容：未發現。
+- 展示題目及假資料：未發現。
+- API金鑰、Token與秘密識別：未發現。
+- 八平台全部自動搜尋等不實宣稱：未發現。
+- SPA fallback、robots及安全headers：存在。
+
+npm提示：esbuild與workerd有安裝腳本尚未列入npm allowScripts白名單；未造成測試、Lint、型別、Build或安全稽核失敗。

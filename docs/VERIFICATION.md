@@ -1,4 +1,17 @@
-# 工作包004A四大平台爆款影音搜尋合規驗證結果
+# 地區、熱搜與八平台RC2驗證結果
+
+## 2026-08-30 RC2本機Production驗收
+
+- `npm test -- --run`：11個測試檔、160項測試全部通過。
+- `npm run typecheck`、`npm run lint`、`npm run build`、`npm audit --audit-level=high`及`git diff --check`全部通過。
+- Production Build掃描通過：未包含A版內容、展示題目、秘密識別或八平台自動取得的不實宣稱。
+- 1440×900、768×1024及390×844均無水平溢出，瀏覽器Console為0錯誤、0警告。
+- 香港與中國大陸預設平台、三維條件保存、B站網址正規化／重複合併／偽造主機拒絕均已實際操作。
+- YouTube標準`watch`網址與`Shorts`網址已實際匯入，分別顯示長影音與Shorts短影音，且兩者都只建立增速基準。
+- 本工作包依指示不部署，因此正式`pages.dev` RC2驗收為`NOT RUN`。
+- 詳細證據：`evidence/work-package-regional-search-rc2/`。
+
+## 工作包004A四大平台RC1歷史驗證結果
 
 驗證日期：2026-08-29（Asia/Taipei）
 

@@ -291,6 +291,24 @@ details summary { min-height: 44px; width: fit-content; padding-block: 10px; col
 .review-reset-notice { margin-top: 15px; padding: 13px 16px; color: #0e574b; background: #e1f5ee; border-radius: 11px; font-weight: 800; }
 
 .video-search-page { max-width: 1280px; }
+.regional-search-workflow { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 13px; padding: 18px; margin-bottom: 12px; background: white; border: 1px solid var(--line); border-radius: 17px; box-shadow: var(--shadow); }
+.filter-step { min-width: 0; padding: 14px; background: var(--page-background); border: 1px solid #dce2eb; border-radius: 13px; }
+.filter-step > span:first-child, .filter-step legend { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; color: #29486f; font-size: .82rem; font-weight: 900; }
+.filter-step b { display: inline-grid; flex: 0 0 24px; width: 24px; height: 24px; place-items: center; color: white; background: var(--brand-navy); border-radius: 50%; font-size: .72rem; }
+.filter-step select, .filter-step input[type="text"], .filter-step input:not([type]) { width: 100%; min-height: 46px; padding: 9px 11px; color: var(--ink); background: white; border: 1px solid #929bad; border-radius: 10px; }
+.platform-checks { grid-column: 1/-1; display: grid; grid-template-columns: repeat(4,minmax(0,1fr)); gap: 9px; }
+.platform-checks legend { grid-column: 1/-1; }
+.platform-checks label, .youtube-form-filter label { display: flex; min-height: 44px; align-items: center; gap: 8px; padding: 8px 10px; background: white; border: 1px solid #cfd6e1; border-radius: 10px; }
+.platform-checks input, .youtube-form-filter input { width: 18px; height: 18px; accent-color: var(--primary-coral); }
+.youtube-form-filter { grid-column: 1/-1; display: flex; flex-wrap: wrap; gap: 9px; }
+.youtube-form-filter legend { width: 100%; }
+.search-time-row { grid-column: 1/-1; display: grid; grid-template-columns: minmax(150px,.7fr) minmax(260px,1.3fr); gap: 11px; }
+.search-time-row > span { grid-column: 1/-1; }
+.search-time-row label { display: flex; flex-direction: column; gap: 5px; color: #415b82; font-size: .75rem; font-weight: 850; }
+.filter-actions { grid-column: 1/-1; display: flex; flex-wrap: wrap; align-items: center; gap: 10px; }
+.applied-filter-summary { grid-column: 1/-1; margin: 0; padding: 11px 13px; color: #29486f; background: var(--soft-blue); border-radius: 10px; font-size: .82rem; font-weight: 800; }
+.source-group { margin-bottom: 25px; }
+.source-regions { padding: 7px 9px; color: #29486f !important; background: var(--soft-blue); border-radius: 8px; font-size: .75rem; }
 .video-search-controls { display: grid; grid-template-columns: 2fr repeat(3,minmax(150px,1fr)); gap: 12px; padding: 18px; margin-bottom: 20px; background: white; border: 1px solid var(--line); border-radius: 17px; box-shadow: var(--shadow); }
 .video-search-controls label, .video-import-form label { display: flex; flex-direction: column; gap: 6px; }
 .video-search-controls label > span, .video-import-form label > span { color: #415b82; font-size: .75rem; font-weight: 850; }
@@ -318,6 +336,17 @@ details summary { min-height: 44px; width: fit-content; padding-block: 10px; col
 .candidate-label-row { display: flex; flex-wrap: wrap; gap: 6px; }
 .candidate-label-row span { padding: 4px 8px; color: #29486f; background: var(--soft-navy); border-radius: 999px; font-size: .68rem; font-weight: 850; }
 .candidate-label-row span:last-child { color: #684d0b; background: var(--soft-amber); }
+
+@media (max-width: 900px) {
+  .platform-checks { grid-template-columns: repeat(2,minmax(0,1fr)); }
+}
+
+@media (max-width: 640px) {
+  .regional-search-workflow { grid-template-columns: 1fr; padding: 12px; }
+  .filter-step, .platform-checks, .youtube-form-filter, .search-time-row, .filter-actions, .applied-filter-summary { grid-column: 1; }
+  .platform-checks, .search-time-row { grid-template-columns: 1fr; }
+  .filter-actions .button { width: 100%; min-height: 48px; }
+}
 .video-result-grid dl, .video-candidate-list dl { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 7px; margin: 12px 0 0; }
 .video-result-grid dl div, .video-candidate-list dl div { padding: 8px; background: white; border-radius: 8px; }
 .video-result-grid dt, .video-candidate-list dt { color: var(--muted); font-size: .66rem; }

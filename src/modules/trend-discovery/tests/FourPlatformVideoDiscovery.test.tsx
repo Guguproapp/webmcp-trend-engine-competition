@@ -27,18 +27,18 @@ function createService(storage = new MemoryStorage()) {
   return { storage, service: new VideoDiscoveryService(new LocalVideoCandidateRepository(storage), clock) };
 }
 
-describe('四大平台搜尋與狀態邊界', () => {
-  it('四大平台固定存在且順序一致', () => {
-    expect(VIDEO_PLATFORMS).toEqual(['youtube', 'facebook', 'instagram', 'tiktok']);
-    expect(DISCOVERY_SOURCE_REGISTRY.slice(0, 4).map((source) => source.code)).toEqual(VIDEO_PLATFORMS);
+describe('八個爆紅影音平台搜尋與狀態邊界', () => {
+  it('八個平台固定存在且順序一致', () => {
+    expect(VIDEO_PLATFORMS).toEqual(['youtube', 'tiktok', 'instagram', 'facebook', 'douyin', 'kuaishou', 'xiaohongshu', 'bilibili']);
+    expect(DISCOVERY_SOURCE_REGISTRY.slice(0, 8).map((source) => source.code)).toEqual(VIDEO_PLATFORMS);
   });
 
   it('YouTube官方來源沿用API狀態，其他平台沒有權限時不會假裝已連線', () => {
     const sources = resolveDiscoverySources([{ code:'youtube', name:'YouTube影音平台', state:'enabled', message:'運作正常', lastSuccessAt:'2026-08-29T00:00:00.000Z', lastAttemptAt:'2026-08-29T00:00:00.000Z', nextRetryAt:null, fetchedCount:3 }]);
     expect(sources.find((source) => source.code === 'youtube')).toMatchObject({ state:'enabled', fetchedCount:3 });
-    expect(sources.find((source) => source.code === 'facebook')?.state).toBe('not_applied');
-    expect(sources.find((source) => source.code === 'instagram')?.state).toBe('not_applied');
-    expect(sources.find((source) => source.code === 'tiktok')).toMatchObject({ state:'enabled', acquisitionMethod:'official_site_assisted' });
+    expect(sources.find((source) => source.code === 'facebook')?.state).toBe('waiting_platform_permission');
+    expect(sources.find((source) => source.code === 'instagram')?.state).toBe('waiting_platform_permission');
+    expect(sources.find((source) => source.code === 'tiktok')).toMatchObject({ state:'official_site_assisted', acquisitionMethod:'official_site_assisted' });
   });
 
   it('等待權限的Facebook、Instagram及TikTok提供者回傳空集合', async () => {
@@ -68,21 +68,21 @@ describe('四大平台搜尋與狀態邊界', () => {
     render(<MemoryRouter initialEntries={['/trends/video-search']}><App /></MemoryRouter>);
     expect(await screen.findByRole('heading', { name:'爆款影音搜尋' })).toBeInTheDocument();
     expect(screen.getByRole('heading', { name:'YouTube官方自動搜尋結果' })).toBeInTheDocument();
-    expect(screen.getAllByText('YouTube影音平台').length).toBeGreaterThan(0);
+    expect(screen.getAllByText('YouTube').length).toBeGreaterThan(0);
   });
 
-  it('資料來源頁固定顯示四平台與取得方式', async () => {
+  it('資料來源頁固定顯示八平台與取得方式', async () => {
     render(<MemoryRouter initialEntries={['/trends/sources']}><App /></MemoryRouter>);
     await screen.findByRole('heading', { name:'資料來源' });
-    for (const name of ['YouTube影音平台', 'Facebook社群平台', 'Instagram圖文與短影音平台', 'TikTok短影音平台']) expect(screen.getByText(name)).toBeInTheDocument();
-    expect(screen.getByText(SOURCE_ACQUISITION_LABELS.official_api)).toBeInTheDocument();
-    expect(screen.getByText(SOURCE_ACQUISITION_LABELS.official_site_assisted)).toBeInTheDocument();
-    expect(screen.getAllByText(SOURCE_ACQUISITION_LABELS.waiting_review)).toHaveLength(2);
+    for (const name of ['YouTube', 'TikTok', 'Instagram Reels', 'Facebook Reels', '抖音', '快手', '小紅書', 'B站']) expect(screen.getByText(name)).toBeInTheDocument();
+    expect(screen.getAllByText(SOURCE_ACQUISITION_LABELS.official_api).length).toBeGreaterThan(0);
+    expect(screen.getAllByText(SOURCE_ACQUISITION_LABELS.official_site_assisted).length).toBeGreaterThan(0);
+    expect(screen.getAllByText(SOURCE_ACQUISITION_LABELS.waiting_review).length).toBeGreaterThanOrEqual(2);
   });
 
-  it('公開介面明確說明不是四平台全自動搜尋', async () => {
+  it('公開介面明確說明平台能力依實際權限提供', async () => {
     render(<MemoryRouter initialEntries={['/review']}><App /></MemoryRouter>);
-    expect(await screen.findByRole('heading', { name:'不是四平台全自動搜尋' })).toBeInTheDocument();
+    expect(await screen.findByRole('heading', { name:'平台能力依實際權限提供' })).toBeInTheDocument();
     expect(document.body.textContent).not.toContain('四平台全部自動搜尋');
   });
 });
@@ -148,7 +148,7 @@ describe('本機影音候選保存與增速保護', () => {
     render(<MemoryRouter initialEntries={['/trends/video-search']}><App /></MemoryRouter>);
     fireEvent.change(await screen.findByLabelText('影音網址（必填）'), { target:{ value:'https://tiktok.com.evil.example/video/123' } });
     fireEvent.click(screen.getByRole('button', { name:'加入影音候選' }));
-    expect(await screen.findByText('只接受YouTube、Facebook、Instagram及TikTok官方網域。')).toBeInTheDocument();
+    expect(await screen.findByText('只接受八個指定影音平台的官方網域。')).toBeInTheDocument();
   });
 });
 
