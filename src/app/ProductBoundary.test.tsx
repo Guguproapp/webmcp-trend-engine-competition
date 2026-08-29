@@ -3,7 +3,7 @@ import { MemoryRouter } from 'react-router-dom';
 import { App } from './App';
 
 const publicRoutes = [
-  ['/review', '熱門引擎｜真實熱門情報審核'],
+  ['/review', '熱門引擎｜公開測試審核'],
   ['/trends', '爆紅熱門精選'],
   ['/trends/search', '主題搜尋'],
   ['/trends/watchlist', '觀察清單'],
@@ -35,7 +35,7 @@ describe('B版公開產品邊界', () => {
 
   it('審核頁按鈕連到正確的B版路由', async () => {
     render(<MemoryRouter initialEntries={['/review']}><App /></MemoryRouter>);
-    expect(await screen.findByRole('heading', { name: '熱門引擎｜真實熱門情報審核' })).toBeInTheDocument();
+    expect(await screen.findByRole('heading', { name: '熱門引擎｜公開測試審核' })).toBeInTheDocument();
     expect(screen.getByRole('link', { name: '開始審核' })).toHaveAttribute('href', '/trends');
     expect(screen.getByRole('link', { name: '查看搜尋與篩選' })).toHaveAttribute('href', '/trends/search');
     expect(screen.getByRole('link', { name: '查看觀察清單' })).toHaveAttribute('href', '/trends/watchlist');
@@ -44,7 +44,7 @@ describe('B版公開產品邊界', () => {
 
   it.each(['/review', '/trends', '/trends/search', '/trends/watchlist', '/trends/excluded', '/trends/rules', '/trends/sources', '/trends/trend-subscription-fatigue'])('%s持續顯示真實資料狀態', async (path) => {
     render(<MemoryRouter initialEntries={[path]}><App /></MemoryRouter>);
-    expect(await screen.findByText(/● 真實來源資料｜最後更新/)).toBeInTheDocument();
+    expect(await screen.findByText(/● 真實來源資料｜資料已更新/)).toBeInTheDocument();
   });
 
   it('原A版專屬模組不在B版原始碼模組圖中', () => {

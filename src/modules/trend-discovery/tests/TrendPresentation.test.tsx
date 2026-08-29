@@ -143,13 +143,13 @@ describe('RC2清單、排除與公開文案', () => {
 
   it.each(['/review','/trends','/trends/search','/trends/watchlist','/trends/excluded','/trends/sources','/trends/rules'])('%s公開畫面不顯示工程術語', async (path) => {
     const { container }=renderRoute(path);
-    await screen.findByText(/● 真實來源資料｜最後更新/);
+    await screen.findByText(/● 真實來源資料｜資料已更新/);
     expect(container.textContent).not.toMatch(/MockTrendSourceProvider|TrendScoreCalculator|Repository|工作包\s*002|infrastructure|application|domain/);
   });
 
   it.each(['/review','/trends','/trends/search','/trends/watchlist','/trends/excluded','/trends/sources','/trends/rules','/trends/trend-subscription-fatigue','/onboarding'])('%s公開文字完成中文化', async (path) => {
     const { container }=renderRoute(path);
-    await screen.findByText(/● 真實來源資料｜最後更新/);
+    await screen.findByText(/● 真實來源資料｜資料已更新/);
     const publicText=container.textContent ?? '';
     for (const forbidden of ['Mock','SaaS','TREND DISCOVERY','RC2','MVP','trend-score','google_trends','news_rss','competitor_tracking']) {
       expect(publicText).not.toContain(forbidden);

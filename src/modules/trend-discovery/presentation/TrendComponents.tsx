@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import { DEFAULT_TREND_FILTERS, type TrendFilters } from '../domain/TrendFilters';
 import { SOURCE_LABELS, TREND_CATEGORIES, TREND_STATUS_LABELS, TREND_TIER_LABELS, type TrendTopic } from '../domain/TrendTopic';
 import { EXCLUSION_REASONS, type ExclusionReason } from '../application/repositories';
-import { formatDateTime } from './formatters';
+import { formatDateTime, growthPresentation } from './formatters';
 import { getAdvancedFilterCount } from './TrendFilterUi';
 import { publicCategoryLabel, publicTopicTitle } from './publicLabels';
 
@@ -47,8 +47,9 @@ export function TrendTopicCard({ topic, rank, watching, onWatch, onRemoveWatch, 
   const [reason, setReason] = useState<ExclusionReason | ''>('');
   const riskLabel = topic.riskScore >= 70 ? '高風險' : topic.riskScore >= 35 ? '中風險' : '低風險';
   const series = (topic.sourceItems[0]?.heatHistory ?? []).map((point)=>point.value);
-  const growthText=topic.growthStatus==='baseline_pending'?'正在建立增速基準':`${topic.growthRate>=0?'+':''}${topic.growthRate}%`;
-  const trendSummary = topic.growthStatus==='baseline_pending'?'第一次快照已建立，等待下一次資料後計算增速。':series.length > 1 ? `熱度由 ${series[0]} 變為 ${series.at(-1)}，目前增速 ${growthText}` : `目前增速 ${growthText}`;
+  const growth = growthPresentation(topic.growthStatus, topic.growthRate, topic.sourceItems[0]?.heatHistory ?? []);
+  const growthText=growth.label;
+  const trendSummary = growth.summary;
   return <article className={`trend-topic-card tier-${topic.tier}`}>
     <div className="trend-card-top"><div className="trend-card-labels">{rank && rank <= 3 && <span className="rank-label">第 {rank} 名</span>}<span className="trend-category">{publicCategoryLabel(topic.category)}</span><span className={`trend-tier tier-label-${topic.tier}`}>{TREND_TIER_LABELS[topic.tier]}</span><span className="trend-growth-label">熱度增速 {growthText}</span>{watching && <span className="watching-flag">觀察中</span>}{topic.status === 'high_risk' && <span className="risk-flag">警告：高風險</span>}{topic.status === 'insufficient_evidence' && <span className="evidence-flag">證據不足</span>}</div><ScoreRing score={topic.totalScore} /></div>
     <h2>{publicTopicTitle(topic.title)}</h2><p className="trend-summary">{topic.summary}</p>

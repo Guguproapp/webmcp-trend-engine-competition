@@ -48,8 +48,9 @@ const untranslatedPublicTerms = [
 
 const requiredLocalizedCopy = [
   '熱門引擎｜爆紅流量情報服務',
-  '熱門引擎｜真實熱門情報審核',
-  '真實來源候選版 0.3',
+  '熱門引擎｜公開測試審核',
+  '真實來源技術測試版 0.3',
+  '公開測試版',
   '取得最新情報',
   'GDELT全球新聞資料',
   'Threads社群討論',
@@ -65,6 +66,8 @@ const forbiddenProductionData = [
   'YOUTUBE_API_KEY',
   'REFRESH_ADMIN_TOKEN',
   '展示審核資料｜非即時熱門情報',
+  'YouTube 需完成官方金鑰設定後才會啟用',
+  '展示資料',
 ];
 
 async function filesUnder(directory) {
@@ -134,6 +137,12 @@ for (const header of ['X-Robots-Tag:', 'X-Content-Type-Options: nosniff', 'Conte
 
 const builtCss = (await Promise.all(files.filter((file)=>file.endsWith('.css')).map((file)=>readFile(file,'utf8')))).join('\n');
 if (!builtCss.includes('prefers-reduced-motion')) throw new Error('公開Build缺少prefers-reduced-motion減少動畫設定。');
+for (const oldColor of ['#12372d', '#1e5142', '#cfff3d']) {
+  if (builtCss.toLowerCase().includes(oldColor)) throw new Error(`公開Build仍包含舊版主要綠色或萊姆色：${oldColor}`);
+}
+for (const releaseColor of ['#15243b', '#243b63', '#ff6b57', '#3d8bff', '#f5f7fb', '#172033']) {
+  if (!builtCss.toLowerCase().includes(releaseColor)) throw new Error(`公開Build缺少正式藍橘配色：${releaseColor}`);
+}
 
 const builtAssets = (await Promise.all(files.filter((file)=>/\.(?:html|js)$/u.test(file)).map((file)=>readFile(file,'utf8')))).join('\n');
 for (const phrase of forbiddenProductionData) {

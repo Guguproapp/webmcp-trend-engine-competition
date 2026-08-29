@@ -7,6 +7,7 @@ interface TopicRow { id:string; canonical_key:string; title:string; summary:stri
 interface SignalRow { id:string; provider:string; original_title:string; publisher:string; original_url:string; published_at:string; fetched_at:string; view_count:number|null; like_count:number|null; comment_count:number|null; report_count:number|null; engagement_count:number|null; growth_delta:number|null; growth_status:string; confidence:number; heat_history_json:string; }
 interface SnapshotRow { topic_id:string; captured_at:string; report_count:number; view_count:number; like_count:number; comment_count:number; heat_value:number; }
 interface ProviderRow { provider:string; state:string; attempted_at:string; completed_at:string|null; fetched_count:number; error_message:string|null; next_retry_at:string|null; }
+interface ProviderSuccessRow { provider:string; last_success_at:string|null; }
 
 const sourcePlatform = (provider:string) => provider==='youtube'?'youtube':'gdelt_news';
 
@@ -69,9 +70,11 @@ export class D1TrendRepository {
 
   async providerStatuses(): Promise<TrendProviderStatus[]> {
     const rows=await this.db.prepare('SELECT r.* FROM trend_provider_runs r JOIN (SELECT provider,MAX(attempted_at) attempted_at FROM trend_provider_runs GROUP BY provider) latest ON latest.provider=r.provider AND latest.attempted_at=r.attempted_at').all<ProviderRow>();
+    const successfulRows=await this.db.prepare("SELECT provider,MAX(completed_at) last_success_at FROM trend_provider_runs WHERE state='enabled' GROUP BY provider").all<ProviderSuccessRow>();
     const byProvider=new Map(rows.results.map((row)=>[row.provider,row]));
+    const lastSuccessByProvider=new Map(successfulRows.results.map((row)=>[row.provider,row.last_success_at]));
     const specs:Array<[TrendProviderStatus['code'],string,string]>=[['gdelt','GDELT全球新聞資料','已啟用'],['youtube','YouTube影音平台','等待YouTube官方API金鑰設定'],['google_trends','Google熱門搜尋趨勢','等待Google官方API存取資格'],['threads','Threads社群討論','等待Threads官方權限']];
-    return specs.map(([code,name,fallback])=>{const row=byProvider.get(code);return {code,name,state:row?.state as TrendProviderStatus['state'] ?? (code==='gdelt'?'temporary_failure':'waiting_authorization'),message:row?.error_message??fallback,lastSuccessAt:row?.state==='enabled'?row.completed_at:null,lastAttemptAt:row?.attempted_at??null,nextRetryAt:row?.next_retry_at??null,fetchedCount:row?.fetched_count??0};});
+    return specs.map(([code,name,fallback])=>{const row=byProvider.get(code);return {code,name,state:row?.state as TrendProviderStatus['state'] ?? (code==='gdelt'?'temporary_failure':'waiting_authorization'),message:row?.error_message??fallback,lastSuccessAt:lastSuccessByProvider.get(code)??null,lastAttemptAt:row?.attempted_at??null,nextRetryAt:row?.next_retry_at??null,fetchedCount:row?.fetched_count??0};});
   }
 
   async acquireRefreshLock(now: Date, ttlSeconds=120) {

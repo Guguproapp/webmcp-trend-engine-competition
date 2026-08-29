@@ -1,4 +1,5 @@
 import type { RawTrendSignal } from '../domain/TrendTopic';
+import type { TrendDataState } from '../domain/TrendFreshness';
 
 export interface TrendCollectionRequest { refreshedAt: string; }
 
@@ -24,10 +25,12 @@ export interface TrendProviderStatus {
 }
 
 export interface TrendApiMetadata {
-  dataState: 'fresh' | 'stale' | 'empty';
+  dataState: TrendDataState;
   lastSuccessAt: string | null;
   lastAttemptAt: string | null;
   nextRetryAt: string | null;
+  nextRefreshAt: string | null;
+  staleAfterAt: string | null;
   isRefreshing: boolean;
   sourceStatuses: TrendProviderStatus[];
   message: string;

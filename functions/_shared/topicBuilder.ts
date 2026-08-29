@@ -120,7 +120,8 @@ export function buildTrendTopics(records: RealSourceRecord[], previous: Map<stri
     const normalized = normalizeTrendTitle(cluster[0].title);
     const canonicalKey = `${stableHash(normalized)}-${normalized.slice(0,12)}`;
     const id = `trend-${stableHash(canonicalKey)}`;
-    const prior = previous.get(id);
+    const storedPrior = previous.get(id);
+    const prior = storedPrior && new Date(storedPrior.capturedAt).getTime() < now.getTime() ? storedPrior : undefined;
     const reports = cluster.filter((record)=>record.provider==='gdelt').length;
     const views = sum(cluster,'viewCount'); const likes = sum(cluster,'likeCount'); const comments = sum(cluster,'commentCount');
     const providers = new Set(cluster.map((record)=>record.provider));
