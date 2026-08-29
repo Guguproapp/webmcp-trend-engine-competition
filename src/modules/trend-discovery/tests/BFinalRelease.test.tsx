@@ -7,6 +7,7 @@ import styles from '../../../styles.css?raw';
 import reviewSource from '../presentation/ReviewPage.tsx?raw';
 import buildVerifier from '../../../../scripts/verify-public-build.mjs?raw';
 import appSource from '../../../app/App.tsx?raw';
+import trendListSource from '../presentation/TrendListPages.tsx?raw';
 
 const updatedAt = '2026-08-29T00:00:00.000Z';
 
@@ -35,6 +36,11 @@ describe('B版公開測試封版', () => {
   it('審核頁的正常來源摘要不是容易過期的固定來源文案', () => {
     expect(reviewSource).toContain('sourceStatuses.filter');
     expect(reviewSource).not.toContain('YouTube 需完成官方金鑰設定後才會啟用');
+  });
+
+  it('搜尋頁上次更新採用來源API成功時間而非瀏覽器取得時間', () => {
+    expect(trendListSource).toContain("metadata?.lastSuccessAt ? formatDateTime(metadata.lastSuccessAt)");
+    expect(trendListSource).not.toContain('latest.refreshedAt');
   });
 
   it('審核頁動態列出等待官方資格的來源', async () => {
