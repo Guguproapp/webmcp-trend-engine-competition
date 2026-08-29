@@ -1,7 +1,7 @@
 import { render, screen, waitFor } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
 import { App } from '../../../app/App';
-import { evaluateTrendFreshness, retainLastSuccessfulTopics, TREND_REFRESH_GRACE_MS, TREND_REFRESH_INTERVAL_MS } from '../domain/TrendFreshness';
+import { evaluateTrendFreshness, retainedExclusiveTopicIds, retainLastSuccessfulTopics, TREND_REFRESH_GRACE_MS, TREND_REFRESH_INTERVAL_MS } from '../domain/TrendFreshness';
 import { growthPresentation } from '../presentation/formatters';
 import styles from '../../../styles.css?raw';
 import reviewSource from '../presentation/ReviewPage.tsx?raw';
@@ -72,6 +72,16 @@ describe('B版公開測試封版', () => {
     const previous=[{id:'real-topic'}];
     expect(retainLastSuccessfulTopics(previous,[])).toBe(previous);
     expect(retainLastSuccessfulTopics(previous,[{id:'new-topic'}])).toEqual([{id:'new-topic'}]);
+  });
+
+  it('單一來源本輪零筆時保留該來源最近成功的獨立主題', () => {
+    const previous=[
+      {id:'news-old',sourcePlatforms:['gdelt_news']},
+      {id:'youtube-old',sourcePlatforms:['youtube']},
+      {id:'cross-old',sourcePlatforms:['gdelt_news','youtube']},
+    ];
+    const retained=retainedExclusiveTopicIds(previous,[{id:'news-new'}],new Set(['gdelt_news']));
+    expect(retained).toEqual(['youtube-old']);
   });
 
   it('正式藍橘色存在且舊綠色與萊姆主要色已移除', () => {

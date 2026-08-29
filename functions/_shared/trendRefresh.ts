@@ -3,7 +3,7 @@ import type { TrendTopic } from '../../src/modules/trend-discovery/domain/TrendT
 import { D1TrendRepository } from './D1TrendRepository';
 import { collectGdelt, collectYouTube, type ProviderCollectionResult } from './providers';
 import { buildTrendTopics, clusterSourceRecords, trendTokens } from './topicBuilder';
-import { evaluateTrendFreshness, retainLastSuccessfulTopics, TREND_REFRESH_INTERVAL_MS } from '../../src/modules/trend-discovery/domain/TrendFreshness';
+import { evaluateTrendFreshness, retainedExclusiveTopicIds, retainLastSuccessfulTopics, TREND_REFRESH_INTERVAL_MS } from '../../src/modules/trend-discovery/domain/TrendFreshness';
 
 function failure(provider:'gdelt'|'youtube', error:unknown, now:Date):ProviderCollectionResult {
   const message=error instanceof Error?error.message:'未知來源錯誤';
@@ -19,6 +19,7 @@ export async function refreshTrendData(env:Env, fetcher:typeof fetch=fetch, now=
   const acquired=await repository.acquireRefreshLock(now);
   if(!acquired) return {topics:await repository.listTopics(),refreshed:false,locked:true};
   try{
+    const previousTopics=await repository.listTopics();
     const previous=await repository.latestSnapshots();
     let gdelt:ProviderCollectionResult;
     try{gdelt=await collectGdelt(fetcher,now);}catch(error){gdelt=failure('gdelt',error,now);}
@@ -26,17 +27,20 @@ export async function refreshTrendData(env:Env, fetcher:typeof fetch=fetch, now=
     await repository.saveProviderRun(gdelt,gdelt.records.length,0);
     await repository.saveProviderRun(youtube,youtube.records.length,0);
     const records=[...gdelt.records,...youtube.records];
-    if(!records.length) return {topics:retainLastSuccessfulTopics(await repository.listTopics(),[]),refreshed:false,locked:false};
+    if(!records.length) return {topics:retainLastSuccessfulTopics(previousTopics,[]),refreshed:false,locked:false};
     const built=buildTrendTopics(records,previous,now);
-    await repository.saveTopics(built.topics,records,built.signalTopicIds,now.toISOString());
-    return {topics:built.topics,refreshed:true,locked:false};
+    const updatedAt=now.toISOString();
+    await repository.saveTopics(built.topics,records,built.signalTopicIds,updatedAt);
+    const refreshedPlatforms=new Set(records.map((record)=>record.provider==='youtube'?'youtube':'gdelt_news'));
+    await repository.retainTopics(retainedExclusiveTopicIds(previousTopics,built.topics,refreshedPlatforms),updatedAt);
+    return {topics:await repository.listTopics(),refreshed:true,locked:false};
   }finally{await repository.releaseRefreshLock();}
 }
 
 export async function trendResponse(env:Env, execution:{waitUntil(promise:Promise<unknown>):void}, fetcher:typeof fetch=fetch, now=new Date()) {
   const repository=new D1TrendRepository(env.TREND_DB);
   let topics=await repository.listTopics();
-  const latestAt=topics[0]?.calculatedAt??null;
+  const latestAt=topics.map((topic)=>topic.calculatedAt).sort().at(-1)??null;
   const dueForRefresh=!latestAt||now.getTime()-new Date(latestAt).getTime()>TREND_REFRESH_INTERVAL_MS;
   let isRefreshing=false;
   if(!topics.length){
@@ -45,7 +49,7 @@ export async function trendResponse(env:Env, execution:{waitUntil(promise:Promis
   }
   else if(dueForRefresh){isRefreshing=true;execution.waitUntil(refreshTrendData(env,fetcher,now).then(()=>undefined));}
   const statuses=await repository.providerStatuses();
-  const lastSuccessAt=topics[0]?.calculatedAt??null;
+  const lastSuccessAt=topics.map((topic)=>topic.calculatedAt).sort().at(-1)??null;
   const lastAttemptAt=statuses.map((item)=>item.lastAttemptAt).filter((value):value is string=>Boolean(value)).sort().at(-1)??null;
   const nextRetryAt=statuses.map((item)=>item.nextRetryAt).filter((value):value is string=>Boolean(value)).sort()[0]??null;
   const freshness=evaluateTrendFreshness(lastSuccessAt,topics.length>0,now);
