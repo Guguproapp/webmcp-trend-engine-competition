@@ -27,12 +27,19 @@ export async function refreshTrendData(env:Env, fetcher:typeof fetch=fetch, now=
     await repository.saveProviderRun(gdelt,gdelt.records.length,0);
     await repository.saveProviderRun(youtube,youtube.records.length,0);
     const records=[...gdelt.records,...youtube.records];
-    if(!records.length) return {topics:retainLastSuccessfulTopics(previousTopics,[]),refreshed:false,locked:false};
-    const built=buildTrendTopics(records,previous,now);
+    const missingProviders=(['gdelt','youtube'] as const).filter((provider)=>!records.some((record)=>record.provider===provider));
+    const retainedProviderTopics=(await Promise.all(missingProviders.map((provider)=>repository.listTopicsForProvider(provider)))).flat();
+    const previousCandidates=[...new Map([...previousTopics,...retainedProviderTopics].map((topic)=>[topic.id,topic])).values()];
     const updatedAt=now.toISOString();
+    if(!records.length) {
+      const retainedIds=retainedExclusiveTopicIds(previousCandidates,[],new Set());
+      await repository.retainTopics(retainedIds,updatedAt);
+      return {topics:retainLastSuccessfulTopics(await repository.listTopics(),[]),refreshed:false,locked:false};
+    }
+    const built=buildTrendTopics(records,previous,now);
     await repository.saveTopics(built.topics,records,built.signalTopicIds,updatedAt);
     const refreshedPlatforms=new Set(records.map((record)=>record.provider==='youtube'?'youtube':'gdelt_news'));
-    await repository.retainTopics(retainedExclusiveTopicIds(previousTopics,built.topics,refreshedPlatforms),updatedAt);
+    await repository.retainTopics(retainedExclusiveTopicIds(previousCandidates,built.topics,refreshedPlatforms),updatedAt);
     return {topics:await repository.listTopics(),refreshed:true,locked:false};
   }finally{await repository.releaseRefreshLock();}
 }

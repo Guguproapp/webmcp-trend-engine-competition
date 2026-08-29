@@ -16,8 +16,20 @@ export class D1TrendRepository {
 
   async listTopics(): Promise<TrendTopic[]> {
     const rows = await this.db.prepare('SELECT * FROM trend_topics WHERE updated_at = (SELECT MAX(updated_at) FROM trend_topics) ORDER BY json_extract(score_json, \'$.totalScore\') DESC').all<TopicRow>();
+    return this.hydrateTopics(rows.results);
+  }
+
+  async listTopicsForProvider(provider: 'gdelt' | 'youtube'): Promise<TrendTopic[]> {
+    const rows = await this.db.prepare(`SELECT DISTINCT t.* FROM trend_topics t
+      JOIN trend_topic_signals ts ON ts.topic_id=t.id
+      JOIN trend_signals s ON s.id=ts.signal_id
+      WHERE s.provider=? ORDER BY json_extract(t.score_json, '$.totalScore') DESC`).bind(provider).all<TopicRow>();
+    return this.hydrateTopics(rows.results);
+  }
+
+  private async hydrateTopics(rows: TopicRow[]): Promise<TrendTopic[]> {
     const topics: TrendTopic[]=[];
-    for (const row of rows.results) {
+    for (const row of rows) {
       const signals = await this.db.prepare('SELECT s.* FROM trend_signals s JOIN trend_topic_signals ts ON ts.signal_id=s.id WHERE ts.topic_id=? ORDER BY s.published_at DESC').bind(row.id).all<SignalRow>();
       const metrics = JSON.parse(row.metrics_json) as Omit<TrendTopic,'id'|'canonicalKey'|'title'|'summary'|'category'|'keywords'|'sourceItems'|'status'|'tier'|'scoreDetails'|'firstSeenAt'|'lastSeenAt'|'calculatedAt'>;
       const scoreDetails = JSON.parse(row.score_json) as TrendTopic['scoreDetails'];
