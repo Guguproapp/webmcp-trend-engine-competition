@@ -57,8 +57,9 @@ describe('WebMCP 真人確認寫入', () => {
   });
 
   it('排除工具不能用confirm參數繞過真人確認', async () => {
-    const { gateway, confirmations, exclude } = setup(); const pending = exclude.execute({ trend_id: 'trend-safe', reason: '風險太高', confirm: true }, { signal: new AbortController().signal });
-    expect(gateway.excluded.has('trend-safe')).toBe(false); expect(confirmations.getState().status).toBe('pending'); confirmations.cancel(confirmations.getState().operation?.id ?? ''); await pending;
+    const { gateway, confirmations, exclude } = setup();
+    expect(() => exclude.execute({ trend_id: 'trend-safe', reason: '風險太高', confirm: true }, { signal: new AbortController().signal })).toThrow('輸入包含不允許的欄位');
+    expect(gateway.excluded.has('trend-safe')).toBe(false); expect(confirmations.getState().status).toBe('idle');
   });
 
   it('不同匿名Session的狀態與稽核互相隔離', async () => {
