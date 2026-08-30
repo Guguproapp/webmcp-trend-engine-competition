@@ -1,0 +1,92 @@
+[
+  {
+    "banned": [],
+    "errorBoundary": false,
+    "finalPath": "/",
+    "heading": "熱門引擎｜爆紅流量情報服務",
+    "overflow": false,
+    "requestedPath": "/",
+    "sourceLimitationsVisible": false
+  },
+  {
+    "banned": [],
+    "errorBoundary": false,
+    "finalPath": "/guide",
+    "heading": "如何探索熱門情報",
+    "overflow": false,
+    "requestedPath": "/guide",
+    "sourceLimitationsVisible": true
+  },
+  {
+    "banned": [],
+    "errorBoundary": false,
+    "finalPath": "/trends",
+    "heading": "爆紅熱門精選",
+    "overflow": false,
+    "requestedPath": "/trends",
+    "sourceLimitationsVisible": false
+  },
+  {
+    "banned": [],
+    "errorBoundary": false,
+    "finalPath": "/trends/search",
+    "heading": "主題搜尋",
+    "overflow": false,
+    "requestedPath": "/trends/search",
+    "sourceLimitationsVisible": false
+  },
+  {
+    "banned": [],
+    "errorBoundary": false,
+    "finalPath": "/trends/video-search",
+    "heading": "爆款影音搜尋",
+    "overflow": false,
+    "requestedPath": "/trends/video-search",
+    "sourceLimitationsVisible": true
+  },
+  {
+    "banned": [],
+    "errorBoundary": false,
+    "finalPath": "/trends/sources",
+    "heading": "資料來源",
+    "overflow": false,
+    "requestedPath": "/trends/sources",
+    "sourceLimitationsVisible": true
+  },
+  {
+    "banned": [],
+    "errorBoundary": false,
+    "finalPath": "/trends/watchlist",
+    "heading": "觀察清單",
+    "overflow": false,
+    "requestedPath": "/trends/watchlist",
+    "sourceLimitationsVisible": false
+  },
+  {
+    "banned": [],
+    "errorBoundary": false,
+    "finalPath": "/trends/excluded",
+    "heading": "已排除主題",
+    "overflow": false,
+    "requestedPath": "/trends/excluded",
+    "sourceLimitationsVisible": false
+  },
+  {
+    "banned": [],
+    "errorBoundary": false,
+    "finalPath": "/trends/rules",
+    "heading": "篩選規則",
+    "overflow": false,
+    "requestedPath": "/trends/rules",
+    "sourceLimitationsVisible": false
+  },
+  {
+    "banned": [],
+    "errorBoundary": true,
+    "finalPath": "/onboarding",
+    "heading": "此功能不屬於目前產品",
+    "overflow": false,
+    "requestedPath": "/onboarding",
+    "sourceLimitationsVisible": false
+  }
+]

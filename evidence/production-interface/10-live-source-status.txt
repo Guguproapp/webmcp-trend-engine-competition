@@ -1,0 +1,9 @@
+正式網址：https://trend-engine-app.pages.dev/
+取得時間：2026-08-30 12:15（Asia/Taipei）
+
+GDELT全球新聞資料：已啟用，最近成功取得94筆。
+YouTube影音平台：等待官方API金鑰設定；最近成功時間為2026-08-30 11:39（Asia/Taipei），本輪取得0筆。
+Google熱門搜尋趨勢：等待Google官方API存取資格。
+Threads社群討論：等待Threads官方權限。
+
+注意：新Cloudflare Pages專案不會自動複製舊專案的加密秘密。本證據未讀取、顯示、下載或輪替任何秘密值。

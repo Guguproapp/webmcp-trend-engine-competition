@@ -1,0 +1,11 @@
+HTTP/2 200
+content-type: text/html; charset=utf-8
+content-security-policy: default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; font-src 'self'; connect-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'; manifest-src 'self'; worker-src 'none'; upgrade-insecure-requests
+permissions-policy: camera=(), microphone=(), geolocation=(), payment=(), usb=(), browsing-topics=()
+referrer-policy: no-referrer
+x-content-type-options: nosniff
+x-frame-options: DENY
+x-robots-tag: noindex, nofollow, noarchive, nosnippet
+
+取得時間：2026-08-30 12:18（Asia/Taipei）
+網址：https://trend-engine-app.pages.dev/

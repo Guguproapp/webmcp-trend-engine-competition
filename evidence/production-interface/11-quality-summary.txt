@@ -1,0 +1,24 @@
+熱門引擎正式產品介面驗收摘要
+
+- 正式網址：https://trend-engine-app.pages.dev/
+- 部署快照：https://9093133a.trend-engine-app.pages.dev
+- Deployment ID：9093133a-152f-4923-9616-244fa58031d6
+- 初次部署Commit：de2d2e8963a493f6eef5e2c806a70d621c21253b
+- 自動測試：11個測試檔、168個案例全部通過。
+- TypeScript：通過。
+- Lint：通過，零警告。
+- Production Build：通過。
+- npm audit --audit-level=high：0個漏洞。
+- git diff --check：通過。
+- 桌面1440x900：通過，無水平溢出。
+- 平板768x1024：通過，無水平溢出。
+- 手機390x844：通過，無水平溢出；底部導覽未遮擋內容。
+- Chrome網站Console：0 error、0 warning。
+- Mac Safari：正式網址可開啟、正式產品文案正常顯示；Safari開發者Console未在本輪直接擷取。
+- /review：已導向正式產品首頁。
+- A版路由：只顯示產品邊界頁。
+- 公開禁用字詞：Production Build掃描通過。
+- 安全標頭與robots：通過，維持noindex。
+- 費用：使用Cloudflare免費方案，未購買網域、未綁信用卡、未開啟付費方案。
+
+已知限制：新Cloudflare Pages專案沒有自動繼承舊專案的加密秘密，YouTube目前顯示等待官方API金鑰設定。必須由宗億本人在Cloudflare後台為trend-engine-app設定同名加密秘密；不得把金鑰貼到對話。
