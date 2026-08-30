@@ -1,0 +1,23 @@
+WebMCP比賽版基準安全掃描
+執行日期：2026-08-30（Asia/Taipei）
+
+掃描範圍：
+1. 目前工作樹，排除.git、node_modules及dist產物。
+2. 完整Git歷史的Patch內容。
+3. 常見Google、OpenAI、GitHub、Slack、AWS金鑰格式。
+4. PEM／OpenSSH等Private Key起始標記。
+5. 電子郵件與台灣手機號碼格式。
+
+結果：
+- 真實API Key／Token格式：PASS，0筆命中。
+- Private Key格式：PASS，0筆命中。
+- 台灣手機號碼格式：PASS，0筆命中。
+- 實際客戶電子郵件或客戶資料：PASS，0筆命中。
+- 完整Git歷史秘密與Private Key格式：PASS，0筆命中。
+
+人工判讀項目：
+- `src/modules/trend-discovery/tests/FourPlatformVideoDiscovery.test.tsx:107`包含`https://user:password@...`合成測試網址，用於驗證不安全網址處理；它不是使用者帳號、客戶資料或真實密碼。
+- 專案文件與程式可以出現`YOUTUBE_API_KEY`、`REFRESH_ADMIN_TOKEN`等秘密變數名稱，但沒有任何秘密值。
+- 本輪沒有讀取、複製、顯示或輪替Cloudflare加密秘密。
+
+限制：此掃描是規則式與人工判讀的本機稽核，不等同第三方商業秘密掃描服務認證。

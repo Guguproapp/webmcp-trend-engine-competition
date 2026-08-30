@@ -1,0 +1,38 @@
+WebMCP比賽版基準品質檢查
+執行日期：2026-08-30（Asia/Taipei）
+執行分支：competition/webmcp-2026
+上游基準：04a34351d46c0571bc480dcda1ef83799eeb1b11
+
+Node.js：v26.5.0
+npm：11.17.0
+
+npm ci：PASS
+- 安裝282個套件。
+- npm稽核283個套件，0個漏洞。
+- npm 11提示esbuild與workerd安裝腳本尚未列入allowScripts；這是套件腳本核准提示，不是安全漏洞，且沒有自行執行額外核准或修改package-lock.json。
+
+npm test -- --run：PASS
+- 測試檔：11／11。
+- 測試案例：168／168。
+- 執行時間：3.48秒。
+
+npm run typecheck：PASS
+- TypeScript零錯誤。
+
+npm run lint：PASS
+- ESLint零錯誤、零警告。
+
+npm run build：PASS
+- Vite轉換53個模組。
+- dist/index.html：0.89 kB，gzip 0.62 kB。
+- CSS：36.52 kB，gzip 7.80 kB。
+- JavaScript：326.19 kB，gzip 98.97 kB。
+- 公開Build檢查通過：未包含A版內容或公開工程術語，SPA fallback、robots與安全headers存在。
+
+npm audit --audit-level=high：PASS
+- 0個漏洞。
+
+git diff --check：PASS
+- 沒有空白或Patch格式錯誤。
+
+本輪沒有部署、Push、WebMCP功能或產品程式修改。
