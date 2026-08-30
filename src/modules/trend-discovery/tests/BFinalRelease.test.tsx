@@ -4,7 +4,7 @@ import { App } from '../../../app/App';
 import { evaluateTrendFreshness, retainedExclusiveTopicIds, retainLastSuccessfulTopics, TREND_REFRESH_GRACE_MS, TREND_REFRESH_INTERVAL_MS } from '../domain/TrendFreshness';
 import { growthPresentation } from '../presentation/formatters';
 import styles from '../../../styles.css?raw';
-import reviewSource from '../presentation/ReviewPage.tsx?raw';
+import productHomeSource from '../presentation/ProductHomePage.tsx?raw';
 import buildVerifier from '../../../../scripts/verify-public-build.mjs?raw';
 import appSource from '../../../app/App.tsx?raw';
 import trendListSource from '../presentation/TrendListPages.tsx?raw';
@@ -13,10 +13,10 @@ const updatedAt = '2026-08-29T00:00:00.000Z';
 
 describe('B版公開測試封版', () => {
   it('審核頁依來源狀態動態顯示GDELT與YouTube已啟用', async () => {
-    render(<MemoryRouter initialEntries={['/review']}><App /></MemoryRouter>);
+    render(<MemoryRouter initialEntries={['/']}><App /></MemoryRouter>);
     expect(await screen.findByText('目前有 2 個真實來源正常運作：GDELT全球新聞資料與YouTube影音平台。')).toBeInTheDocument();
     expect(screen.getByText('GDELT全球新聞資料、YouTube影音平台')).toBeInTheDocument();
-    expect(screen.getByText('YouTube 本輪取得 1 筆，資料量仍少，只能證明技術串接成功。')).toBeInTheDocument();
+    expect(screen.getByText('YouTube 本輪取得 1 筆；資料量仍少，請搭配其他來源判斷。')).toBeInTheDocument();
     expect(document.body.textContent).not.toContain('YouTube 需完成官方金鑰設定後才會啟用');
   });
 
@@ -28,14 +28,14 @@ describe('B版公開測試封版', () => {
         {code:'youtube',name:'YouTube影音平台',state:'enabled',message:'運作正常',lastSuccessAt:updatedAt,lastAttemptAt:updatedAt,nextRetryAt:null,fetchedCount:1},
       ],
     } })));
-    render(<MemoryRouter initialEntries={['/review']}><App /></MemoryRouter>);
+    render(<MemoryRouter initialEntries={['/']}><App /></MemoryRouter>);
     expect(await screen.findByText(/異常來源：GDELT全球新聞資料/)).toBeInTheDocument();
     expect(await screen.findByText(/● 來源異常：GDELT全球新聞資料/)).toBeInTheDocument();
   });
 
   it('審核頁的正常來源摘要不是容易過期的固定來源文案', () => {
-    expect(reviewSource).toContain('sourceStatuses.filter');
-    expect(reviewSource).not.toContain('YouTube 需完成官方金鑰設定後才會啟用');
+    expect(productHomeSource).toContain('sourceStatuses.filter');
+    expect(productHomeSource).not.toContain('YouTube 需完成官方金鑰設定後才會啟用');
   });
 
   it('搜尋頁上次更新採用來源API成功時間而非瀏覽器取得時間', () => {
@@ -44,7 +44,7 @@ describe('B版公開測試封版', () => {
   });
 
   it('審核頁動態列出等待官方資格的來源', async () => {
-    render(<MemoryRouter initialEntries={['/review']}><App /></MemoryRouter>);
+    render(<MemoryRouter initialEntries={['/']}><App /></MemoryRouter>);
     expect(await screen.findByText('Google熱門搜尋趨勢、Threads社群討論')).toBeInTheDocument();
   });
 
@@ -98,7 +98,7 @@ describe('B版公開測試封版', () => {
   it('公開建置檢查會拒絕舊配色、秘密名稱與測試題目', () => {
     expect(buildVerifier).toContain("['#12372d', '#1e5142', '#cfff3d']");
     expect(buildVerifier).toContain('YOUTUBE_API_KEY');
-    expect(buildVerifier).toContain('展示資料');
+    expect(buildVerifier).toContain('已自動監控八大平台');
   });
 
   it('深藍白字與珊瑚橘深色字皆達WCAG AA一般文字對比', () => {
@@ -119,10 +119,10 @@ describe('B版公開測試封版', () => {
     expect(appSource).not.toMatch(/Onboarding|OAuthCallback|PlatformConnections/u);
   });
 
-  it('全站公開狀態文字已統一為公開測試版', async () => {
+  it('全站公開狀態使用正式產品文字', async () => {
     render(<MemoryRouter initialEntries={['/trends']}><App /></MemoryRouter>);
-    expect(await screen.findByText('公開測試版')).toBeInTheDocument();
-    expect(document.body.textContent).not.toContain('公開測試中');
+    expect(await screen.findByText('真實來源')).toBeInTheDocument();
+    expect(document.body.textContent).not.toMatch(/審核|公開測試|測試版|候選版|RC2|Mock|工作包/u);
   });
 });
 

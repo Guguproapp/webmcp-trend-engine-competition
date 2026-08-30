@@ -135,6 +135,6 @@ describe('保存、網址與公開介面', () => {
   it('A版路由與模組仍隔離且Build掃描保護秘密與假資料', () => {
     expect(appSource).not.toMatch(/Onboarding|OAuthCallback|PlatformConnections/u);
     expect(buildVerifier).toContain('YOUTUBE_API_KEY');
-    expect(buildVerifier).toContain('展示資料');
+    expect(buildVerifier).toContain('已自動監控八大平台');
   });
 });

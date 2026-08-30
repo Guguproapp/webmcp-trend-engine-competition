@@ -3,7 +3,8 @@ import { MemoryRouter } from 'react-router-dom';
 import { App } from './App';
 
 const publicRoutes = [
-  ['/review', '熱門引擎｜公開測試審核'],
+  ['/', '熱門引擎｜爆紅流量情報服務'],
+  ['/guide', '如何探索熱門情報'],
   ['/trends', '爆紅熱門精選'],
   ['/trends/search', '主題搜尋'],
   ['/trends/watchlist', '觀察清單'],
@@ -33,16 +34,21 @@ describe('B版公開產品邊界', () => {
     expect(screen.queryByText(/AI 影音發布助手/i)).not.toBeInTheDocument();
   });
 
-  it('審核頁按鈕連到正確的B版路由', async () => {
-    render(<MemoryRouter initialEntries={['/review']}><App /></MemoryRouter>);
-    expect(await screen.findByRole('heading', { name: '熱門引擎｜公開測試審核' })).toBeInTheDocument();
-    expect(screen.getByRole('link', { name: '開始審核' })).toHaveAttribute('href', '/trends');
-    expect(screen.getByRole('link', { name: '查看搜尋與篩選' })).toHaveAttribute('href', '/trends/search');
-    expect(screen.getByRole('link', { name: '查看觀察清單' })).toHaveAttribute('href', '/trends/watchlist');
-    expect(screen.getByRole('link', { name: '查看資料來源狀態' })).toHaveAttribute('href', '/trends/sources');
+  it('產品首頁按鈕連到正確的B版路由', async () => {
+    render(<MemoryRouter initialEntries={['/']}><App /></MemoryRouter>);
+    expect(await screen.findByRole('heading', { name: '熱門引擎｜爆紅流量情報服務' })).toBeInTheDocument();
+    expect(screen.getByRole('link', { name: '開始探索熱門' })).toHaveAttribute('href', '/trends');
+    expect(screen.getByRole('link', { name: '搜尋熱門情報' })).toHaveAttribute('href', '/trends/search');
+    expect(screen.getAllByRole('link', { name: '爆款影音搜尋' }).some((link) => link.getAttribute('href') === '/trends/video-search')).toBe(true);
+    expect(screen.getByRole('link', { name: '查看使用說明' })).toHaveAttribute('href', '/guide');
   });
 
-  it.each(['/review', '/trends', '/trends/search', '/trends/watchlist', '/trends/excluded', '/trends/rules', '/trends/sources', '/trends/trend-subscription-fatigue'])('%s持續顯示真實資料狀態', async (path) => {
+  it('/review會導向正式產品首頁', async () => {
+    render(<MemoryRouter initialEntries={['/review']}><App /></MemoryRouter>);
+    expect(await screen.findByRole('heading', { name: '熱門引擎｜爆紅流量情報服務' })).toBeInTheDocument();
+  });
+
+  it.each(['/', '/guide', '/review', '/trends', '/trends/search', '/trends/watchlist', '/trends/excluded', '/trends/rules', '/trends/sources', '/trends/trend-subscription-fatigue'])('%s持續顯示真實資料狀態', async (path) => {
     render(<MemoryRouter initialEntries={[path]}><App /></MemoryRouter>);
     expect(await screen.findByText(/● 真實來源資料｜資料已更新/)).toBeInTheDocument();
   });

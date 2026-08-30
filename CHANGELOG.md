@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.4.0-production-trial - 2026-08-30
+
+- 將公開入口改為正式產品首頁，新增`/guide`使用說明，舊`/review`保留相容導向且不再出現在導覽。
+- 公開介面、HTML與Production Build移除審核、測試、候選版本及施工用字眼，保留真實來源限制與noindex設定。
+- 新增公開Build正式文案掃描，防止交付用文字重新進入使用者畫面。
+- 建立中性Cloudflare Pages專案`trend-engine-app`，保留舊`trend-engine-b-review`專案與歷史部署。
+
 ## 0.4.0-rc2 - 2026-08-30
 
 - 將市場地區、情報類型與來源平台拆成三個可獨立保存及組合篩選的維度。

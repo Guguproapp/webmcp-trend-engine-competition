@@ -38,6 +38,7 @@ const untranslatedPublicTerms = [
   'Mock',
   'SaaS',
   'TREND DISCOVERY',
+  'RC1',
   'RC2',
   'MVP',
   'trend-score',
@@ -46,11 +47,27 @@ const untranslatedPublicTerms = [
   'competitor_tracking',
 ];
 
+const forbiddenPublicProductCopy = [
+  '審核',
+  '公開測試',
+  '測試候選',
+  '測試版',
+  '候選版',
+  'RC1',
+  'RC2',
+  'Mock',
+  '模擬熱門資料',
+  '工作包',
+  '已自動監控八大平台',
+];
+
 const requiredLocalizedCopy = [
   '熱門引擎｜爆紅流量情報服務',
-  '熱門引擎｜公開測試審核',
-  '地區熱搜與八平台候選版 0.4｜第二次測試候選版',
-  '公開測試版',
+  '蒐集正在上升的搜尋話題與爆紅影音',
+  '開始探索熱門',
+  '搜尋熱門情報',
+  '產品首頁',
+  '使用說明',
   '取得最新情報',
   'GDELT全球新聞資料',
   'Threads社群討論',
@@ -86,9 +103,7 @@ const forbiddenProductionData = [
   '四大平台全部自動搜尋',
   '八平台全部自動搜尋',
   '八大平台全部自動搜尋',
-  '展示審核資料｜非即時熱門情報',
   'YouTube 需完成官方金鑰設定後才會啟用',
-  '展示資料',
 ];
 
 async function filesUnder(directory) {
@@ -118,6 +133,9 @@ for (const file of publicUiSourceFiles) {
   const content = await readFile(file, 'utf8');
   for (const phrase of untranslatedPublicTerms) {
     if (content.includes(phrase)) throw new Error(`公開介面仍包含未中文化術語：${phrase}（${file}）`);
+  }
+  for (const phrase of forbiddenPublicProductCopy) {
+    if (content.includes(phrase)) throw new Error(`公開介面仍包含非正式產品文字：${phrase}（${file}）`);
   }
   if (/(^|[^A-Z])AI([^A-Z]|$)/u.test(content)) throw new Error(`公開介面仍包含未中文化術語：AI（${file}）`);
 }
@@ -166,8 +184,12 @@ for (const releaseColor of ['#15243b', '#243b63', '#ff6b57', '#3d8bff', '#f5f7fb
 }
 
 const builtAssets = (await Promise.all(files.filter((file)=>/\.(?:html|js)$/u.test(file)).map((file)=>readFile(file,'utf8')))).join('\n');
+const publicBuiltText = builtAssets.replaceAll('isMock', '');
 for (const phrase of forbiddenProductionData) {
   if (builtAssets.includes(phrase)) throw new Error(`公開Build包含展示資料或秘密識別：${phrase}`);
+}
+for (const phrase of forbiddenPublicProductCopy) {
+  if (publicBuiltText.includes(phrase)) throw new Error(`公開Build包含非正式產品文字：${phrase}`);
 }
 for (const phrase of requiredLocalizedCopy) {
   if (!builtAssets.includes(phrase)) throw new Error(`公開Build缺少中文介面文字：${phrase}`);

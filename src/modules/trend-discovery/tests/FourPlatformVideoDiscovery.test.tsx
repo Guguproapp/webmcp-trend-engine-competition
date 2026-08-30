@@ -81,7 +81,7 @@ describe('八個爆紅影音平台搜尋與狀態邊界', () => {
   });
 
   it('公開介面明確說明平台能力依實際權限提供', async () => {
-    render(<MemoryRouter initialEntries={['/review']}><App /></MemoryRouter>);
+    render(<MemoryRouter initialEntries={['/']}><App /></MemoryRouter>);
     expect(await screen.findByRole('heading', { name:'平台能力依實際權限提供' })).toBeInTheDocument();
     expect(document.body.textContent).not.toContain('四平台全部自動搜尋');
   });
