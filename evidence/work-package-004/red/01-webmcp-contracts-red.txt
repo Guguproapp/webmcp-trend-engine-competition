@@ -1,0 +1,56 @@
+
+> ai-trend-video-saas@0.4.0-rc2 test
+> vitest run --run src/modules/webmcp/tests/WebMcpContracts.test.ts src/modules/webmcp/tests/WebMcpHumanConfirmation.test.ts
+
+
+ RUN  v4.1.11 /Users/chenzongyi/Documents/Codex/2026-08-30/webmcp-trend-engine-competition
+
+ ❯ src/modules/webmcp/tests/WebMcpContracts.test.ts (0 test)
+ ❯ src/modules/webmcp/tests/WebMcpHumanConfirmation.test.ts (0 test)
+
+⎯⎯⎯⎯⎯⎯ Failed Suites 2 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  src/modules/webmcp/tests/WebMcpContracts.test.ts [ src/modules/webmcp/tests/WebMcpContracts.test.ts ]
+Error: Failed to resolve import "../application/createWebMcpToolDefinitions" from "src/modules/webmcp/tests/WebMcpContracts.test.ts". Does the file exist?
+  Plugin: vite:import-analysis
+  File: /Users/chenzongyi/Documents/Codex/2026-08-30/webmcp-trend-engine-competition/src/modules/webmcp/tests/WebMcpContracts.test.ts:3:69
+  1  |  import { describe, expect, it, vi } from "vitest";
+  2  |  import { createWebMcpToolDefinitions } from "../application/createWebMcpToolDefinitions";
+     |                                               ^
+  3  |  import { HumanConfirmationCoordinator } from "../application/HumanConfirmationCoordinator";
+  4  |  import { registerWebMcpTools } from "../infrastructure/registerWebMcpTools";
+ ❯ TransformPluginContext._formatLog node_modules/vite/dist/node/chunks/node.js:31147:39
+ ❯ TransformPluginContext.error node_modules/vite/dist/node/chunks/node.js:31144:14
+ ❯ normalizeUrl node_modules/vite/dist/node/chunks/node.js:28083:18
+ ❯ node_modules/vite/dist/node/chunks/node.js:28153:30
+ ❯ TransformPluginContext.transform node_modules/vite/dist/node/chunks/node.js:28119:4
+ ❯ EnvironmentPluginContainer.transform node_modules/vite/dist/node/chunks/node.js:30932:14
+ ❯ loadAndTransform node_modules/vite/dist/node/chunks/node.js:20671:26
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/2]⎯
+
+ FAIL  src/modules/webmcp/tests/WebMcpHumanConfirmation.test.ts [ src/modules/webmcp/tests/WebMcpHumanConfirmation.test.ts ]
+Error: Failed to resolve import "../application/createWebMcpToolDefinitions" from "src/modules/webmcp/tests/WebMcpHumanConfirmation.test.ts". Does the file exist?
+  Plugin: vite:import-analysis
+  File: /Users/chenzongyi/Documents/Codex/2026-08-30/webmcp-trend-engine-competition/src/modules/webmcp/tests/WebMcpHumanConfirmation.test.ts:3:69
+  1  |  import { describe, expect, it, vi } from "vitest";
+  2  |  import { createWebMcpToolDefinitions } from "../application/createWebMcpToolDefinitions";
+     |                                               ^
+  3  |  import { HumanConfirmationCoordinator } from "../application/HumanConfirmationCoordinator";
+  4  |  import { MemoryWebMcpAuditRepository } from "../infrastructure/WebMcpAuditRepository";
+ ❯ TransformPluginContext._formatLog node_modules/vite/dist/node/chunks/node.js:31147:39
+ ❯ TransformPluginContext.error node_modules/vite/dist/node/chunks/node.js:31144:14
+ ❯ normalizeUrl node_modules/vite/dist/node/chunks/node.js:28083:18
+ ❯ node_modules/vite/dist/node/chunks/node.js:28153:30
+ ❯ TransformPluginContext.transform node_modules/vite/dist/node/chunks/node.js:28119:4
+ ❯ EnvironmentPluginContainer.transform node_modules/vite/dist/node/chunks/node.js:30932:14
+ ❯ loadAndTransform node_modules/vite/dist/node/chunks/node.js:20671:26
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/2]⎯
+
+
+ Test Files  2 failed (2)
+      Tests  no tests
+   Start at  16:16:33
+   Duration  702ms (transform 101ms, setup 288ms, import 0ms, tests 0ms, environment 853ms)
+
