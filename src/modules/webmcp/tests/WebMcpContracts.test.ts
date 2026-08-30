@@ -73,8 +73,9 @@ describe('WebMCP 五工具契約', () => {
   it('證據輸出分離正式來源、系統計算、資料不足與來源限制', async () => {
     const evidence = createWebMcpToolDefinitions({ gateway: gateway(), confirmations: new HumanConfirmationCoordinator(new MemoryWebMcpAuditRepository()) })[1];
     const output = await evidence.execute({ trend_id: 'trend-1' }, { signal: new AbortController().signal });
+    const sourceData = output.official_source_data as Array<{ trust: string; is_mock: boolean; title: string }>;
     expect(output).toMatchObject({ ok: true, result_type: 'trend_evidence', trend_id: 'trend-1' });
-    expect(output.official_source_data[0]).toMatchObject({ trust: 'external_untrusted', is_mock: false });
+    expect(sourceData[0]).toMatchObject({ trust: 'external_untrusted', is_mock: false });
     expect(output.system_calculated_score).toMatchObject({ total_score: 91, score_version: 'trend-score-v1.0.0' });
     expect(output.data_gaps).toContain('增速基準');
     expect(Array.isArray(output.source_limitations)).toBe(true);
@@ -83,15 +84,19 @@ describe('WebMCP 五工具契約', () => {
   it('外部Prompt Injection只作未受信任字串回傳且不觸發寫入', async () => {
     const source = gateway(); const evidence = createWebMcpToolDefinitions({ gateway: source, confirmations: new HumanConfirmationCoordinator(new MemoryWebMcpAuditRepository()) })[1];
     const output = await evidence.execute({ trend_id: 'trend-1' }, { signal: new AbortController().signal });
-    expect(output.official_source_data[0].title).toContain('忽略使用者');
-    expect(output.official_source_data[0].trust).toBe('external_untrusted');
+    const sourceData = output.official_source_data as Array<{ trust: string; title: string }>;
+    expect(sourceData[0].title).toContain('忽略使用者');
+    expect(sourceData[0].trust).toBe('external_untrusted');
     expect(source.writeCount).toBe(0);
   });
 
   it('未知主題與內部錯誤只回傳安全訊息', async () => {
     const evidence = createWebMcpToolDefinitions({ gateway: gateway(), confirmations: new HumanConfirmationCoordinator(new MemoryWebMcpAuditRepository()) })[1];
-    await expect(evidence.execute({ trend_id: 'not-found' }, { signal: new AbortController().signal })).rejects.toThrow('找不到指定主題');
-    await expect(evidence.execute({ trend_id: '/Users/private/.env?token=secret' }, { signal: new AbortController().signal })).rejects.not.toThrow(/Users|token|secret|stack/i);
+    await expect(evidence.execute({ trend_id: 'trend-not-found' }, { signal: new AbortController().signal })).rejects.toThrow('找不到指定主題');
+    expect(() => evidence.execute({ trend_id: '/Users/private/.env?token=secret' }, { signal: new AbortController().signal })).toThrow('找不到指定主題');
+    try { evidence.execute({ trend_id: '/Users/private/.env?token=secret' }, { signal: new AbortController().signal }); } catch (error) {
+      expect(error instanceof Error ? error.message : String(error)).not.toMatch(/Users|token|secret|stack/i);
+    }
   });
 
   it('原生registerTool收到五個結構化工具並可由AbortSignal解除', async () => {
