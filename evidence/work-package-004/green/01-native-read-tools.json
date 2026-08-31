@@ -1,0 +1,47 @@
+{
+  "validated_at": "2026-08-31T12:00:00+08:00",
+  "environment": "Codex in-app browser native WebMCP + local Wrangler Pages Functions + local D1",
+  "formal_b_resources_used": false,
+  "registered_tools": [
+    "search_trends",
+    "get_trend_evidence",
+    "get_source_status",
+    "add_trend_to_watchlist",
+    "exclude_trend"
+  ],
+  "search_input": {
+    "query": "",
+    "region": "all",
+    "platform": "all",
+    "time_range": "7d"
+  },
+  "search_output_summary": {
+    "ok": true,
+    "candidate_count": 3,
+    "result_limit": 3,
+    "candidate_scores": [22, 19, 16],
+    "candidate_data_status": ["資料不足", "資料不足", "資料不足"],
+    "candidate_limitations": [
+      "只有一次有效快照，不顯示推測增速。",
+      "只有一次有效快照，不顯示推測增速。",
+      "只有一次有效快照，不顯示推測增速。"
+    ]
+  },
+  "evidence_output_summary": {
+    "ok": true,
+    "source_count": 2,
+    "source_trust": "external_untrusted",
+    "data_status": "資料不足",
+    "system_score": 22,
+    "score_version": "trend-score-v1.0.0",
+    "limitation": "只有一次有效快照，不顯示推測增速。"
+  },
+  "source_status_output_summary": {
+    "ok": true,
+    "operational_count": 1,
+    "gdelt": "enabled",
+    "youtube": "waiting_authorization",
+    "google_trends": "waiting_authorization",
+    "threads": "waiting_authorization"
+  }
+}

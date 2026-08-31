@@ -1,0 +1,12 @@
+Safari安全降級驗證
+日期：2026-08-31 Asia/Taipei
+網址：http://127.0.0.1:5173/agent-workspace
+
+PASS：頁面成功載入，產品名稱、導覽及Agent Workspace內容可讀。
+PASS：明確顯示「安全降級：瀏覽器未支援原生WebMCP」。
+PASS：明確說明原網站功能仍可使用，且未建立假Polyfill。
+PASS：沒有宣稱Safari原生支援WebMCP。
+PASS：Safari accessibility tree可讀取頁面標題、工作區四步驟與安全降級文案。
+
+截圖：04-safari-safe-fallback.png
+限制：Safari只驗證一般UI及安全降級；原生工具驗證在Codex in-app browser完成。

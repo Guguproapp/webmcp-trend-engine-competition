@@ -1,0 +1,16 @@
+WebMCP Agent Workspace響應式與基本無障礙驗收
+日期：2026-08-31 Asia/Taipei
+
+桌面1440x900：PASS，document clientWidth=1440、scrollWidth=1440，無水平溢出。
+平板768x1024：PASS，document clientWidth=768、scrollWidth=768，無水平溢出。
+手機390x844：PASS，document clientWidth=390、scrollWidth=390，無水平溢出。
+手機可見主要控制最小高度：47.59px，符合至少44px。
+真人確認區：role=dialog、aria-modal=false，Escape可取消，確認出現時焦點移入確認按鈕。
+結果區：role=status、aria-live=polite。
+狀態同時有中文文字，不只使用顏色或動畫。
+CSS保留prefers-reduced-motion規則。
+
+截圖：
+- 01-agent-workspace-desktop-1440x900.png
+- 02-agent-workspace-tablet-768x1024.png
+- 03-agent-workspace-mobile-390x844.png

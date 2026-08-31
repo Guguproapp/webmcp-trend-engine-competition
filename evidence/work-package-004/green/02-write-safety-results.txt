@@ -1,0 +1,19 @@
+WebMCP寫入安全驗證
+日期：2026-08-31 Asia/Taipei
+
+PASS：add_trend_to_watchlist與exclude_trend呼叫後只建立待確認操作，確認前repository寫入次數為0。
+PASS：取消後資料不變。
+PASS：逾時後資料不變。
+PASS：AbortSignal後資料不變。
+PASS：路由離開或元件卸載後待確認操作回傳aborted，資料不變。
+PASS：真人確認後只寫入一次。
+PASS：相同idempotency key重複呼叫不重複寫入。
+PASS：撤銷後恢復操作前觀察／排除狀態。
+PASS：不同匿名Session的稽核紀錄互相隔離。
+
+原生瀏覽器實測：
+- add_trend_to_watchlist由原生WebMCP提出後，等待網站真人確認。
+- 無真人點擊時，瀏覽器呼叫逾時並觸發Abort，工作區顯示timed_out，沒有寫入。
+- 真人確認成功及真人確認後撤銷：BLOCKED，仍需宗億本人在網站按下確認；不得由代理按鈕自動化冒充真人。
+
+自動測試：WebMcpHumanConfirmation.test.ts與WebMcpSecurity.test.tsx均PASS。

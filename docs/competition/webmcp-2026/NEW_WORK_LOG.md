@@ -60,10 +60,30 @@
 
 ### 2026-08-30｜安全、回歸與比賽文件
 
-- Commit：完成本筆文件後以Git歷史中的`test: harden WebMCP competition boundaries`定位，完整雜湊於最終證據回填。
+- Commit：`14fd91af01b385a54602f6efb6c17dcbd8c76614`
 - 新增功能：生命週期、安全命名空間、稽核欄位、Build秘密掃描、MVP規格、工具契約、安全模型與三分鐘腳本。
 - 使用的WebMCP工具：五工具共同安全邊界。
 - 測試指令與結果：`PASS`；15個測試檔、193項測試，TypeScript、ESLint、Production Build及WebMCP Build掃描。
 - 畫面或影片證據：待最終瀏覽器驗收。
 - 是否影響正式B版：否。
 - 備註與限制：`$grill-me`技能在本次環境查無，已在SECURITY_MODEL記錄等效反向稽核，不假稱已使用。
+
+### 2026-08-31｜原生 WebMCP 實驗瀏覽器相容性修正
+
+- Commit：`56242f1c1971035b96f5d3523cd0f65519f9bca6`
+- 新增功能：修正React StrictMode雙重掛載造成的短暫重複註冊、實驗瀏覽器未傳execute options、以及既有中文主題ID被錯誤拒絕三項真實流程問題。
+- 使用的WebMCP工具：五工具共同註冊生命週期；三個只讀工具完成原生呼叫。
+- 測試指令與結果：`PASS`；15個測試檔、196項測試，TypeScript、ESLint、Production Build及秘密掃描。
+- 畫面或影片證據：`evidence/work-package-004/browser/`與`evidence/work-package-004/green/01-native-read-tools.json`。
+- 是否影響正式B版：否。
+- 備註與限制：原生搜尋回傳3個真實GDELT候選，證據與來源狀態回傳結構化結果；全部候選只有一次快照，因此誠實標示資料不足、沒有假增速。
+
+### 2026-08-31｜本機瀏覽器、安全與響應式證據
+
+- Commit：以Git歷史中的`chore: record native WebMCP validation evidence`定位，完整雜湊於下一筆文件提交回填。
+- 新增功能：原生工具清單、三個只讀工具輸出、逾時／Abort零寫入、Safari安全降級、三種尺寸與安全掃描證據。
+- 使用的WebMCP工具：`search_trends`、`get_trend_evidence`、`get_source_status`，以及`add_trend_to_watchlist`的待確認與逾時中止流程。
+- 測試指令與結果：只讀工具`PASS`；寫入確認前零變更、逾時與Abort`PASS`；真人確認成功與成功後撤銷`BLOCKED`。
+- 畫面或影片證據：`evidence/work-package-004/browser/`、`evidence/work-package-004/green/`、`evidence/work-package-004/security/`。
+- 是否影響正式B版：否。
+- 備註與限制：兩次開啟真人確認窗口均未收到真人按鍵，瀏覽器逾時後零寫入；不得由代理自動按確認冒充真人證據。

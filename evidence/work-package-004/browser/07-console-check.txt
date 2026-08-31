@@ -1,0 +1,11 @@
+瀏覽器Console驗收
+日期：2026-08-31 Asia/Taipei
+環境：Codex in-app browser，http://localhost:8788/agent-workspace
+
+網站程式error：0
+網站程式warning：0
+未捕捉例外：0
+
+已分開處理的預期狀態：
+- 未有真人確認時，原生寫入工具逾時／Abort是受控結果，不是Console錯誤。
+- 初次Vite開發環境缺少Pages Functions造成來源工具安全失敗，後改用本機Wrangler+D1完成真實來源驗證；未連正式資源。
