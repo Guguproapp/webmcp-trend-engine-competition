@@ -1,0 +1,30 @@
+WebMCP 比賽版獨立部署與線上驗證
+日期：2026-08-31（Asia/Taipei）
+
+Cloudflare Pages 專案：webmcp-trend-engine-competition
+正式網址：https://webmcp-trend-engine-competition.pages.dev/
+代理工作區：https://webmcp-trend-engine-competition.pages.dev/agent-workspace
+首次部署快照：https://68555fd2.webmcp-trend-engine-competition.pages.dev/
+首次 Deployment ID：68555fd2-260b-4150-bf42-5886b93d43cc
+獨立 D1：webmcp-trend-engine-competition
+正式 B 版資源：未使用
+
+線上驗證：
+- 深層網址 /agent-workspace：HTTP 200
+- CSP、X-Content-Type-Options、Referrer-Policy、Permissions-Policy、frame-ancestors：PASS
+- X-Robots-Tag 與 robots.txt noindex：PASS
+- 原生 WebMCP 五工具註冊：PASS
+- search_trends：PASS，回傳最多3個真實候選
+- get_trend_evidence：PASS，正式來源、系統分數、資料不足與信任邊界分離
+- get_source_status：PASS，GDELT正常，其他未授權來源誠實標示限制
+- 單次快照不顯示推測增速：PASS
+- 1440x900：scrollWidth=clientWidth=1440，最低可見互動高度47.59px
+- 768x1024：scrollWidth=clientWidth=768，最低可見互動高度51.59px
+- 390x844：scrollWidth=clientWidth=390，最低可見互動高度47.59px
+- Browser Console：0 error、0 warning
+- 真人確認前零寫入、逾時零寫入：PASS
+- 真人確認成功、成功後撤銷：等待宗億本人操作，BLOCKED
+
+限制：
+- 比賽版沒有複製正式 YouTube 金鑰，因此YouTube顯示等待授權。
+- 未使用正式 B 版 Cloudflare Pages、D1、YOUTUBE_API_KEY或REFRESH_ADMIN_TOKEN。

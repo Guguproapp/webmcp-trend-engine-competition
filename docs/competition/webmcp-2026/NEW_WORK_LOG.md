@@ -94,6 +94,6 @@
 - 新增功能：將比賽副本的Pages專案與D1綁定改為`webmcp-trend-engine-competition`，避免誤連正式B版資源。
 - 使用的WebMCP工具：無；此項只建立獨立部署環境。
 - 測試指令與結果：`PASS`；15個測試檔、196項測試，TypeScript、ESLint、Production Build、WebMCP Build掃描與npm高風險安全稽核。
-- 畫面或影片證據：部署完成後補入獨立`pages.dev`網址及線上驗證證據。
+- 畫面或影片證據：`https://webmcp-trend-engine-competition.pages.dev/agent-workspace`與`evidence/work-package-004/deployment/04-deployment-and-live-check.txt`。
 - 是否影響正式B版：否。
-- 備註與限制：本次部署由宗億於2026-08-31另行明確授權；不使用正式B版Pages、D1或任何正式秘密。
+- 備註與限制：本次部署由宗億於2026-08-31另行明確授權；不使用正式B版Pages、D1或任何正式秘密。線上真人確認成功與撤銷仍須宗億本人在確認卡操作。
