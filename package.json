@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "tsc -b && vite build && node scripts/verify-public-build.mjs",
+    "build": "tsc -b && vite build && node scripts/verify-public-build.mjs && node scripts/verify-webmcp-build.mjs",
     "lint": "eslint . --max-warnings 0",
     "typecheck": "tsc -b --pretty false",
     "test": "vitest run",
