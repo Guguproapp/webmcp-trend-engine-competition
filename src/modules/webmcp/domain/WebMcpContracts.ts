@@ -21,7 +21,7 @@ export interface WebMcpToolDefinition {
   description: string;
   inputSchema: Record<string, unknown>;
   annotations: WebMcpToolAnnotations;
-  execute: (input: unknown, options: WebMcpExecuteOptions) => Promise<Record<string, unknown>> | Record<string, unknown>;
+  execute: (input: unknown, options?: WebMcpExecuteOptions) => Promise<Record<string, unknown>> | Record<string, unknown>;
 }
 
 export const WEBMCP_REGIONS = ['china_mainland', 'taiwan', 'hong_kong', 'macau', 'all'] as const;
@@ -47,7 +47,7 @@ export function isPlainObject(value: unknown): value is Record<string, unknown> 
 }
 
 export function safeId(value: unknown) {
-  if (typeof value !== 'string' || value.length < 1 || value.length > 160 || !/^trend-[a-zA-Z0-9._-]+$/u.test(value)) {
+  if (typeof value !== 'string' || value.length < 1 || value.length > 160 || !/^trend-[\p{L}\p{N}._-]+$/u.test(value)) {
     throw new SafeWebMcpError('找不到指定主題。');
   }
   return value;

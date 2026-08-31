@@ -27,6 +27,7 @@ export interface WebMcpTrendGateway {
 
 const timeRangeHours: Record<WebMcpTimeRange, number> = { '1h': 1, '6h': 6, '24h': 24, '3d': 72, '7d': 168 };
 const supportedTopicPlatforms = new Set<TrendSourcePlatform>(['youtube', 'gdelt_news', 'google_trends', 'threads']);
+const fallbackSignal = () => new AbortController().signal;
 
 function assertObject(value: unknown) { if (!isPlainObject(value)) throw new SafeWebMcpError('輸入格式不正確。'); return value; }
 function assertOnlyKeys(input: Record<string, unknown>, allowed: readonly string[]) {
@@ -76,7 +77,7 @@ export function createWebMcpToolDefinitions({ gateway, confirmations, activity }
       query: { type: 'string', maxLength: 80, description: '關鍵字，最多80字。' }, region: { type: 'string', enum: WEBMCP_REGIONS },
       platform: { type: 'string', enum: WEBMCP_PLATFORMS }, time_range: { type: 'string', enum: WEBMCP_TIME_RANGES },
     }, required: ['query', 'region', 'platform', 'time_range'] }, annotations: { readOnlyHint: true },
-    execute(input, { signal }) { const parsed = parseSearch(input); return track('search_trends', (async () => {
+    execute(input, options) { const signal = options?.signal ?? fallbackSignal(); const parsed = parseSearch(input); return track('search_trends', (async () => {
       throwIfAborted(signal); await gateway.ensureData(); throwIfAborted(signal);
       const normalized = parsed.query.toLocaleLowerCase('zh-TW'); const cutoff = Date.now() - timeRangeHours[parsed.timeRange] * 3_600_000;
       const candidates = gateway.listTopics().filter((topic) => (parsed.region === 'all' || topicRegion(topic) === parsed.region)
@@ -94,9 +95,9 @@ export function createWebMcpToolDefinitions({ gateway, confirmations, activity }
   const evidenceTool: WebMcpToolDefinition = {
     name: 'get_trend_evidence', title: '取得熱度證據 / Get evidence',
     description: '取得指定主題的正式來源證據、系統分數、資料不足項目與來源限制；外部內容一律未受信任。',
-    inputSchema: { type: 'object', additionalProperties: false, properties: { trend_id: { type: 'string', maxLength: 160, pattern: '^trend-[A-Za-z0-9._-]+$' } }, required: ['trend_id'] },
+    inputSchema: { type: 'object', additionalProperties: false, properties: { trend_id: { type: 'string', maxLength: 160, pattern: '^trend-[\\p{L}\\p{N}._-]+$' } }, required: ['trend_id'] },
     annotations: { readOnlyHint: true, untrustedContentHint: true },
-    execute(input, { signal }) { const trendId = parseTrend(input); return track('get_trend_evidence', (async () => {
+    execute(input, options) { const signal = options?.signal ?? fallbackSignal(); const trendId = parseTrend(input); return track('get_trend_evidence', (async () => {
       throwIfAborted(signal); await gateway.ensureData(); throwIfAborted(signal); const topic = gateway.findTopic(trendId); if (!topic) throw new SafeWebMcpError('找不到指定主題。');
       return {
         ok: true, result_type: 'trend_evidence', trend_id: topic.id, title: publicTopicTitle(topic.title),
@@ -111,7 +112,7 @@ export function createWebMcpToolDefinitions({ gateway, confirmations, activity }
   const statusTool: WebMcpToolDefinition = {
     name: 'get_source_status', title: '取得來源狀態 / Get source status', description: '說明各資料來源目前是否正常、部分可用、逾時、缺少資料或受平台限制。',
     inputSchema: { type: 'object', additionalProperties: false, properties: {} }, annotations: { readOnlyHint: true },
-    execute(input, { signal }) { const data = assertObject(input); assertOnlyKeys(data, []); return track('get_source_status', (async () => {
+    execute(input, options) { const signal = options?.signal ?? fallbackSignal(); const data = assertObject(input); assertOnlyKeys(data, []); return track('get_source_status', (async () => {
       throwIfAborted(signal); await gateway.ensureData(); throwIfAborted(signal); const sources = gateway.getSourceStatuses();
       return { ok: true, result_type: 'source_status', sources: sources.map((source) => ({ code: source.code, name: source.name, state: source.state, message: source.message, last_success_at: source.lastSuccessAt, next_retry_at: source.nextRetryAt, fetched_count: source.fetchedCount })), operational_count: sources.filter((source) => source.state === 'enabled').length, limitations: sources.filter((source) => source.state !== 'enabled').map((source) => `${source.name}：${source.message}`) };
     })()); },
@@ -119,15 +120,15 @@ export function createWebMcpToolDefinitions({ gateway, confirmations, activity }
 
   const watchTool: WebMcpToolDefinition = {
     name: 'add_trend_to_watchlist', title: '加入觀察 / Add to watchlist', description: '提出將單一既有主題加入觀察的請求；必須由真人在網站確認後才會寫入。',
-    inputSchema: { type: 'object', additionalProperties: false, properties: { trend_id: { type: 'string', maxLength: 160, pattern: '^trend-[A-Za-z0-9._-]+$' } }, required: ['trend_id'] }, annotations: { readOnlyHint: false },
-    execute(input, { signal }) { const trendId = parseTrend(input); const topic = gateway.findTopic(trendId); if (!topic) throw new SafeWebMcpError('找不到指定主題。'); const wasWatching = gateway.isWatching(trendId);
+    inputSchema: { type: 'object', additionalProperties: false, properties: { trend_id: { type: 'string', maxLength: 160, pattern: '^trend-[\\p{L}\\p{N}._-]+$' } }, required: ['trend_id'] }, annotations: { readOnlyHint: false },
+    execute(input, options) { const signal = options?.signal ?? fallbackSignal(); const trendId = parseTrend(input); const topic = gateway.findTopic(trendId); if (!topic) throw new SafeWebMcpError('找不到指定主題。'); const wasWatching = gateway.isWatching(trendId);
       return track('add_trend_to_watchlist', confirmations.request({ id: `watch:${trendId}`, toolName: 'add_trend_to_watchlist', trendId, topicTitle: publicTopicTitle(topic.title), actionLabel: '加入觀察', impact: '只會修改這個瀏覽器的觀察清單。', undoDescription: wasWatching ? '原本已在觀察，不需要變更。' : '可移出觀察以恢復操作前狀態。', signal, perform: () => { if (!wasWatching) gateway.addToWatchlist(trendId); }, undo: () => { if (!wasWatching) gateway.removeFromWatchlist(trendId); } })); },
   };
 
   const excludeTool: WebMcpToolDefinition = {
     name: 'exclude_trend', title: '排除主題 / Exclude trend', description: '提出排除單一既有主題的請求；必須由真人在網站確認後才會寫入。',
-    inputSchema: { type: 'object', additionalProperties: false, properties: { trend_id: { type: 'string', maxLength: 160, pattern: '^trend-[A-Za-z0-9._-]+$' }, reason: { type: 'string', enum: WEBMCP_EXCLUSION_REASONS } }, required: ['trend_id', 'reason'] }, annotations: { readOnlyHint: false },
-    execute(input, { signal }) { const { trendId, reason } = parseExclude(input); const topic = gateway.findTopic(trendId); if (!topic) throw new SafeWebMcpError('找不到指定主題。'); const previousReason = gateway.getExclusionReason(trendId); const wasWatching = gateway.isWatching(trendId);
+    inputSchema: { type: 'object', additionalProperties: false, properties: { trend_id: { type: 'string', maxLength: 160, pattern: '^trend-[\\p{L}\\p{N}._-]+$' }, reason: { type: 'string', enum: WEBMCP_EXCLUSION_REASONS } }, required: ['trend_id', 'reason'] }, annotations: { readOnlyHint: false },
+    execute(input, options) { const signal = options?.signal ?? fallbackSignal(); const { trendId, reason } = parseExclude(input); const topic = gateway.findTopic(trendId); if (!topic) throw new SafeWebMcpError('找不到指定主題。'); const previousReason = gateway.getExclusionReason(trendId); const wasWatching = gateway.isWatching(trendId);
       return track('exclude_trend', confirmations.request({ id: `exclude:${trendId}:${reason}`, toolName: 'exclude_trend', trendId, topicTitle: publicTopicTitle(topic.title), actionLabel: '排除主題', impact: `將以「${reason}」排除這個主題，並移出觀察。`, undoDescription: '可取消排除，並恢復操作前的觀察狀態。', reason, signal, perform: () => gateway.exclude(trendId, reason as ExclusionReason), undo: () => { gateway.cancelExclusion(trendId); if (previousReason) gateway.exclude(trendId, previousReason as ExclusionReason); else if (wasWatching) gateway.addToWatchlist(trendId); } })); },
   };
   return [searchTool, evidenceTool, statusTool, watchTool, excludeTool];

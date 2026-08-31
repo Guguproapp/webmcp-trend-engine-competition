@@ -1,3 +1,4 @@
+import { StrictMode } from 'react';
 import { act, render, waitFor } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
 import { describe, expect, it, vi } from 'vitest';
@@ -9,13 +10,24 @@ import { LocalWebMcpAuditRepository } from '../infrastructure/WebMcpAuditReposit
 import { AgentWorkspacePage } from '../presentation/AgentWorkspacePage';
 
 describe('WebMCP 安全與生命週期', () => {
+  it('React StrictMode雙重掛載仍只建立一組有效工具', async () => {
+    const signals: AbortSignal[] = [];
+    const names: string[] = [];
+    Object.defineProperty(document, 'modelContext', { configurable: true, value: { registerTool: vi.fn((tool: WebMcpToolDefinition, options: { signal: AbortSignal }) => { names.push(tool.name); signals.push(options.signal); }) } });
+    const view = render(<StrictMode><MemoryRouter><AgentWorkspacePage /></MemoryRouter></StrictMode>);
+    await waitFor(() => expect(names).toEqual(['search_trends', 'get_trend_evidence', 'get_source_status', 'add_trend_to_watchlist', 'exclude_trend']));
+    expect(signals.every((signal) => !signal.aborted)).toBe(true);
+    view.unmount();
+    await waitFor(() => expect(signals.every((signal) => signal.aborted)).toBe(true));
+  });
+
   it('元件卸載時透過註冊AbortSignal移除全部工具', async () => {
     const signals: AbortSignal[] = [];
     Object.defineProperty(document, 'modelContext', { configurable: true, value: { registerTool: vi.fn(async (_tool: WebMcpToolDefinition, options: { signal: AbortSignal }) => { signals.push(options.signal); }) } });
     const view = render(<MemoryRouter><AgentWorkspacePage /></MemoryRouter>);
     await waitFor(() => expect(signals).toHaveLength(5));
     expect(signals.every((signal) => !signal.aborted)).toBe(true);
-    view.unmount(); expect(signals.every((signal) => signal.aborted)).toBe(true);
+    view.unmount(); await waitFor(() => expect(signals.every((signal) => signal.aborted)).toBe(true));
   });
 
   it('頁面離開會中止待確認操作且不寫入', async () => {

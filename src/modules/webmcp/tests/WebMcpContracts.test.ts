@@ -70,6 +70,11 @@ describe('WebMCP 五工具契約', () => {
     expect(output.candidates).toHaveLength(3);
   });
 
+  it('實驗瀏覽器未傳execute options時仍可安全執行只讀工具', async () => {
+    const search = createWebMcpToolDefinitions({ gateway: gateway(), confirmations: new HumanConfirmationCoordinator(new MemoryWebMcpAuditRepository()) })[0];
+    await expect(search.execute({ query: '', region: 'taiwan', platform: 'all', time_range: '24h' })).resolves.toMatchObject({ ok: true, result_limit: 3 });
+  });
+
   it('證據輸出分離正式來源、系統計算、資料不足與來源限制', async () => {
     const evidence = createWebMcpToolDefinitions({ gateway: gateway(), confirmations: new HumanConfirmationCoordinator(new MemoryWebMcpAuditRepository()) })[1];
     const output = await evidence.execute({ trend_id: 'trend-1' }, { signal: new AbortController().signal });
@@ -99,12 +104,24 @@ describe('WebMCP 五工具契約', () => {
     }
   });
 
+  it('既有中文主題ID可查證據但網址、HTML與路徑仍被拒絕', async () => {
+    const source = gateway();
+    const original = source.listTopics()[0];
+    const localized = { ...original, id: 'trend-台灣熱門_2026' };
+    source.listTopics = () => [localized]; source.findTopic = (id) => id === localized.id ? localized : undefined;
+    const evidence = createWebMcpToolDefinitions({ gateway: source, confirmations: new HumanConfirmationCoordinator(new MemoryWebMcpAuditRepository()) })[1];
+    await expect(evidence.execute({ trend_id: localized.id })).resolves.toMatchObject({ trend_id: localized.id });
+    for (const unsafe of ['trend-https://evil.example', 'trend-<script>', 'trend-../../private']) {
+      expect(() => evidence.execute({ trend_id: unsafe })).toThrow('找不到指定主題');
+    }
+  });
+
   it('原生registerTool收到五個結構化工具並可由AbortSignal解除', async () => {
     const registered: Array<{ name: string }> = []; const signals: AbortSignal[] = [];
     const document = { modelContext: { registerTool: vi.fn(async (tool: { name: string }, options: { signal: AbortSignal }) => { registered.push(tool); signals.push(options.signal); }) } } as unknown as Document;
     const tools = createWebMcpToolDefinitions({ gateway: gateway(), confirmations: new HumanConfirmationCoordinator(new MemoryWebMcpAuditRepository()) });
     const result = await registerWebMcpTools({ document, tools });
     expect(result.supported).toBe(true); expect(result.registeredNames).toHaveLength(5); expect(registered).toHaveLength(5);
-    result.unregister(); expect(signals.every((signal) => signal.aborted)).toBe(true);
+    result.unregister(); await vi.waitFor(() => expect(signals.every((signal) => signal.aborted)).toBe(true));
   });
 });
