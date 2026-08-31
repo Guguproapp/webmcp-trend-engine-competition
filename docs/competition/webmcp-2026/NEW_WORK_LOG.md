@@ -80,7 +80,7 @@
 
 ### 2026-08-31｜本機瀏覽器、安全與響應式證據
 
-- Commit：以Git歷史中的`chore: record native WebMCP validation evidence`定位，完整雜湊於下一筆文件提交回填。
+- Commit：`b708e82efe444a24a92bcdff2d1e849a5c32a582`
 - 新增功能：原生工具清單、三個只讀工具輸出、逾時／Abort零寫入、Safari安全降級、三種尺寸與安全掃描證據。
 - 使用的WebMCP工具：`search_trends`、`get_trend_evidence`、`get_source_status`，以及`add_trend_to_watchlist`的待確認與逾時中止流程。
 - 測試指令與結果：只讀工具`PASS`；寫入確認前零變更、逾時與Abort`PASS`；真人確認成功與成功後撤銷`BLOCKED`。
