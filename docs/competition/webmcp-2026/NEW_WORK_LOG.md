@@ -87,3 +87,13 @@
 - 畫面或影片證據：`evidence/work-package-004/browser/`、`evidence/work-package-004/green/`、`evidence/work-package-004/security/`。
 - 是否影響正式B版：否。
 - 備註與限制：兩次開啟真人確認窗口均未收到真人按鍵，瀏覽器逾時後零寫入；不得由代理自動按確認冒充真人證據。
+
+### 2026-08-31｜獨立比賽版 Cloudflare 隔離設定
+
+- Commit：`7ffb15214f5391f69ca333b718c1481bc2d25238`。
+- 新增功能：將比賽副本的Pages專案與D1綁定改為`webmcp-trend-engine-competition`，避免誤連正式B版資源。
+- 使用的WebMCP工具：無；此項只建立獨立部署環境。
+- 測試指令與結果：`PASS`；15個測試檔、196項測試，TypeScript、ESLint、Production Build、WebMCP Build掃描與npm高風險安全稽核。
+- 畫面或影片證據：部署完成後補入獨立`pages.dev`網址及線上驗證證據。
+- 是否影響正式B版：否。
+- 備註與限制：本次部署由宗億於2026-08-31另行明確授權；不使用正式B版Pages、D1或任何正式秘密。
