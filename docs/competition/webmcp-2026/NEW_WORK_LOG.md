@@ -11,7 +11,8 @@
 - 與既有 B 版差異：只在比賽版自己的分支提供文字交接素材；不共用正式 B、A 或熱門雷達的原始碼、資料、Repository、分支、Commit、Tag、部署或秘密。
 - 真實性與安全：外部標題與摘要只作素材，預設要求查證；輸出不捏造熱門事實、增速、觀看數或平台資料。
 - 畫面證據：本機瀏覽器驗收後記錄於`reports/video-creation-node/BROWSER_VALIDATION.md`。
-- 未完成限制：使用者必須自行選擇影音生成工具、確認事實與素材權利；本節點不生成、上傳或發布影音。
+- 預覽部署：宗億於 2026-09-02 明確授權後，已部署至`https://feature-video-creation-node.webmcp-trend-engine-competition.pages.dev`；部署識別網址為`https://b91f9fc5.webmcp-trend-engine-competition.pages.dev`。線上已驗證創作建議與「複製完整創作包」，Console error／warning 均為 0。
+- 未完成限制：使用者必須自行選擇影音生成工具、確認事實與素材權利；本節點不生成、上傳或發布影音。熱門雷達真實資料仍需在比賽版 Pages 專案設定獨立`RADAR_PROGRAM_API_TOKEN`；已確認不得借用 A 版或正式 B 版的秘密。
 
 ## 2026-09-02｜熱門雷達唯讀工具
 
