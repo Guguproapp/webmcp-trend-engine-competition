@@ -80,6 +80,41 @@ export class RadarGatewayError extends Error {
 }
 
 interface ErrorEnvelope { error?: { code?: string; message?: string } }
+type RadarReadFallback = (url: string, signal?: AbortSignal) => Promise<Response>;
+
+/**
+ * Some WebKit configurations reject `fetch` for a Pages Function after a
+ * navigation even though a same-origin XMLHttpRequest remains available.
+ * This is deliberately limited to the same relative GET endpoint selected by
+ * this gateway; it never receives an upstream URL or an authorization token.
+ */
+function readWithXmlHttpRequest(url: string, signal?: AbortSignal): Promise<Response> {
+  return new Promise((resolve, reject) => {
+    if (typeof XMLHttpRequest === 'undefined') {
+      reject(new Error('XMLHttpRequest is unavailable'));
+      return;
+    }
+
+    const request = new XMLHttpRequest();
+    const abort = () => request.abort();
+    const cleanup = () => signal?.removeEventListener('abort', abort);
+    if (signal?.aborted) {
+      reject(new DOMException('The operation was aborted.', 'AbortError'));
+      return;
+    }
+
+    request.open('GET', url, true);
+    request.setRequestHeader('Accept', 'application/json');
+    request.onload = () => {
+      cleanup();
+      resolve(new Response(request.responseText, { status: request.status, statusText: request.statusText }));
+    };
+    request.onerror = () => { cleanup(); reject(new Error('XMLHttpRequest network error')); };
+    request.onabort = () => { cleanup(); reject(new DOMException('The operation was aborted.', 'AbortError')); };
+    signal?.addEventListener('abort', abort, { once: true });
+    request.send();
+  });
+}
 
 function buildQuery(query: RadarQuery): string {
   const parameters = new URLSearchParams();
@@ -96,7 +131,10 @@ function summary(kind: RadarGatewayResult<unknown>['kind'], count: number, delay
 }
 
 export class HttpRadarBrowserGateway implements RadarBrowserGateway {
-  constructor(private readonly fetcher: typeof fetch = fetch) {}
+  constructor(
+    private readonly fetcher: typeof fetch = globalThis.fetch.bind(globalThis),
+    private readonly fallbackReader: RadarReadFallback = readWithXmlHttpRequest,
+  ) {}
 
   trends(query: RadarQuery, signal?: AbortSignal) { return this.read<RadarRankingItem[]>('/api/radar/trends', query, signal); }
   videos(query: RadarQuery, signal?: AbortSignal) { return this.read<RadarRankingItem[]>('/api/radar/videos', query, signal); }
@@ -108,8 +146,17 @@ export class HttpRadarBrowserGateway implements RadarBrowserGateway {
   private async read<T>(path: string, query: RadarQuery | Record<string, unknown>, signal?: AbortSignal): Promise<RadarGatewayResult<T>> {
     const search = 'topicId' in query ? '' : buildQuery(query as RadarQuery);
     let response: Response;
-    try { response = await this.fetcher(`${path}${search ? `?${search}` : ''}`, { method: 'GET', headers: { Accept: 'application/json' }, signal }); }
-    catch { throw new RadarGatewayError('network_error', '熱門雷達目前無法連線，請稍後再試。', 503); }
+    const url = `${path}${search ? `?${search}` : ''}`;
+    try {
+      response = await this.fetcher(url, { method: 'GET', headers: { Accept: 'application/json' }, signal });
+    } catch (fetchError) {
+      if (signal?.aborted) throw new RadarGatewayError('request_aborted', '熱門雷達查詢已取消。', 499);
+      try { response = await this.fallbackReader(url, signal); }
+      catch {
+        void fetchError;
+        throw new RadarGatewayError('network_error', '熱門雷達目前無法連線，請稍後再試。', 503);
+      }
+    }
     const body = await response.json().catch(() => ({})) as Partial<RadarGatewayResult<T>> & ErrorEnvelope;
     if (!response.ok || body.ok !== true) throw new RadarGatewayError(body.error?.code ?? 'request_failed', body.error?.message ?? '熱門雷達查詢暫時無法完成。', response.status);
     const count = typeof body.actualCount === 'number' ? body.actualCount : Array.isArray(body.data) ? body.data.length : body.data ? 1 : 0;

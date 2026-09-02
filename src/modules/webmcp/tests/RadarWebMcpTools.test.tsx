@@ -2,7 +2,7 @@ import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
 import { describe, expect, it, vi } from 'vitest';
 import { createRadarWebMcpToolDefinitions } from '../application/createRadarWebMcpToolDefinitions';
-import type { RadarBrowserGateway } from '../application/RadarBrowserGateway';
+import { HttpRadarBrowserGateway, type RadarBrowserGateway } from '../application/RadarBrowserGateway';
 import { RadarToolsPage } from '../presentation/RadarToolsPage';
 
 function gateway(): RadarBrowserGateway {
@@ -24,6 +24,30 @@ function gateway(): RadarBrowserGateway {
 }
 
 describe('熱門雷達唯讀WebMCP工具', () => {
+  it('瀏覽器Fetch暫時失敗時，會以同網域唯讀XHR降級，不攜帶任何秘密', async () => {
+    const fetcher = vi.fn(async () => { throw new TypeError('network failed'); }) as unknown as typeof fetch;
+    const fallbackReader = vi.fn(async (url: string) => {
+      expect(url).toBe('/api/radar/trends?market=TW&limit=1');
+      return new Response(JSON.stringify({
+        ok: true, kind: 'trends', query: { market: 'TW', limit: 1 }, acquiredAt: '2026-09-02T08:00:00.000Z', delayed: false,
+        actualCount: 0, data: [],
+      }), { status: 200 });
+    });
+    const client = new HttpRadarBrowserGateway(fetcher, fallbackReader);
+    const result = await client.trends({ market: 'TW', limit: 1 });
+    expect(fetcher).toHaveBeenCalledWith('/api/radar/trends?market=TW&limit=1', expect.objectContaining({ method: 'GET' }));
+    expect(fallbackReader).toHaveBeenCalledOnce();
+    expect(result).toMatchObject({ ok: true, actualCount: 0, data: [] });
+  });
+
+  it('已取消的請求不會啟動XHR降級請求', async () => {
+    const controller = new AbortController(); controller.abort();
+    const fallbackReader = vi.fn();
+    const client = new HttpRadarBrowserGateway(vi.fn(async () => { throw new DOMException('aborted', 'AbortError'); }) as unknown as typeof fetch, fallbackReader);
+    await expect(client.trends({ market: 'TW' }, controller.signal)).rejects.toMatchObject({ code: 'request_aborted' });
+    expect(fallbackReader).not.toHaveBeenCalled();
+  });
+
   it('註冊六個固定名稱且全部唯讀無副作用', () => {
     const tools = createRadarWebMcpToolDefinitions(gateway());
     expect(tools.map((tool) => tool.name)).toEqual(['search_radar_trends', 'get_radar_trend', 'search_radar_videos', 'list_radar_sources', 'list_radar_markets', 'list_radar_categories']);
