@@ -1,5 +1,17 @@
 # WebMCP 2026 新增工作紀錄
 
+## 2026-09-02｜獨立熱門雷達通道與 Safari 搜尋修正
+
+- 基準：`b5ccaecaf93570f0499285c2c5d260f51b19785c`。
+- 分支：`competition/webmcp-2026`。
+- 功能Commit：`8a3facbdb1759937cfe630e5887f851bfc07d924`（`fix: preserve radar search in WebKit`）。
+- 新增行為：熱門雷達服務端已提供比賽版專用、唯讀且配額隔離的程式身分；前端在 WebKit 的 Fetch 暫時失敗時，只會以同網域、GET、無授權標頭的 XHR 安全降級讀取同一個比賽版 Pages Function。
+- 使用的WebMCP工具：六個既有唯讀雷達工具沿用同一個伺服器端 Adapter；沒有新增寫入、管理或排程工具。
+- 對應測試：`RadarWebMcpTools.test.tsx`新增 Fetch 失敗→XHR 成功與 Abort 不降級測試；完整回歸為 19 個測試檔、227 項測試全數通過，TypeScript、ESLint、Production Build、npm 高風險稽核與`git diff --check`均通過。
+- 畫面或影片證據：Safari 實測正式網址`https://webmcp-trend-engine-competition.pages.dev/radar-tools`，台灣／上升熱搜／24 小時／前 5 筆成功呈現真實雷達結果；正式部署識別網址為`https://577dadbf.webmcp-trend-engine-competition.pages.dev`。
+- 是否影響正式B版：否。通道不共用 A 版、正式 B 版的 D1、秘密、部署或配額；只讀未命中快取讀取預算獨立。
+- 備註與限制：Safari 不原生支援 WebMCP，僅驗證安全降級的一般網站搜尋；WebMCP 原生工具驗證仍以支援 WebMCP 的評審環境為準。資料不足時仍誠實顯示「正在建立增速基準」，不補假資料。
+
 ## 2026-09-02｜篩選後影音創作交接節點
 
 - 基準：`ad948cbae4f8b4828a85753476f3aebecdec7c87`
