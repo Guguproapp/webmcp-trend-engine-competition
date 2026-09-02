@@ -4,6 +4,7 @@
 
 - 基準：`7444f6b8a1cd95d68e08b4b47aa2195050e8f8e0`
 - 分支：`feature/webmcp-radar-tools`
+- 功能Commit：`c88e250bfcaef5e16080ebd2717f349d5064049d`
 - 新增行為：六個原生唯讀工具、比賽版伺服器代理、單一 `RadarAdapter`、一般網站備援、嚴格 Schema、短期快取與安全錯誤。
 - 對應測試：`RadarAdapter.test.ts`、`RadarWebMcpTools.test.tsx`。
 - 與既有 B 版差異：只透過穩定唯讀 API 讀取熱門雷達，不共用原版 B D1、Token、部署或管理端點。

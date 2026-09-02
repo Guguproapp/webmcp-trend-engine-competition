@@ -25,7 +25,7 @@ PASS - Vite build, public build scan and WebMCP build scan.
 Browser assets: 6 files. Six read-only radar tool names present. Legacy write tool names and browser Secret identifiers absent.
 
 Cloudflare Pages Functions:
-npx wrangler pages functions build functions --outdir /private/tmp/webmcp-radar-functions-build-20260902-v2 --project-directory .
+npx wrangler pages functions build functions --outdir /private/tmp/webmcp-radar-functions-build-20260902-final --project-directory .
 PASS - Worker compiled successfully; each /api/radar route registered once.
 
 Dependency audit:
