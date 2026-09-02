@@ -12,6 +12,7 @@ const publicRoutes = [
   ['/trends/excluded', '已排除主題'],
   ['/trends/rules', '篩選規則'],
   ['/trends/sources', '資料來源'],
+  ['/trends/trend-subscription-fatigue/create', '影音創作工作區'],
 ] as const;
 
 describe('B版公開產品邊界', () => {

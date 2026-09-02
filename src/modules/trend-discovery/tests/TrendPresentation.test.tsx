@@ -52,6 +52,7 @@ describe('RC2熱門精選使用性', () => {
     expect(firstCard).toHaveTextContent(`熱度增速 +${topic.growthRate}%`);
     expect(firstCard).toHaveTextContent('爆紅高潛力');
     expect(firstCard.querySelector('a[href^="/trends/"]')).toHaveTextContent('查看熱度證據');
+    expect(firstCard.querySelector('a[href$="/create"]')).toHaveTextContent('建立影音創作稿');
     expect(firstCard).toHaveTextContent('加入觀察');
   });
 });

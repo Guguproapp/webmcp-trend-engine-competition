@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
+import { Link } from 'react-router-dom';
 import { createRadarWebMcpToolDefinitions } from '../application/createRadarWebMcpToolDefinitions';
 import { HttpRadarBrowserGateway, type RadarBrowserGateway, type RadarGatewayResult, type RadarMarket, type RadarRankingItem, type RadarSort, type RadarSourceHealth, type RadarType } from '../application/RadarBrowserGateway';
 import { registerWebMcpTools } from '../infrastructure/registerWebMcpTools';
@@ -88,7 +89,8 @@ export function RadarToolsPage({ gateway: suppliedGateway }: { gateway?: RadarBr
       <p className={`radar-message message-${state}`} role="status" aria-live="polite">{message || '尚未查詢；可先使用台灣過去24小時前5名。'}</p>
       {result && <div className="radar-result-list">{result.data.length ? result.data.map((item) => {
         const sourceUrl = safeSourceUrl(item.sourceUrl);
-        return <article key={item.topicId}><div><span>#{item.rank}</span><span>{item.marketCode}</span><span>信心 {Math.round(item.confidence * 100)}%</span></div><h3>{item.traditionalTitle ?? item.originalTitle}</h3><p>來源：{item.sourceNames.join('、') || '來源不足'}</p><p>{item.searchGrowth === null && item.videoGrowth === null && item.newsGrowth === null ? '正在建立增速基準' : `增速：${item.searchGrowth ?? item.videoGrowth ?? item.newsGrowth}%`}</p><p>{result.delayed || item.delayed ? `目前顯示最近一次成功資料｜取得：${item.acquiredAt}` : `取得時間：${item.acquiredAt}`}</p>{sourceUrl ? <a href={sourceUrl} target="_blank" rel="noopener noreferrer">查看原始來源</a> : <span className="radar-source-unavailable">原始來源網址不可用</span>}</article>;
+        const creatorParams = new URLSearchParams({ title: item.traditionalTitle ?? item.originalTitle, summary: `來源：${item.sourceNames.join('、') || '來源不足'}；取得時間：${item.acquiredAt}`, sources: String(item.sourceNames.length) });
+        return <article key={item.topicId}><div><span>#{item.rank}</span><span>{item.marketCode}</span><span>信心 {Math.round(item.confidence * 100)}%</span></div><h3>{item.traditionalTitle ?? item.originalTitle}</h3><p>來源：{item.sourceNames.join('、') || '來源不足'}</p><p>{item.searchGrowth === null && item.videoGrowth === null && item.newsGrowth === null ? '正在建立增速基準' : `增速：${item.searchGrowth ?? item.videoGrowth ?? item.newsGrowth}%`}</p><p>{result.delayed || item.delayed ? `目前顯示最近一次成功資料｜取得：${item.acquiredAt}` : `取得時間：${item.acquiredAt}`}</p><div className="radar-result-actions">{sourceUrl ? <a href={sourceUrl} target="_blank" rel="noopener noreferrer">查看原始來源</a> : <span className="radar-source-unavailable">原始來源網址不可用</span>}<Link to={`/trends/${encodeURIComponent(item.topicId)}/create?${creatorParams.toString()}`}>建立影音創作稿</Link></div></article>;
       }) : <div className="radar-empty"><strong>目前沒有符合條件的正式資料</strong><p>系統不會建立假主題或假影片補位。</p></div>}</div>}
       {sources && <div className="radar-source-list">{sources.data.map((source) => <article key={source.sourceCode}><strong>{source.sourceName}</strong><span>{sourceStatusLabels[source.status]}（{source.status}）</span><p>{source.message}</p><small>最後成功：{source.lastSuccessAt ?? '尚無'}</small></article>)}</div>}
     </section>

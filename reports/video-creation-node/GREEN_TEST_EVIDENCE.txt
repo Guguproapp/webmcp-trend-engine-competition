@@ -1,0 +1,26 @@
+篩選後影音創作節點｜GREEN 驗收證據
+日期：2026-09-02（Asia/Taipei）
+分支：feature/video-creation-node
+基準 HEAD：ad948cbae4f8b4828a85753476f3aebecdec7c87
+
+專屬測試：
+  npm test -- --run src/modules/video-creation/tests/LocalVideoCreationPlanner.test.ts src/modules/video-creation/tests/VideoCreationPage.test.tsx
+  Test Files  2 passed (2)
+  Tests  5 passed (5)
+
+完整回歸：
+  npm test -- --run
+  Test Files  19 passed (19)
+  Tests  224 passed (224)
+
+靜態品質：
+  npm run typecheck  PASS
+  npm run lint       PASS（0 warnings）
+  npm run build      PASS
+  git diff --check   PASS
+
+Production Build 掃描：
+  Runway、Kling、Sora、Veo、Midjourney、YOUTUBE_API_KEY、REFRESH_ADMIN_TOKEN、RADAR_PROGRAM_API_TOKEN：查無命中。
+  既有公開 Build 與 WebMCP 邊界掃描皆通過。
+
+本證據只證明本機規則文字交接、UI 與 Build 正常；不代表已呼叫、驗證或付費使用任何影音生成服務。

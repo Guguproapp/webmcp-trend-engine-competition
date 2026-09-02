@@ -81,6 +81,7 @@ describe('熱門雷達唯讀WebMCP工具', () => {
     await waitFor(() => expect(screen.getByText(/安全降級/)).toBeInTheDocument());
     fireEvent.click(screen.getByRole('button', { name: /搜尋雷達/ }));
     expect(await screen.findByRole('heading', { name: '台灣熱門' })).toBeInTheDocument();
+    expect(screen.getByRole('link', { name: '建立影音創作稿' })).toHaveAttribute('href', expect.stringMatching(/^\/trends\/topic-1\/create\?/));
   });
 
   it('一般網站不把非HTTPS外部網址渲染為可點擊連結', async () => {
