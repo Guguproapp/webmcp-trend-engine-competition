@@ -39,6 +39,9 @@ describe('熱門雷達伺服器轉接器', () => {
 
   it('topicId限制格式、長度並阻擋路徑注入', () => {
     expect(validateRadarTopicId('topic-TW_2026.09:abc')).toBe('topic-TW_2026.09:abc');
+    expect(validateRadarTopicId('TW:股東')).toBe('TW:股東');
+    expect(validateRadarTopicId('JP:トレンド')).toBe('JP:トレンド');
+    expect(validateRadarTopicId('KR:인기')).toBe('KR:인기');
     for (const id of ['../admin/settings', 'topic/%2e%2e', '<script>', 'a'.repeat(121), '']) {
       expect(() => validateRadarTopicId(id)).toThrow(RadarAdapterError);
     }

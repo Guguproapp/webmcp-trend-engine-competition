@@ -113,6 +113,9 @@ export interface RadarAdapterOptions {
 }
 
 const allowedQueryKeys = ['market', 'category', 'type', 'hours', 'minConfidence', 'source', 'sort', 'limit'] as const;
+// 熱門雷達的穩定識別碼會以「市場:主題」表示，主題可包含中、日、韓文字。
+// 仍嚴格排除斜線、百分號與空白，避免路徑注入或多段路由。
+const radarTopicIdPattern = /^[A-Za-z0-9\u3400-\u9FFF\u3040-\u30FF\uAC00-\uD7AF][A-Za-z0-9\u3400-\u9FFF\u3040-\u30FF\uAC00-\uD7AF._:-]{0,119}$/u;
 type RadarCachePath = '/trends' | '/videos' | '/sources' | '/markets' | '/categories' | '/trends/:topicId';
 const cacheTtlMilliseconds: Record<RadarCachePath, number> = {
   '/trends': 5 * 60_000,
@@ -177,7 +180,7 @@ export function validateRadarQuery(query: RadarQuery): RadarQuery {
 }
 
 export function validateRadarTopicId(value: string): string {
-  if (typeof value !== 'string' || !/^[A-Za-z0-9][A-Za-z0-9._:-]{0,119}$/u.test(value) || value.includes('..')) {
+  if (typeof value !== 'string' || !radarTopicIdPattern.test(value) || value.includes('..')) {
     throw new RadarAdapterError('invalid_topic_id', 'topicId 不符合允許格式。', 400);
   }
   return value;

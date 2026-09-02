@@ -39,6 +39,13 @@ describe('熱門雷達唯讀WebMCP工具', () => {
     await expect(tool.execute({ market: 'TW', upstream: 'https://evil.example' }, { signal: new AbortController().signal })).rejects.toThrow(/欄位/);
   });
 
+  it('單一主題工具接受安全的亞洲文字主題識別碼，但仍拒絕路徑注入', async () => {
+    const source = gateway(); const tool = createRadarWebMcpToolDefinitions(source)[1];
+    await tool.execute({ topicId: 'TW:股東' }, { signal: new AbortController().signal });
+    expect(source.trend).toHaveBeenCalledWith('TW:股東', expect.any(AbortSignal));
+    await expect(tool.execute({ topicId: '../admin/settings' }, { signal: new AbortController().signal })).rejects.toThrow(/topicId/);
+  });
+
   it('台灣24小時前5名情境傳送正確結構化條件', async () => {
     const source = gateway(); const tool = createRadarWebMcpToolDefinitions(source)[0];
     const output = await tool.execute({ market: 'TW', type: 'search_rising', hours: 24, sort: 'rank', limit: 5 }, { signal: new AbortController().signal });

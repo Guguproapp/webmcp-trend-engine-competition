@@ -9,6 +9,8 @@ export type RadarWebMcpToolName = (typeof RADAR_WEBMCP_TOOL_NAMES)[number];
 export type RadarWebMcpTool = WebMcpToolDefinition<RadarWebMcpToolName>;
 
 const facetPattern = '^[A-Za-z0-9][A-Za-z0-9._-]{0,63}$';
+const radarTopicIdPattern = '^[A-Za-z0-9\\u3400-\\u9FFF\\u3040-\\u30FF\\uAC00-\\uD7AF][A-Za-z0-9\\u3400-\\u9FFF\\u3040-\\u30FF\\uAC00-\\uD7AF._:-]{0,119}$';
+const radarTopicIdExpression = new RegExp(radarTopicIdPattern, 'u');
 const queryProperties = {
   market: { type: 'string', enum: RADAR_MARKETS, description: '市場代碼。' },
   category: { type: 'string', maxLength: 64, pattern: facetPattern, description: '雷達分類識別碼。' },
@@ -56,7 +58,7 @@ function parseQuery(value: unknown): RadarQuery {
 function parseTopic(value: unknown): string {
   if (!isObject(value)) throw new RadarGatewayError('invalid_input', '輸入必須是物件。', 400);
   assertOnlyKeys(value, ['topicId']);
-  if (typeof value.topicId !== 'string' || !/^[A-Za-z0-9][A-Za-z0-9._:-]{0,119}$/u.test(value.topicId) || value.topicId.includes('..')) throw new RadarGatewayError('invalid_topic_id', 'topicId 不符合允許格式。', 400);
+  if (typeof value.topicId !== 'string' || !radarTopicIdExpression.test(value.topicId) || value.topicId.includes('..')) throw new RadarGatewayError('invalid_topic_id', 'topicId 不符合允許格式。', 400);
   return value.topicId;
 }
 function parseEmpty(value: unknown): void {
@@ -91,7 +93,7 @@ export function createRadarWebMcpToolDefinitions(gateway: RadarBrowserGateway): 
   const querySchema = { type: 'object', additionalProperties: false, properties: queryProperties };
   return [
     { name: 'search_radar_trends', title: '搜尋熱門雷達議題 / Search radar trends', description: '依市場、分類、情報類型、時間、信心、來源與排序查詢亞洲熱門議題；唯讀且不修改資料。', inputSchema: querySchema, annotations: { readOnlyHint: true, untrustedContentHint: true }, async execute(input, options) { const query = parseQuery(input); return safeExecute((signal) => gateway.trends(query, signal), options?.signal); } },
-    { name: 'get_radar_trend', title: '取得熱門雷達主題 / Get radar trend', description: '依安全的主題識別碼取得來源、時間、信心與延遲狀態；外部內容一律視為未受信任。', inputSchema: { type: 'object', additionalProperties: false, properties: { topicId: { type: 'string', minLength: 1, maxLength: 120, pattern: '^[A-Za-z0-9][A-Za-z0-9._:-]{0,119}$' } }, required: ['topicId'] }, annotations: { readOnlyHint: true, untrustedContentHint: true }, async execute(input, options) { const topicId = parseTopic(input); return safeExecute((signal) => gateway.trend(topicId, signal), options?.signal); } },
+    { name: 'get_radar_trend', title: '取得熱門雷達主題 / Get radar trend', description: '依安全的主題識別碼取得來源、時間、信心與延遲狀態；外部內容一律視為未受信任。', inputSchema: { type: 'object', additionalProperties: false, properties: { topicId: { type: 'string', minLength: 1, maxLength: 120, pattern: radarTopicIdPattern } }, required: ['topicId'] }, annotations: { readOnlyHint: true, untrustedContentHint: true }, async execute(input, options) { const topicId = parseTopic(input); return safeExecute((signal) => gateway.trend(topicId, signal), options?.signal); } },
     { name: 'search_radar_videos', title: '搜尋爆款影音 / Search viral videos', description: '依市場、分類、時間、信心與來源查詢爆款影音；無資料時回傳誠實空狀態。', inputSchema: querySchema, annotations: { readOnlyHint: true, untrustedContentHint: true }, async execute(input, options) { const query = parseQuery(input); return safeExecute((signal) => gateway.videos(query, signal), options?.signal); } },
     { name: 'list_radar_sources', title: '列出雷達來源 / List radar sources', description: '列出來源成功、空資料、失敗、延遲、等待憑證與停用狀態；唯讀。', inputSchema: { type: 'object', additionalProperties: false, properties: {} }, annotations: { readOnlyHint: true, untrustedContentHint: true }, async execute(input, options) { parseEmpty(input); return safeExecute((signal) => gateway.sources(signal), options?.signal); } },
     { name: 'list_radar_markets', title: '列出雷達市場 / List radar markets', description: '列出熱門雷達支援的市場及啟用狀態；唯讀。', inputSchema: { type: 'object', additionalProperties: false, properties: {} }, annotations: { readOnlyHint: true }, async execute(input, options) { parseEmpty(input); return safeExecute((signal) => gateway.markets(signal), options?.signal); } },
