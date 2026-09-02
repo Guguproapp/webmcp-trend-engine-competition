@@ -186,6 +186,17 @@ export function validateRadarTopicId(value: string): string {
   return value;
 }
 
+/** Cloudflare Pages keeps dynamic route parameters percent-encoded. Decode exactly
+ * once before validation; a double-encoded slash remains a forbidden percent sign. */
+export function decodeRadarTopicIdPathSegment(value: string): string {
+  try {
+    return validateRadarTopicId(decodeURIComponent(value));
+  } catch (error) {
+    if (error instanceof RadarAdapterError) throw error;
+    throw new RadarAdapterError('invalid_topic_id', 'topicId 不符合允許格式。', 400);
+  }
+}
+
 function stableBaseUrl(value?: string): string {
   const normalized = (value?.trim() || STABLE_RADAR_API_BASE_URL).replace(/\/+$/u, '');
   if (normalized !== STABLE_RADAR_API_BASE_URL) throw new RadarAdapterError('invalid_configuration', '熱門雷達服務網址不符合固定契約。', 503);

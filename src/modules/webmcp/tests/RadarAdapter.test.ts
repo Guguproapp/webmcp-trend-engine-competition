@@ -2,6 +2,7 @@ import { describe, expect, it, vi } from 'vitest';
 import {
   RadarAdapter,
   RadarAdapterError,
+  decodeRadarTopicIdPathSegment,
   parseRadarQuery,
   validateRadarTopicId,
   type RadarAdapterEnvironment,
@@ -42,9 +43,12 @@ describe('熱門雷達伺服器轉接器', () => {
     expect(validateRadarTopicId('TW:股東')).toBe('TW:股東');
     expect(validateRadarTopicId('JP:トレンド')).toBe('JP:トレンド');
     expect(validateRadarTopicId('KR:인기')).toBe('KR:인기');
+    expect(decodeRadarTopicIdPathSegment('TW%3A%E8%82%A1%E6%9D%B1')).toBe('TW:股東');
     for (const id of ['../admin/settings', 'topic/%2e%2e', '<script>', 'a'.repeat(121), '']) {
       expect(() => validateRadarTopicId(id)).toThrow(RadarAdapterError);
     }
+    expect(() => decodeRadarTopicIdPathSegment('TW%ZZ')).toThrow(RadarAdapterError);
+    expect(() => decodeRadarTopicIdPathSegment('TW%253A%252Fadmin')).toThrow(RadarAdapterError);
   });
 
   it('只向穩定API送出GET及伺服器Authorization且不回傳Token', async () => {
