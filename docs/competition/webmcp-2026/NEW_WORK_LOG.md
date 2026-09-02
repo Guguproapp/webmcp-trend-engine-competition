@@ -127,3 +127,13 @@
 - 畫面或影片證據：`https://webmcp-trend-engine-competition.pages.dev/agent-workspace`與`evidence/work-package-004/deployment/04-deployment-and-live-check.txt`。
 - 是否影響正式B版：否。
 - 備註與限制：本次部署由宗億於2026-08-31另行明確授權；不使用正式B版Pages、D1或任何正式秘密。線上真人確認成功與撤銷仍須宗億本人在確認卡操作。
+
+### 2026-09-02｜影音創作交接節點正式部署
+
+- Commit：部署基準將在本紀錄提交後固定於本項 Commit。
+- 新增功能：從熱門主題與雷達候選，整理出可複製的前三秒鉤子、旁白、逐鏡分鏡、文字轉影片指令、圖片轉影片動作指令與人工查證提醒；不直接產生、上傳或發布影音。
+- 使用的WebMCP工具：無新增工具；本項是既有唯讀熱門證據流程的下游創作交接。
+- 測試指令與結果：`PASS`；19 個測試檔、224 項測試、TypeScript、ESLint、Production Build、npm 高風險安全稽核與 `git diff --check` 全數通過。
+- 畫面或影片證據：正式部署 `https://webmcp-trend-engine-competition.pages.dev/trends/radar-demo/create`；本次部署識別為 `c4880014-93f2-4000-95b1-90236651481d`，已實測生成與複製完整創作包，Console 無網站錯誤或警告。
+- 是否影響正式B版：否。
+- 備註與限制：本機規則只產生可交給使用者選擇之影音工具的素材，不呼叫付費人工智慧服務。真實雷達資料仍需要比賽版專用的 `RADAR_PROGRAM_API_TOKEN` 由熱門雷達所有者安全設定，絕不借用 A 版或正式 B 版秘密。
