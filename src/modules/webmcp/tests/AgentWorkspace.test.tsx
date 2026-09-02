@@ -3,7 +3,8 @@ import { MemoryRouter } from 'react-router-dom';
 import { describe, expect, it, vi } from 'vitest';
 import { AgentWorkspacePage } from '../presentation/AgentWorkspacePage';
 import type { WebMcpToolDefinition } from '../domain/WebMcpContracts';
-import { humanConfirmationCoordinator, trendDiscoveryService } from '../../../app/services';
+import { trendDiscoveryService } from '../../../app/services';
+import { humanConfirmationCoordinator } from '../legacyServices';
 
 describe('Agent Workspace 代理協作工作區', () => {
   it('原生介面可用時註冊五工具並顯示雙語狀態', async () => {

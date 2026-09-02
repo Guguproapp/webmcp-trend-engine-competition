@@ -2,3 +2,6 @@
 # 不得將實際值提交到 Git，亦不得傳到 React 前端。
 YOUTUBE_API_KEY=
 REFRESH_ADMIN_TOKEN=
+# 熱門雷達使用比賽版自己的唯讀程式Token；正式值只能設在比賽版Cloudflare加密秘密。
+RADAR_API_BASE_URL=https://asia-trend-radar.gugupro-app.workers.dev/api/v1
+RADAR_PROGRAM_API_TOKEN=

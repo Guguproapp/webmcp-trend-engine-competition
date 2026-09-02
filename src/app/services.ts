@@ -5,12 +5,6 @@ import { ApiTrendSourceProvider } from '../modules/trend-discovery/infrastructur
 import { LocalVideoCandidateRepository } from '../modules/trend-discovery/infrastructure/LocalVideoCandidateRepository';
 import { VideoDiscoveryService } from '../modules/trend-discovery/application/VideoDiscoveryService';
 import { LocalRegionalSearchPreferencesRepository } from '../modules/trend-discovery/infrastructure/LocalRegionalSearchPreferencesRepository';
-import { HumanConfirmationCoordinator } from '../modules/webmcp/application/HumanConfirmationCoordinator';
-import { createWebMcpToolDefinitions } from '../modules/webmcp/application/createWebMcpToolDefinitions';
-import { WebMcpActivityStore } from '../modules/webmcp/application/WebMcpActivityStore';
-import { getOrCreateAnonymousSessionId } from '../modules/webmcp/infrastructure/AnonymousWebMcpSession';
-import { LocalWebMcpAuditRepository } from '../modules/webmcp/infrastructure/WebMcpAuditRepository';
-import { TrendDiscoveryWebMcpGateway } from '../modules/webmcp/infrastructure/TrendDiscoveryWebMcpGateway';
 
 const localStorageAdapter = new BrowserStorage();
 
@@ -27,7 +21,3 @@ export const trendDiscoveryService = new TrendDiscoveryService(
   new ApiTrendSourceProvider(), trendTopicRepository, trendWatchlistRepository, trendExclusionRepository,
   trendFilterRuleRepository, trendRefreshLogRepository, trendAuditRepository,
 );
-export const webMcpActivityStore = new WebMcpActivityStore();
-export const webMcpAuditRepository = new LocalWebMcpAuditRepository(localStorageAdapter);
-export const humanConfirmationCoordinator = new HumanConfirmationCoordinator(webMcpAuditRepository, { sessionId: getOrCreateAnonymousSessionId() });
-export const webMcpToolDefinitions = createWebMcpToolDefinitions({ gateway: new TrendDiscoveryWebMcpGateway(trendDiscoveryService), confirmations: humanConfirmationCoordinator, activity: webMcpActivityStore });

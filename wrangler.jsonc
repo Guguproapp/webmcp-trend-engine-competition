@@ -4,6 +4,9 @@
   "pages_build_output_dir": "./dist",
   "compatibility_date": "2026-08-28",
   "compatibility_flags": ["nodejs_compat"],
+  "vars": {
+    "RADAR_API_BASE_URL": "https://asia-trend-radar.gugupro-app.workers.dev/api/v1"
+  },
   "d1_databases": [
     {
       "binding": "TREND_DB",

@@ -1,5 +1,7 @@
 # WebMCP 五工具契約
 
+> 目前正式展示契約已由 [RADAR_TOOLS_SPEC.md](./RADAR_TOOLS_SPEC.md) 取代：六個熱門雷達工具全部唯讀。本文件以下內容保留為比賽版先前「人機確認寫入」實驗的歷史證據，不會載入目前正式 Build。
+
 所有工具都使用原生 `document.modelContext.registerTool()`，具有 `name`、`title`、`description`、`inputSchema`、`execute` 與 `annotations`。工具名稱與參數描述遵守短字數限制，輸出為可序列化的結構化資料。
 
 ## 共通安全規則

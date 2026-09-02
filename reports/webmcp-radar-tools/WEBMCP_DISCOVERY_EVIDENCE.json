@@ -1,0 +1,20 @@
+{
+  "date": "2026-09-02T19:00:00+08:00",
+  "environment": "ChatGPT in-app browser",
+  "url": "http://127.0.0.1:8792/radar-tools",
+  "nativeWebMcpDiscovered": true,
+  "tools": [
+    { "name": "search_radar_trends", "readOnlyHint": true, "untrustedContentHint": true },
+    { "name": "get_radar_trend", "readOnlyHint": true, "untrustedContentHint": true },
+    { "name": "search_radar_videos", "readOnlyHint": true, "untrustedContentHint": true },
+    { "name": "list_radar_sources", "readOnlyHint": true, "untrustedContentHint": true },
+    { "name": "list_radar_markets", "readOnlyHint": true },
+    { "name": "list_radar_categories", "readOnlyHint": true }
+  ],
+  "nativeCalls": {
+    "limit500": "PASS - rejected before upstream request",
+    "adminWriteTool": "PASS - tool not available",
+    "realData": "BLOCKED - competition-only RADAR_PROGRAM_API_TOKEN is not configured"
+  },
+  "secretValuesRecorded": false
+}

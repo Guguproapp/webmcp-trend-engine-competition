@@ -1,0 +1,18 @@
+WebMCP Radar Tools security scan
+Date: 2026-09-02 Asia/Taipei
+
+PASS - Browser Production Build does not contain RADAR_PROGRAM_API_TOKEN identifier or any token value.
+PASS - WebMCP outputs and browser Console contain no Authorization header, Bearer token, Cookie, stack trace, D1 details or local paths.
+PASS - Server adapter accepts only the stable Asia Trend Radar API base URL.
+PASS - Server adapter exposes only GET /trends, /trends/:topicId, /videos, /sources, /markets and /categories.
+PASS - /admin/settings is absent from adapter and WebMCP tools.
+PASS - topicId traversal and unsafe formats are rejected.
+PASS - unknown query keys, unsafe facets, limit > 50 and unsupported markets/types/sorts are rejected.
+PASS - 429 retries are bounded to two retries; timeout is 8 seconds; no infinite retry.
+PASS - stale cache is marked delayed with original acquired time; no cache returns a safe error.
+PASS - external source links are clickable only when HTTPS.
+PASS - npm audit --audit-level=high reports 0 vulnerabilities.
+PASS - private-key, common secret-pattern and tracked-customer-data scans report no findings in first-party files.
+BLOCKED - production Radar data cannot be verified until the competition-only Cloudflare Secret is configured.
+
+No secret values are included in this evidence file.

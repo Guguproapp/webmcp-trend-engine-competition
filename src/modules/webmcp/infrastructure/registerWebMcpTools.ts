@@ -1,7 +1,7 @@
 import type { WebMcpToolDefinition } from '../domain/WebMcpContracts';
 
 interface NativeModelContext {
-  registerTool(tool: WebMcpToolDefinition, options?: { signal?: AbortSignal }): void | Promise<void>;
+  registerTool(tool: WebMcpToolDefinition<string>, options?: { signal?: AbortSignal }): void | Promise<void>;
 }
 
 export interface WebMcpDocument extends Document { modelContext?: NativeModelContext; }
@@ -23,7 +23,7 @@ function stopRegistration(registration: SharedRegistration) {
   if (sharedRegistration === registration) sharedRegistration = null;
 }
 
-export async function registerWebMcpTools({ document, tools }: { document: Document; tools: WebMcpToolDefinition[] }) {
+export async function registerWebMcpTools({ document, tools }: { document: Document; tools: WebMcpToolDefinition<string>[] }) {
   const target = document as WebMcpDocument; const modelContext = target.modelContext;
   if (!modelContext || typeof modelContext.registerTool !== 'function') {
     return { supported: false as const, registeredNames: [] as string[], unregister: () => undefined, document: target };

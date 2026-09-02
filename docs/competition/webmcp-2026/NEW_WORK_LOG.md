@@ -1,5 +1,20 @@
 # WebMCP 2026 新增工作紀錄
 
+## 2026-09-02｜熱門雷達唯讀工具
+
+- 基準：`7444f6b8a1cd95d68e08b4b47aa2195050e8f8e0`
+- 分支：`feature/webmcp-radar-tools`
+- 新增行為：六個原生唯讀工具、比賽版伺服器代理、單一 `RadarAdapter`、一般網站備援、嚴格 Schema、短期快取與安全錯誤。
+- 對應測試：`RadarAdapter.test.ts`、`RadarWebMcpTools.test.tsx`。
+- 與既有 B 版差異：只透過穩定唯讀 API 讀取熱門雷達，不共用原版 B D1、Token、部署或管理端點。
+- RED 證據：`reports/webmcp-radar-tools/RED_TEST_EVIDENCE.txt`。
+- 真正工具呼叫：ChatGPT 內建瀏覽器已真正發現六個工具；`limit=500` 原生呼叫遭拒，未註冊的管理工具無法呼叫。資料型工具已進入安全失敗路徑，但因比賽版 Pages 專用 Secret 尚未設定，真實雷達資料回傳為 `BLOCKED`，未借用其他產品 Token。
+- 畫面證據：`evidence/webmcp-radar-tools/`；瀏覽器與工具證據：`reports/webmcp-radar-tools/`。
+- 完整回歸：17 個測試檔、218 項測試全部通過；TypeScript、ESLint、Production Build、npm 高風險稽核與 Functions 編譯均通過。
+- 未完成限制：真實資料工具輸出仍需宗億將比賽版專用 Token 直接設定到 Cloudflare Secret 後驗證；不含寫入、排程、管理、會員、金流、影音生成或部署。
+
+---
+
 本檔建立時尚未開始任何WebMCP功能施工。後續每一項比賽新增功能都必須在完成後追加一筆紀錄，不得回填成比賽前既有功能。
 
 ## 紀錄格式

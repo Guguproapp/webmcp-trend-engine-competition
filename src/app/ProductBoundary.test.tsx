@@ -5,6 +5,7 @@ import { App } from './App';
 const publicRoutes = [
   ['/', '熱門引擎｜爆紅流量情報服務'],
   ['/guide', '如何探索熱門情報'],
+  ['/radar-tools', '熱門雷達工具 Asia Trend Radar Tools'],
   ['/trends', '爆紅熱門精選'],
   ['/trends/search', '主題搜尋'],
   ['/trends/watchlist', '觀察清單'],

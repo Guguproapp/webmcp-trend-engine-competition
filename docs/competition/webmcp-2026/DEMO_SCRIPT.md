@@ -1,5 +1,7 @@
 # 三分鐘 WebMCP 比賽 DEMO 腳本
 
+> 本腳本是先前五工具實驗的歷史證據。目前評審流程改用六個熱門雷達唯讀工具，請依 [RADAR_DEMO_SCRIPT.md](./RADAR_DEMO_SCRIPT.md) 操作。
+
 ## 事前準備
 
 - 使用 ChatGPT 內建瀏覽器或已啟用 WebMCP 測試功能的相容 Chrome。

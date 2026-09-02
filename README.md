@@ -2,6 +2,8 @@
 
 蒐集正在快速上升的熱門議題，依真實來源證據計算熱度、增速、社會共鳴、跨來源程度、資料信心與風險。
 
+> 本程式庫是獨立的 WebMCP 2026 比賽版，不是正式 B 版工作目錄。比賽新增功能只在 `competition/webmcp-2026` 的後續分支開發，不回寫 A 版或正式 B 版。目前比賽展示入口為 `/radar-tools`，提供六個可由原生 WebMCP 發現的唯讀熱門雷達工具，以及不支援 WebMCP 時仍可使用的一般網站搜尋。
+
 目前介面以正式產品使用情境呈現。Cloudflare Pages Functions透過同網域`/api`取得GDELT與YouTube資料，並以D1保存主題、來源訊號、快照與提供者執行紀錄。搜尋介面將市場地區、情報類型與來源平台分成三個獨立維度；未取得正式權限的平台只提供官方網站輔助或使用者分享入口，不回傳假資料。
 
 正式中性網址：<https://trend-engine-app.pages.dev/>。舊版交付網址`trend-engine-b-review.pages.dev`保留，不刪除或覆蓋。
@@ -39,6 +41,8 @@ npm run lint
 npm run build
 npx wrangler pages dev dist
 ```
+
+熱門雷達正式連線另需在比賽版自己的伺服器環境設定 `RADAR_PROGRAM_API_TOKEN`。未設定時會安全失敗且不使用展示資料；不得借用正式 B 版或熱門雷達管理者憑證。
 
 本機需要 D1 時，先執行 `npx wrangler d1 migrations apply trend-engine-b-review --local`。
 

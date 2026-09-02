@@ -15,8 +15,8 @@ export interface WebMcpToolAnnotations {
 
 export interface WebMcpExecuteOptions { signal: AbortSignal; }
 
-export interface WebMcpToolDefinition {
-  name: WebMcpToolName;
+export interface WebMcpToolDefinition<TName extends string = WebMcpToolName> {
+  name: TName;
   title: string;
   description: string;
   inputSchema: Record<string, unknown>;

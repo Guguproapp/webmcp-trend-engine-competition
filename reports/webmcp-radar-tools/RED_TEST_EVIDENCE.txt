@@ -1,0 +1,12 @@
+WebMCP Radar Tools RED evidence
+Date: 2026-09-02 Asia/Taipei
+Branch: feature/webmcp-radar-tools
+Baseline HEAD: 7444f6b8a1cd95d68e08b4b47aa2195050e8f8e0
+
+Command:
+npm test -- --run src/modules/webmcp/tests/RadarAdapter.test.ts src/modules/webmcp/tests/RadarWebMcpTools.test.tsx
+
+Result before implementation:
+FAIL - 2 test suites could not resolve the intentionally missing RadarAdapter and createRadarWebMcpToolDefinitions modules.
+
+This file records only the expected TDD RED gate. Final GREEN results are recorded separately after implementation.

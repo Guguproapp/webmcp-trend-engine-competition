@@ -1,0 +1,37 @@
+WebMCP Radar Tools GREEN evidence
+Date: 2026-09-02 Asia/Taipei
+Branch: feature/webmcp-radar-tools
+Baseline HEAD: 7444f6b8a1cd95d68e08b4b47aa2195050e8f8e0
+
+Target tests:
+npm test -- --run src/modules/webmcp/tests/RadarAdapter.test.ts src/modules/webmcp/tests/RadarWebMcpTools.test.tsx
+PASS - 2 files, 21 tests.
+
+Full regression:
+npm test -- --run
+PASS - 17 files, 218 tests.
+
+TypeScript:
+npm run typecheck
+PASS - zero errors.
+
+ESLint:
+npm run lint
+PASS - zero errors and zero warnings.
+
+Production Build:
+npm run build
+PASS - Vite build, public build scan and WebMCP build scan.
+Browser assets: 6 files. Six read-only radar tool names present. Legacy write tool names and browser Secret identifiers absent.
+
+Cloudflare Pages Functions:
+npx wrangler pages functions build functions --outdir /private/tmp/webmcp-radar-functions-build-20260902-v2 --project-directory .
+PASS - Worker compiled successfully; each /api/radar route registered once.
+
+Dependency audit:
+npm audit --audit-level=high
+PASS - 0 vulnerabilities.
+
+Formatting:
+git diff --check
+PASS.
