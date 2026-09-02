@@ -4,7 +4,7 @@
 
 - 基準：`ad948cbae4f8b4828a85753476f3aebecdec7c87`
 - 分支：`feature/video-creation-node`
-- 功能Commit：待本機驗收及提交後補上。
+- 功能Commit：`5c863cc8916b207ea846c2d91b4535e093825acf`（`feat: add post-filter video creation handoff`）。
 - 新增行為：由主題卡、主題詳情或熱門雷達候選進入創作工作區；使用者可自行輸入創作方向，或套用安全本機建議格式，再產生前三秒鉤子、旁白、逐鏡分鏡、通用文字轉影片指令、圖片轉影片動作指令與人工查證提醒。
 - 使用的WebMCP工具：無。本功能不新增代理工具，不呼叫付費人工智慧或任何外部影音服務。
 - 對應測試：`LocalVideoCreationPlanner.test.ts`、`VideoCreationPage.test.tsx`，以及既有主題卡、詳情、雷達連結與路由測試。
