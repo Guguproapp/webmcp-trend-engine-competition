@@ -1,5 +1,26 @@
 {
-  "currentRun": {
+  "latestRun": {
+    "date": "2026-09-04T00:56:00+08:00",
+    "environment": "Production Cloudflare Pages and ChatGPT Codex in-app browser",
+    "canonicalUrl": "https://webmcp-trend-engine-competition.pages.dev/radar-tools",
+    "snapshotUrl": "https://1c151157.webmcp-trend-engine-competition.pages.dev/radar-tools",
+    "deployedCommit": "e6d593a1bedc7c8aa739f5484ad0afffda943cd9",
+    "nativeWebMcpDiscovered": true,
+    "nativeToolCount": 6,
+    "websiteAndApiValidation": {
+      "taiwanRising24hLimit5": "PASS - 5 real records",
+      "unicodeTopicId": "PASS - detail round-trip",
+      "videos": "PASS - honest empty result",
+      "sourcesMarketsCategories": "PASS - 14 / 16 / 16",
+      "limit500": "PASS - HTTP 400 invalid_query",
+      "sensitiveUrlUi": "PASS - rejected, cleared, refocused, bilingual warning, fake marker absent from DOM"
+    },
+    "nativeToolInvocationsAfterDeployment": "NOT RUN - website and API calls are not reported as native tool calls",
+    "safariSecurityPatch": "NOT RUN",
+    "secretValuesRecorded": false,
+    "fullEvidence": "evidence/webmcp-radar-tools/2026-09-04-security-deployment.json"
+  },
+  "previousRun": {
     "date": "2026-09-03T16:38:00+08:00",
     "environment": "ChatGPT Codex in-app browser",
     "canonicalUrl": "https://webmcp-trend-engine-competition.pages.dev/radar-tools",
