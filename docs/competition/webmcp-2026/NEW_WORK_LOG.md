@@ -206,13 +206,15 @@
 - 是否影響正式 B 版：否。
 - 備註與限制：英文範圍是 Radar Tools 網頁；原生 WebMCP metadata 維持既有雙語契約。沒有 Push、沒有新建 Pages 專案、沒有讀寫或輪替 Secret。報名尚未執行。
 
-### 2026-09-04｜封關後 Token 與私人網址安全修正
+### 2026-09-04｜封關後 Token 與私人網址安全修正及正式部署
 
-- Commit：本紀錄所在的單一安全修正 Commit（以 `git rev-parse HEAD` 為準）。
+- Commit：`e6d593a1bedc7c8aa739f5484ad0afffda943cd9`。
 - 新增功能：不新增產品功能；增加公開 HTTPS 網址安全門檻、敏感欄位遮蔽、Radar Runtime 白名單、Cache 讀寫再清理、安全錯誤紀錄及 YouTube Header 金鑰傳遞。
 - 使用的 WebMCP 工具：沿用六個既有唯讀雷達工具；名稱、Schema、數量與唯讀註記不變。
 - 測試指令與結果：`PASS`；`npm ci`、20 個測試檔／305 項測試、TypeScript、ESLint、Production Build、`npm audit --audit-level=high`（0 漏洞）與 `git diff --check` 全數通過。
 - 本機資料防護：區域搜尋關鍵字、趨勢 Topics／Filters／Watchlist／Exclusions／Refresh／Audit 與 WebMCP legacy audit 均在新寫入前清理；舊資料讀取時只遷移各 Repository 自有 key，不清除其他命名空間。
 - 畫面或影片證據：本機實測 `/trends/video-search`的1440×900、768×1024、390×844；中英文警告、清空、回焦、無水平溢出與行動導覽不遮擋均通過。`/radar-tools` 中英文各三尺寸無溢出，六張工具卡保留。
+- 正式部署：`PASS`；Cloudflare Pages Production Deployment ID `1c151157-a5a3-4e39-8c11-a0155a7f7f12`，Source `e6d593a`，快照 `https://1c151157.webmcp-trend-engine-competition.pages.dev`，canonical 已更新。
+- 部署後驗證：中英文深層網址 HTTP 200；內建瀏覽器原生發現六個唯讀工具；台灣 24 小時前 5 筆、中文 topicId、來源 14、市場 16、分類 16、影音 0、`limit=500` 回傳 400、敏感影音網址清空與雙語警告均 `PASS`。部署後原生工具逐一呼叫與 Safari 本輪為 `NOT RUN`。
 - 是否影響正式 B 版：否；未讀取或修改 A 版、原版 B、管理端、Secret 或 Production 資料。
-- 備註與限制：只建立本地 Commit，不 Push、不部署、不修改 Devpost。因此現行正式 Live 仍是舊部署，不得宣稱線上已套用修正。
+- 備註與限制：部署由宗億於 2026-09-04 另行明確授權；沒有讀取、顯示或輪替 Secret。交件文件另以 docs Commit 同步 GitHub 與 Devpost，展示影片及圖片不變。

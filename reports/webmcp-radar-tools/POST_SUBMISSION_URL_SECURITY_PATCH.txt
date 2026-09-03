@@ -72,25 +72,25 @@ WebMCP 比賽版｜封關後 Token 與私人網址安全修正報告
     PASS；影音頁 1440×900、768×1024、390×844 無水平溢出；拒絕後清空、回焦、雙語警告、不回顯假敏感值，行動底部導覽未遮擋警告。Radar 中英文各三尺寸均無溢出且保留六張工具卡。Safari 本輪 NOT RUN。
 
 15. WebMCP 功能是否退化
-    PASS；六工具為 search_radar_trends、get_radar_trend、search_radar_videos、list_radar_sources、list_radar_markets、list_radar_categories。自動測試確認名稱、封閉式 Schema、readOnlyHint、中文 topicId、空影音、limit=500 拒絕、不得輸入任意路徑／Shell／憑證，以及無管理工具。本機原生發現六個唯讀工具 PASS；原生真實資料呼叫 NOT RUN（本機 Vite 不含 Pages Functions，且本修正未部署）。
+    PASS；六工具為 search_radar_trends、get_radar_trend、search_radar_videos、list_radar_sources、list_radar_markets、list_radar_categories。自動測試確認名稱、封閉式 Schema、readOnlyHint、中文 topicId、空影音、limit=500 拒絕、不得輸入任意路徑／Shell／憑證，以及無管理工具。Production 內建瀏覽器原生發現六個唯讀工具 PASS；正式網站與 API 的台灣前 5 筆、中文 topicId、影音空資料、來源／市場／分類及 limit=500 拒絕均 PASS。部署後原生工具逐一呼叫本輪 NOT RUN，不以網站 API 呼叫冒充。
 
 16. 是否修改 A 版或原版 B
     否；未讀取、複製或修改。
 
 17. Commit 及完成 HEAD
-    本報告所在的單一安全修正 Commit；完整 SHA 以封關後 git rev-parse HEAD 與最終交付報告為準。
+    安全修正 Commit：e6d593a1bedc7c8aa739f5484ad0afffda943cd9。
 
 18. 是否 Push
-    否。
+    是；安全修正與本次交件文件同步後推送至公開 GitHub origin/main。
 
 19. 是否部署
-    否。正式 Live 仍對應舊部署 source commit 935df99，未套用本機安全修正。
+    PASS。Cloudflare Pages Production Deployment ID：1c151157-a5a3-4e39-8c11-a0155a7f7f12；Source Commit：e6d593a；快照：https://1c151157.webmcp-trend-engine-competition.pages.dev；canonical 中英文網址均已套用安全修正。
 
 20. Git 工作樹狀態
-    完成 Commit 後必須 CLEAN；以最終 git status --short 為準。
+    安全修正 Commit 後 CLEAN；本次交件文件另建立 docs Commit，Push 後再次確認 CLEAN。
 
 21. 尚未驗證的部分
-    NOT RUN：Safari 本輪實機、Production 原生 WebMCP 惡意上游注入、Cloudflare 歷史 Log／Trace、Production D1／Cache 既有資料、加密 Secret 實際值、圖片 OCR。這些需要管理或部署授權，本輪不讀取。
+    NOT RUN：Safari 本輪實機、部署後原生工具逐一呼叫、Production 惡意上游注入、Cloudflare 歷史 Log／Trace、Production D1／Cache 既有資料、加密 Secret 實際值、圖片 OCR。這些需要額外環境或敏感資料權限，本輪不讀取。
 
 22. 明確停止點
-    本機安全修正、驗證與單一 Commit 完成即停止；不 Push、不部署、不修改 GitHub、Devpost 或展示影片。
+    安全修正已部署；完成交件文件 Commit、Push GitHub main 與 Devpost 文字同步後停止。不重做展示影片或圖片，不接觸其他產品、管理資料或 Secret。

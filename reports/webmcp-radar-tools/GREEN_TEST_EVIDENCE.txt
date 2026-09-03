@@ -65,3 +65,25 @@ PASS.
 Cloudflare Pages deployment
 PASS - existing project webmcp-trend-engine-competition.
 Snapshot: https://dbdfe5e6.webmcp-trend-engine-competition.pages.dev
+
+Post-submission URL and secret safety closeout
+Date: 2026-09-04 Asia/Taipei
+Security implementation HEAD: e6d593a1bedc7c8aa739f5484ad0afffda943cd9
+
+npm ci
+PASS - 282 packages installed; audit reported 0 vulnerabilities.
+
+npm test
+PASS - 20 files, 305 tests.
+
+npm run typecheck / npm run lint / npm run build / npm audit --audit-level=high / git diff --check
+PASS - all gates passed; lint had 0 warnings and audit had 0 vulnerabilities.
+
+Production secret scan
+PASS - no high-confidence secret value, private key, API key pattern, or signed private URL found.
+
+Cloudflare Pages security deployment
+PASS - Deployment ID 1c151157-a5a3-4e39-8c11-a0155a7f7f12; Source e6d593a.
+Snapshot: https://1c151157.webmcp-trend-engine-competition.pages.dev
+Canonical ZH and EN, five Taiwan results, Unicode topic ID, empty videos, 14 sources, 16 markets, 16 categories, limit=500 rejection, six native tools discovered, and sensitive-URL UI rejection all passed.
+Safari and post-deployment native tool-by-tool invocation: NOT RUN.

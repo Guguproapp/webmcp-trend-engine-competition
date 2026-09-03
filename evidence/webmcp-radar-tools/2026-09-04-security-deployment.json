@@ -1,0 +1,35 @@
+{
+  "verifiedAt": "2026-09-04T00:56:00+08:00",
+  "branch": "competition/webmcp-2026",
+  "deployedCommit": "e6d593a1bedc7c8aa739f5484ad0afffda943cd9",
+  "deploymentId": "1c151157-a5a3-4e39-8c11-a0155a7f7f12",
+  "snapshotUrl": "https://1c151157.webmcp-trend-engine-competition.pages.dev",
+  "canonicalZh": "https://webmcp-trend-engine-competition.pages.dev/radar-tools",
+  "canonicalEn": "https://webmcp-trend-engine-competition.pages.dev/radar-tools?lang=en",
+  "results": {
+    "deployment": "PASS",
+    "canonicalZhHttp": 200,
+    "canonicalEnHttp": 200,
+    "nativeWebMcpDiscovery": "PASS - six read-only tools",
+    "nativeToolInvocationsAfterDeployment": "NOT RUN",
+    "taiwanRising24hLimit5": "PASS - 5 real records",
+    "unicodeTopicId": "PASS - detail round-trip",
+    "videos": "PASS - honest empty result, 0 records",
+    "sources": "PASS - 14 records",
+    "markets": "PASS - 16 records",
+    "categories": "PASS - 16 records",
+    "limit500": "PASS - HTTP 400 invalid_query",
+    "sensitiveUrlUi": "PASS - rejected, cleared, refocused, bilingual warning, fake marker absent from DOM",
+    "managementSurface": "PASS - no management WebMCP tool; similar URL returned SPA HTML, not a management API",
+    "highConfidenceSecretScan": "NOT FOUND"
+  },
+  "notRun": [
+    "Safari security-patch validation",
+    "post-deployment native tool-by-tool invocation",
+    "malicious production upstream injection",
+    "Cloudflare historical logs and traces",
+    "production D1 and cache contents",
+    "actual encrypted secret values"
+  ],
+  "secretValuesRecorded": false
+}

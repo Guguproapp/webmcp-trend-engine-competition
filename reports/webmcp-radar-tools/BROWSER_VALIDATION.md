@@ -92,3 +92,13 @@ Canonical：`https://webmcp-trend-engine-competition.pages.dev/radar-tools`
 - Safari：英文 UI、同條件 5 筆網站搜尋、深層 reload 均 `PASS`；Safari 顯示 `WebMCP unavailable — website search still works`，原生 WebMCP 因此為 `NOT RUN`。
 - 1440×900、768×1024、390×844：`PASS`；均無水平溢出，平板與手機 CTA 位於首屏。
 - 截圖 SHA-256：desktop results `918c425de37bc75997e24033585f5ef8e616dc8e852fc7dd83ccf91959869add`；tablet `a7e2c7038c1a64efb7f90409554251b26ba6a6512a0d61bf0a09e79e7cca7852`；mobile `457e1f76bc4358d06ec67b0bfc601af810d9c066efd475b6d0b91e6dab846aea`；Safari `b787c67bab872c3c92ed38937526a738b1d7ae91a7be4daea49bd25d597345ee`。
+
+## Security deployment validation｜2026-09-04 00:47–00:56
+
+- 驗證基準：`e6d593a1bedc7c8aa739f5484ad0afffda943cd9`。
+- Deployment：`1c151157-a5a3-4e39-8c11-a0155a7f7f12`；快照 `https://1c151157.webmcp-trend-engine-competition.pages.dev`。
+- 中文／英文 canonical 深層網址：`PASS`，HTTP 200。
+- 內建瀏覽器原生工具發現：`PASS`，六個工具均為 `readOnlyHint=true`。
+- 一般網站台灣近 24 小時前 5 筆：`PASS`，顯示 5 筆真實資料。
+- 敏感網址 UI：`PASS`，輸入含明確假 `access_token` 的 YouTube 網址後，欄位清空、焦點返回、指定中英文警告顯示，假值未出現在 DOM。
+- Safari 新安全版：`NOT RUN`；部署後原生工具逐一呼叫亦為 `NOT RUN`。

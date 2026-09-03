@@ -44,3 +44,20 @@ Safari 一般網站已於 2026-09-03 15:43–15:45 在本任務全新的 Private
 | 管理端 | PASS：沒有暴露管理工具；管理 API 直接呼叫維持 NOT RUN |
 | Safari 英文一般 UI 與網站搜尋 | PASS：真實 5 筆與 reload 通過 |
 | Safari 原生 WebMCP | NOT RUN：Safari 明確顯示不支援，不冒充 PASS |
+
+## Post-submission security deployment｜2026-09-04
+
+| 情境 | 結果 |
+|---|---|
+| Production 部署 | PASS：Deployment `1c151157-a5a3-4e39-8c11-a0155a7f7f12`，Source `e6d593a` |
+| 中英文深層網址 | PASS：canonical 與部署快照均 HTTP 200 |
+| 原生 WebMCP 發現 | PASS：正式站發現六個唯讀工具；逐一原生呼叫本輪 NOT RUN |
+| 台灣 24 小時前 5 筆 | PASS：一般網站與 API 均回傳 5 筆真實資料 |
+| 中文 topicId | PASS：找到中文識別碼並完成詳情 round-trip |
+| sources／markets／categories | PASS：14／16／16 |
+| videos 無資料 | PASS：0 筆誠實空資料 |
+| `limit=500` | PASS：HTTP 400、`invalid_query` |
+| 敏感網址 | PASS：正式站拒絕、清空、回焦並顯示指定中英文警告 |
+| 管理端 | PASS：無管理工具；相似網址只回 SPA HTML，不是管理 API |
+| 高信心秘密掃描 | NOT FOUND：正式 API 回應 0 命中 |
+| Safari 新安全版 | NOT RUN |

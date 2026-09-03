@@ -16,7 +16,7 @@
 - YouTube API Key 只透過伺服器端 `x-goog-api-key` Header 傳送，不放在 URL Query；此做法依循 [Google API Key 安全建議](https://docs.cloud.google.com/docs/authentication/api-keys-best-practices)。
 - 錯誤記錄只保留固定事件與安全錯誤代碼，不記錄原始例外文字。
 - 區域搜尋偏好及各 Trend Repository 的新寫入會先清理；舊 Topics、Filters、Watchlist、Exclusions、Refresh、Audit 與 WebMCP audit 在讀取時只遷移其自有 key。敏感搜尋 query 直接清空，WebMCP audit 只保留既定八個欄位。
-- 原風險已由假值測試重現，但未發現真實 Secret 已洩漏。本次只完成本機修正與 Commit，沒有 Push、部署、讀取 Secret 或清理 Production D1／Cache。
+- 原風險已由假值測試重現，但未發現真實 Secret 已洩漏。修正 Commit `e6d593a` 已部署至比賽版 Cloudflare Pages；部署過程沒有讀取、顯示或輪替 Secret，也沒有清理 Production D1／Cache。
 
 ## 寫入保護
 
@@ -62,4 +62,4 @@
 
 - 瀏覽器本機隔離是以個別瀏覽器 Profile／Origin 為單位；同一 Profile 的多位真人不應共用公開 DEMO 裝置。未來公開部署前若要多人共用同一裝置，需另建比賽版匿名伺服器 Session。
 - WebMCP 是演進中的草案。瀏覽器未提供原生 `document.modelContext` 時，只能驗證安全降級，不能宣稱原生工具完成。
-- 本輪不部署，因此不會使用正式 Cloudflare、D1 或秘密變數。
+- 安全修正已部署至比賽版正式 Cloudflare Pages；部署後網站、API 與原生工具發現已驗證。Safari、原生工具逐一呼叫及惡意上游注入本輪仍為 `NOT RUN`，且未讀取正式 D1、Cache、Log／Trace 或秘密值。
