@@ -10,6 +10,10 @@ Open the English judging interface:
 
 Use ChatGPT's in-app browser or a compatible browser with native WebMCP support to discover and call the tools. Browsers without native WebMCP support can still use the visible read-only website search.
 
+Watch the public 2:26 demo with English narration and English/Traditional Chinese captions:
+
+<https://youtu.be/AzmVt_3NpQE>
+
 ## WebMCP tools
 
 - `search_radar_trends`: search trend signals with typed market, category, time, confidence, source, and sorting inputs.

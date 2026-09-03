@@ -11,8 +11,8 @@
 - [x] MIT license selected and added locally.
 - [ ] Public GitHub, GitLab, or Bitbucket repository created and verified.
 - [ ] Repository license detected at the top of the public repository page.
-- [ ] Public YouTube demo uploaded, with English voice and bilingual captions.
-- [ ] Demo verified to be shorter than three minutes.
+- [x] Public YouTube demo uploaded, with English voice and bilingual captions: <https://youtu.be/AzmVt_3NpQE>.
+- [x] Demo verified to be shorter than three minutes (YouTube displays 2:26).
 - [ ] Devpost thumbnail and gallery uploaded.
 - [ ] Final Devpost submission verified as `Submitted` before the deadline.
 
@@ -30,7 +30,7 @@
 - [x] No management tool or management route is part of the public tool surface.
 - [x] No background music or third-party stock media planned.
 - [ ] Public repository and full history rechecked immediately before push.
-- [ ] Final video checked for unrelated tabs, notifications, personal data, credentials, and third-party material.
+- [x] Final video checked for unrelated tabs, notifications, personal data, credentials, and third-party material.
 - [ ] Final Devpost fields checked for confidential or internal-only information.
 
 ## Freeze
