@@ -7,7 +7,7 @@ import { trendDiscoveryService } from '../../../app/services';
 import { humanConfirmationCoordinator } from '../legacyServices';
 import type { WebMcpToolDefinition } from '../domain/WebMcpContracts';
 import { getOrCreateAnonymousSessionId } from '../infrastructure/AnonymousWebMcpSession';
-import { LocalWebMcpAuditRepository } from '../infrastructure/WebMcpAuditRepository';
+import { LocalWebMcpAuditRepository, WEBMCP_AUDIT_STORAGE_KEY } from '../infrastructure/WebMcpAuditRepository';
 import { AgentWorkspacePage } from '../presentation/AgentWorkspacePage';
 
 describe('WebMCP 安全與生命週期', () => {
@@ -57,6 +57,33 @@ describe('WebMCP 安全與生命週期', () => {
     expect(storage.getItem('other-product.data')).toBe('keep');
     expect(Object.keys(repository.list('session-safe')[0]).sort()).toEqual(['confirmedAt', 'id', 'requestedAt', 'result', 'sessionId', 'toolName', 'trendId', 'undone'].sort());
     expect(JSON.stringify(repository.list('session-safe'))).not.toMatch(/prompt|cookie|token|conversation/i);
+  });
+
+  it('稽核寫入會移除未知欄位並遮蔽固定欄位中的敏感內容', () => {
+    const storage = new MemoryStorage(); const marker = 'NOT_A_REAL_SECRET';
+    const repository = new LocalWebMcpAuditRepository(storage);
+    repository.append({ id: 'audit-1', toolName: 'exclude_trend', trendId: `token=${marker}`, requestedAt: '2026-08-30T00:00:00Z', confirmedAt: null, result: 'cancelled', undone: false, sessionId: 'session-safe', prompt: marker, cookie: marker, url: `https://files.example.test/a?signature=${marker}` } as never);
+    const raw = storage.getItem(WEBMCP_AUDIT_STORAGE_KEY) ?? '';
+    const entry = repository.list('session-safe')[0];
+    expect(raw).not.toContain(marker);
+    expect(Object.keys(entry).sort()).toEqual(['confirmedAt', 'id', 'requestedAt', 'result', 'sessionId', 'toolName', 'trendId', 'undone'].sort());
+    expect(entry.trendId).toBe('token=[redacted]');
+    repository.update('audit-1', { result: `token=${marker}` as never, undone: true });
+    expect(repository.list('session-safe')[0]).toMatchObject({ result: 'cancelled', undone: true });
+    expect(storage.getItem(WEBMCP_AUDIT_STORAGE_KEY)).not.toContain(marker);
+  });
+
+  it('讀取舊稽核資料時安全遷移且不影響其他Session或儲存命名空間', () => {
+    const storage = new MemoryStorage(); const marker = 'NOT_A_REAL_SECRET'; storage.setItem('other-product.data', 'keep');
+    storage.setItem(WEBMCP_AUDIT_STORAGE_KEY, JSON.stringify([
+      { id: 'audit-legacy', toolName: 'exclude_trend', trendId: `Bearer ${marker}`, requestedAt: '2026-08-30T00:00:00Z', confirmedAt: null, result: 'failed', undone: false, sessionId: 'session-safe', authorization: marker },
+      { id: 'audit-other', toolName: 'add_trend_to_watchlist', trendId: 'trend-other', requestedAt: '2026-08-30T00:00:00Z', confirmedAt: null, result: 'confirmed', undone: false, sessionId: 'session-other' },
+    ]));
+    const repository = new LocalWebMcpAuditRepository(storage);
+    expect(repository.list('session-safe')).toHaveLength(1);
+    expect(repository.list('session-other')).toHaveLength(1);
+    expect(storage.getItem(WEBMCP_AUDIT_STORAGE_KEY)).not.toContain(marker);
+    expect(storage.getItem('other-product.data')).toBe('keep');
   });
 
   it('寫入工具Schema不接受網址、HTML、程式碼、批次或代理確認欄位', () => {

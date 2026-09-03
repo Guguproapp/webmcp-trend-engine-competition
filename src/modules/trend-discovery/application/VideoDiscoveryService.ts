@@ -1,6 +1,7 @@
 import { normalizeVideoUrl, type SourceAcquisitionMethod, type VideoCandidate, type VideoCandidateMetrics } from '../domain/VideoDiscovery';
 import { inferYouTubeContentForm, type SpecificMarketRegion, type VideoContentForm } from '../domain/RegionalDiscovery';
 import type { VideoCandidateRepository } from './VideoCandidateRepository';
+import { redactSensitiveText } from '../../../shared/security/PublicUrlSafety';
 
 export interface ImportVideoCandidateInput {
   url: string;
@@ -32,18 +33,21 @@ export class VideoDiscoveryService {
     const snapshot = hasMetrics(metrics) ? [{ ...metrics, capturedAt:timestamp, source:'user_provided' as const }] : [];
     const inferredContentForm = normalized.platform === 'youtube' ? inferYouTubeContentForm(input.url) : 'short_video';
     const selectedContentForm = input.contentForm && input.contentForm !== 'unknown' ? input.contentForm : inferredContentForm;
+    const safeTitle = redactSensitiveText(input.title.trim());
+    const safeAuthor = redactSensitiveText(input.author?.trim() ?? '');
+    const safeNotes = redactSensitiveText(input.notes?.trim() ?? '');
     const candidate: VideoCandidate = existing ? {
-      ...existing, originalUrl:input.url.trim(), title:input.title.trim() || existing.title,
-      author:input.author?.trim() || existing.author, acquisitionMethod:input.acquisitionMethod,
-      notes:input.notes?.trim() || existing.notes, updatedAt:timestamp, snapshots:[...existing.snapshots, ...snapshot],
+      ...existing, originalUrl:normalized.originalUrl, normalizedUrl:normalized.normalizedUrl, title:safeTitle || existing.title,
+      author:safeAuthor || existing.author, acquisitionMethod:input.acquisitionMethod,
+      notes:safeNotes || existing.notes, updatedAt:timestamp, snapshots:[...existing.snapshots, ...snapshot],
       region:input.region ?? existing.region ?? 'taiwan', intelligenceType:'insufficient_evidence',
       contentForm:normalized.platform==='youtube'
         ? selectedContentForm === 'unknown' ? existing.contentForm ?? 'unknown' : selectedContentForm
         : existing.contentForm ?? 'short_video',
     } : {
-      id:crypto.randomUUID(), platform:normalized.platform, originalUrl:input.url.trim(), normalizedUrl:normalized.normalizedUrl,
-      title:input.title.trim() || '尚未命名的影音候選', author:input.author?.trim() ?? '', acquiredAt:timestamp, updatedAt:timestamp,
-      acquisitionMethod:input.acquisitionMethod, evidenceConfidence:'low', verified:false, notes:input.notes?.trim() ?? '', snapshots:snapshot,
+      id:crypto.randomUUID(), platform:normalized.platform, originalUrl:normalized.originalUrl, normalizedUrl:normalized.normalizedUrl,
+      title:safeTitle || '尚未命名的影音候選', author:safeAuthor, acquiredAt:timestamp, updatedAt:timestamp,
+      acquisitionMethod:input.acquisitionMethod, evidenceConfidence:'low', verified:false, notes:safeNotes, snapshots:snapshot,
       region:input.region ?? 'taiwan', intelligenceType:'insufficient_evidence',
       contentForm:selectedContentForm,
     };

@@ -1,0 +1,96 @@
+WebMCP 比賽版｜封關後 Token 與私人網址安全修正報告
+日期：2026-09-04（Asia/Taipei）
+工作包：WP-WEBMCP-POSTSUBMIT-URL-SECRET-SAFETY-2026-09-04-01（含 A1、A2、A3 更正）
+
+1. 修改前分支及 HEAD
+   competition/webmcp-2026，67c9d6205f2082c9c4ecdb7b097c631c0169ff8a。
+
+2. 工作樹原始狀態
+   CLEAN；無使用者未提交修改。
+
+3. 是否確認敏感資料風險
+   CONFIRMED：以明確假值重現敏感 URL 進入 localStorage、Radar Cache 與 WebMCP 回應的可能性；區域搜尋關鍵字、其他 Trend Repository 與 legacy WebMCP audit 也存在同類資料邊界風險。NOT FOUND：未發現真實 Token、API Key 或 Private Key 已洩漏。
+
+4. 風險位置
+   影音 URL 匯入與本機儲存、區域搜尋關鍵字、Trend Topics／Filters／Watchlist／Exclusions／Refresh／Audit、legacy WebMCP audit、Radar 上游資料與 Cache、WebMCP structuredContent、GDELT 外部網址、YouTube API Key Query、一般趨勢 API 錯誤 Console。
+
+5. 修正方式
+   共用公開 HTTPS 驗證器；拒絕帳密、Fragment、自訂連接埠、指定敏感 Query、X-Amz-* 與 X-Goog-*；先驗證再儲存；舊候選、區域搜尋偏好與 Trend Repository 讀取時安全遷移；敏感篩選 query 清空；legacy WebMCP audit 固定八欄白名單並移除未知欄位；Radar 端點欄位白名單；Cache v2 與讀取再清理；Browser Gateway 及 WebMCP 二次遮蔽；金鑰改用 x-goog-api-key Header；Console 改固定代碼。
+
+6. 修改檔案
+   functions/_shared/providers.ts
+   functions/_shared/radar/RadarAdapter.ts
+   functions/api/trends/index.ts
+   scripts/verify-public-build.mjs
+   scripts/verify-webmcp-build.mjs
+   src/shared/security/PublicUrlSafety.ts
+   src/shared/security/PublicUrlSafety.test.ts
+   src/modules/trend-discovery/application/VideoDiscoveryService.ts
+   src/modules/trend-discovery/domain/VideoDiscovery.ts
+   src/modules/trend-discovery/infrastructure/LocalRegionalSearchPreferencesRepository.ts
+   src/modules/trend-discovery/infrastructure/LocalTrendRepositories.ts
+   src/modules/trend-discovery/infrastructure/LocalVideoCandidateRepository.ts
+   src/modules/trend-discovery/presentation/TrendDetailPage.tsx
+   src/modules/trend-discovery/presentation/VideoSearchPage.tsx
+   src/modules/trend-discovery/tests/FourPlatformVideoDiscovery.test.tsx
+   src/modules/trend-discovery/tests/RealTrendSources.test.tsx
+   src/modules/trend-discovery/tests/RegionalSearchVideoSources.test.tsx
+   src/modules/trend-discovery/tests/TrendRepositories.test.ts
+   src/modules/webmcp/application/RadarBrowserGateway.ts
+   src/modules/webmcp/application/createRadarWebMcpToolDefinitions.ts
+   src/modules/webmcp/infrastructure/WebMcpAuditRepository.ts
+   src/modules/webmcp/presentation/RadarToolsPage.tsx
+   src/modules/webmcp/tests/RadarAdapter.test.ts
+   src/modules/webmcp/tests/RadarWebMcpTools.test.tsx
+   src/modules/webmcp/tests/WebMcpSecurity.test.tsx
+   docs/competition/webmcp-2026/SECURITY_MODEL.md
+   docs/competition/webmcp-2026/NEW_WORK_LOG.md
+   reports/webmcp-radar-tools/POST_SUBMISSION_URL_SECURITY_PATCH.txt
+
+7. 新增測試
+   公開 HTTPS 通過；HTTP、帳密、Fragment、token、access_token、refresh_token、api_key、apikey、signature、sig、X-Amz-*、GoogleAccessId 及大小寫變形拒絕；零儲存；區域搜尋關鍵字與所有自有 localStorage 舊資料安全遷移；legacy audit 八欄白名單；UI 清空、回焦、雙語且不回顯；GDELT 過濾；YouTube Header；Radar 白名單與 Cache；WebMCP 遮蔽；安全 Console。
+
+8. 測試數量及結果
+   PASS；20 個測試檔，305 項全數通過。
+
+9. TypeScript
+   PASS；npm run typecheck。
+
+10. Lint
+    PASS；npm run lint，0 warnings。
+
+11. Build
+    PASS；npm run build，包含公開 Build 與 WebMCP Build 驗證。
+
+12. npm audit
+    PASS；npm audit --audit-level=high，0 vulnerabilities。
+
+13. Production Build 秘密掃描
+    PASS；高信心秘密值／私人簽名 URL 命中 0 檔。一般關鍵字命中來自安全說明、運行期阻擋清單、表單屬性及樣式名，人工判讀非憑證值。
+
+14. 中英文畫面驗收
+    PASS；影音頁 1440×900、768×1024、390×844 無水平溢出；拒絕後清空、回焦、雙語警告、不回顯假敏感值，行動底部導覽未遮擋警告。Radar 中英文各三尺寸均無溢出且保留六張工具卡。Safari 本輪 NOT RUN。
+
+15. WebMCP 功能是否退化
+    PASS；六工具為 search_radar_trends、get_radar_trend、search_radar_videos、list_radar_sources、list_radar_markets、list_radar_categories。自動測試確認名稱、封閉式 Schema、readOnlyHint、中文 topicId、空影音、limit=500 拒絕、不得輸入任意路徑／Shell／憑證，以及無管理工具。本機原生發現六個唯讀工具 PASS；原生真實資料呼叫 NOT RUN（本機 Vite 不含 Pages Functions，且本修正未部署）。
+
+16. 是否修改 A 版或原版 B
+    否；未讀取、複製或修改。
+
+17. Commit 及完成 HEAD
+    本報告所在的單一安全修正 Commit；完整 SHA 以封關後 git rev-parse HEAD 與最終交付報告為準。
+
+18. 是否 Push
+    否。
+
+19. 是否部署
+    否。正式 Live 仍對應舊部署 source commit 935df99，未套用本機安全修正。
+
+20. Git 工作樹狀態
+    完成 Commit 後必須 CLEAN；以最終 git status --short 為準。
+
+21. 尚未驗證的部分
+    NOT RUN：Safari 本輪實機、Production 原生 WebMCP 惡意上游注入、Cloudflare 歷史 Log／Trace、Production D1／Cache 既有資料、加密 Secret 實際值、圖片 OCR。這些需要管理或部署授權，本輪不讀取。
+
+22. 明確停止點
+    本機安全修正、驗證與單一 Commit 完成即停止；不 Push、不部署、不修改 GitHub、Devpost 或展示影片。

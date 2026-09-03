@@ -63,6 +63,18 @@ describe('熱門雷達唯讀WebMCP工具', () => {
     await expect(tool.execute({ market: 'TW', upstream: 'https://evil.example' }, { signal: new AbortController().signal })).rejects.toThrow(/欄位/);
   });
 
+  it('WebMCP結構化與文字回應不保留敏感欄位或網址', async () => {
+    const marker='NOT_A_REAL_SECRET'; const source=gateway();
+    vi.mocked(source.trends).mockResolvedValueOnce({
+      ...(await source.trends({market:'TW'})),
+      summary:`source https://example.com/file?access_token=${marker}`,
+      data:[{...(await source.trends({market:'TW'})).data[0],sourceUrl:`https://example.com/file?X-Amz-Signature=${marker}`,token:marker} as never],
+    });
+    const output=await createRadarWebMcpToolDefinitions(source)[0].execute({market:'TW'},{signal:new AbortController().signal});
+    expect(JSON.stringify(output)).not.toContain(marker);
+    expect((output.structuredContent as {data:Array<Record<string,unknown>>}).data[0]).not.toHaveProperty('token');
+  });
+
   it('單一主題工具接受安全的亞洲文字主題識別碼，但仍拒絕路徑注入', async () => {
     const source = gateway(); const tool = createRadarWebMcpToolDefinitions(source)[1];
     await tool.execute({ topicId: 'TW:股東' }, { signal: new AbortController().signal });
@@ -186,6 +198,18 @@ describe('熱門雷達唯讀WebMCP工具', () => {
     fireEvent.click(screen.getByRole('button', { name: /搜尋雷達/ }));
     expect(await screen.findByText('原始來源網址不可用')).toBeInTheDocument();
     expect(screen.queryByRole('link', { name: '查看原始來源' })).not.toBeInTheDocument();
+  });
+
+  it('一般網站不把簽名參數或Fragment網址渲染為可點擊連結', async () => {
+    const marker='NOT_A_REAL_SECRET'; const source=gateway();
+    vi.mocked(source.trends).mockResolvedValueOnce({
+      ...(await source.trends({market:'TW'})),
+      data:[{...(await source.trends({market:'TW'})).data[0],sourceUrl:`https://example.com/file?signature=${marker}#private`}],
+    });
+    render(<MemoryRouter><RadarToolsPage gateway={source}/></MemoryRouter>);
+    fireEvent.click(screen.getByRole('button',{name:/搜尋雷達/}));
+    expect(await screen.findByText('原始來源網址不可用')).toBeInTheDocument();
+    expect(document.body.textContent).not.toContain(marker);
   });
 
   it('工具被原生介面發現且頁面卸載後移除', async () => {

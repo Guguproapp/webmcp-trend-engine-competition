@@ -26,6 +26,13 @@ for (const legacyWriteTool of ['add_trend_to_watchlist', 'exclude_trend']) {
   if (builtAssets.includes(legacyWriteTool)) throw new Error(`本輪正式Build不得註冊舊寫入工具：${legacyWriteTool}`);
 }
 if (/AIza[0-9A-Za-z_-]{30,}/u.test(builtAssets)) throw new Error('WebMCP正式Build疑似包含Google API金鑰。');
+for (const pattern of [
+  /-----BEGIN [A-Z ]*PRIVATE KEY-----/u,
+  /\bgh[opusr]_[0-9A-Za-z]{30,}\b/u,
+  /\bAKIA[0-9A-Z]{16}\b/u,
+  /\beyJ[A-Za-z0-9_-]{12,}\.[A-Za-z0-9_-]{12,}\.[A-Za-z0-9_-]{12,}\b/u,
+  /https:\/\/[^\s"'<>]+[?&](?:token|access_token|refresh_token|api_key|apikey|secret|password|authorization|cookie|session_id|signature|sig|x-amz-[^=]*)=[^\s&"'<>]+/iu,
+]) if (pattern.test(builtAssets)) throw new Error(`WebMCP正式Build疑似包含密密值或私人簽名網址：${pattern.source}`);
 if (/document\s*\.\s*modelContext\s*=/u.test(source)) throw new Error('不得以自建屬性假冒原生WebMCP。');
 if (!source.includes("additionalProperties: false")) throw new Error('WebMCP工具輸入必須拒絕未定義欄位。');
 

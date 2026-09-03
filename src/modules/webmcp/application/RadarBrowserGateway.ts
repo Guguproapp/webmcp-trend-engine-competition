@@ -1,3 +1,5 @@
+import { sanitizeUntrustedPublicData } from '../../../shared/security/PublicUrlSafety';
+
 export const RADAR_MARKETS = ['TW', 'HK', 'MO', 'JP', 'KR', 'SG', 'MY', 'TH', 'ID', 'VN', 'PH', 'IN', 'US', 'GB', 'AU', 'CN'] as const;
 export const RADAR_TYPES = ['search_rising', 'video_viral', 'dual', 'news_rising'] as const;
 export const RADAR_SORTS = ['rank', 'freshness', 'growth'] as const;
@@ -157,7 +159,8 @@ export class HttpRadarBrowserGateway implements RadarBrowserGateway {
         throw new RadarGatewayError('network_error', '熱門雷達目前無法連線，請稍後再試。', 503);
       }
     }
-    const body = await response.json().catch(() => ({})) as Partial<RadarGatewayResult<T>> & ErrorEnvelope;
+    const rawBody = await response.json().catch(() => ({}));
+    const body = sanitizeUntrustedPublicData(rawBody) as Partial<RadarGatewayResult<T>> & ErrorEnvelope;
     if (!response.ok || body.ok !== true) throw new RadarGatewayError(body.error?.code ?? 'request_failed', body.error?.message ?? '熱門雷達查詢暫時無法完成。', response.status);
     const count = typeof body.actualCount === 'number' ? body.actualCount : Array.isArray(body.data) ? body.data.length : body.data ? 1 : 0;
     const delayed = body.delayed === true;

@@ -5,7 +5,7 @@ import { MemoryStorage } from '../../../shared/infrastructure/storage';
 import { DISCOVERY_SOURCE_REGISTRY } from '../application/PlatformSourceRegistry';
 import { VideoDiscoveryService } from '../application/VideoDiscoveryService';
 import {
-  canCompareYouTubeBenchmarks, classifyIntelligence, inferYouTubeContentForm, INTELLIGENCE_TYPES, isRegionalResultMatch,
+  canCompareYouTubeBenchmarks, classifyIntelligence, DEFAULT_REGIONAL_SEARCH_FILTERS, inferYouTubeContentForm, INTELLIGENCE_TYPES, isRegionalResultMatch,
   MARKET_REGIONS, REGION_DEFAULT_PLATFORMS, type RegionalSearchFilters,
 } from '../domain/RegionalDiscovery';
 import { normalizeVideoUrl, VIDEO_PLATFORMS } from '../domain/VideoDiscovery';
@@ -81,6 +81,23 @@ describe('保存、網址與公開介面', () => {
     expect(repository.read()).toMatchObject({keyword:'物價',region:'macau',platforms:['youtube','douyin'],youtubeContentForm:'long_video'});
     expect(storage.getItem(REGIONAL_SEARCH_STORAGE_KEY)).toContain('macau');
     expect(storage.getItem('trend-engine.filters.v1')).toBe('keep');
+  });
+
+  it.each(['token=NOT_A_REAL_SECRET','Bearer NOT_A_REAL_SECRET','https://example.com/file?signature=NOT_A_REAL_SECRET'])('敏感搜尋字不原樣寫入瀏覽器儲存：%s', (keyword) => {
+    const storage=new MemoryStorage(); storage.setItem('unrelated.owner.data','keep');
+    const repository=new LocalRegionalSearchPreferencesRepository(storage);
+    repository.save({...DEFAULT_REGIONAL_SEARCH_FILTERS,keyword});
+    expect(storage.getItem(REGIONAL_SEARCH_STORAGE_KEY)).not.toContain('NOT_A_REAL_SECRET');
+    expect(repository.read().keyword).toBe('');
+    expect(storage.getItem('unrelated.owner.data')).toBe('keep');
+  });
+
+  it('舊儲存的敏感搜尋字會清空但保留其他篩選條件', () => {
+    const storage=new MemoryStorage(); const repository=new LocalRegionalSearchPreferencesRepository(storage);
+    storage.setItem(REGIONAL_SEARCH_STORAGE_KEY,JSON.stringify({...DEFAULT_REGIONAL_SEARCH_FILTERS,keyword:'accessToken=NOT_A_REAL_SECRET',region:'hong_kong',platforms:['youtube','xiaohongshu'],timeRangeHours:72}));
+    const result=repository.read();
+    expect(result).toMatchObject({keyword:'',region:'hong_kong',platforms:['youtube','xiaohongshu'],timeRangeHours:72});
+    expect(storage.getItem(REGIONAL_SEARCH_STORAGE_KEY)).not.toContain('NOT_A_REAL_SECRET');
   });
 
   it.each([

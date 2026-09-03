@@ -15,6 +15,19 @@ describe('真實來源提供者',()=>{
     const fetcher=vi.fn(async()=>response(gdeltPayload)); const result=await collectGdelt(fetcher as typeof fetch,now);
     expect(result.state).toBe('enabled'); expect(result.records).toHaveLength(1); expect(result.records[0]).toMatchObject({provider:'gdelt',publisher:'news.example',url:'https://news.example/tw/1',viewCount:null}); expect(JSON.stringify(result.records)).not.toContain('content');
   });
+  it('GDELT只保留不含私人存取資訊的公開HTTPS網址',async()=>{
+    const marker='NOT_A_REAL_SECRET';
+    const articles=[gdeltPayload.articles[0],
+      {...gdeltPayload.articles[0],url:'http://news.example/tw/http'},
+      {...gdeltPayload.articles[0],url:'https://user:password@news.example/tw/private'},
+      {...gdeltPayload.articles[0],url:`https://news.example/tw/private?access_token=${marker}`},
+      {...gdeltPayload.articles[0],url:`https://news.example/tw/private?X-Amz-Signature=${marker}`},
+      {...gdeltPayload.articles[0],url:`https://news.example/tw/private#${marker}`},
+    ];
+    const fetcher=vi.fn(async()=>response({articles})); const result=await collectGdelt(fetcher as typeof fetch,now);
+    expect(result.records.map((item)=>item.url)).toEqual(['https://news.example/tw/1']);
+    expect(JSON.stringify(result)).not.toContain(marker);
+  });
   it('GDELT相同網址的預設連接埠變體只保存一次',async()=>{const fetcher=vi.fn(async()=>response({articles:[gdeltPayload.articles[0],{...gdeltPayload.articles[0],url:'https://news.example:443/tw/1'}]}));const result=await collectGdelt(fetcher as typeof fetch,now);expect(result.records).toHaveLength(1);expect(result.records[0].url).toBe('https://news.example/tw/1');});
   it('HTTPS失敗時只向GDELT官方備援網址取公開索引',async()=>{
     const fetcher=vi.fn().mockRejectedValueOnce(new Error('certificate')).mockResolvedValueOnce(response(gdeltPayload)); const result=await collectGdelt(fetcher as typeof fetch,now);
@@ -23,11 +36,12 @@ describe('真實來源提供者',()=>{
   it('GDELT單次查詢限制100筆以控制來源負載與伺服器CPU',async()=>{const fetcher=vi.fn(async(input:RequestInfo|URL)=>{void input;return response(gdeltPayload);});await collectGdelt(fetcher as typeof fetch,now);expect(String(fetcher.mock.calls[0][0])).toContain('maxrecords=100');});
   it('YouTube先搜尋識別碼再批次取得官方統計',async()=>{
     const fetcher=vi.fn().mockResolvedValueOnce(response({items:[{id:{videoId:'abc123'}}]})).mockResolvedValueOnce(response({items:[{id:'abc123',snippet:{title:'台灣午餐價格討論',channelTitle:'測試頻道',publishedAt:'2026-08-28T22:00:00Z'},statistics:{viewCount:'1200',likeCount:'80',commentCount:'12'}}]}));
-    const result=await collectYouTube(fetcher as typeof fetch,'secret',['午餐 價格'],now);
+    const apiKey='EXAMPLE_NOT_A_SECRET'; const result=await collectYouTube(fetcher as typeof fetch,apiKey,['午餐 價格'],now);
     expect(result.state).toBe('enabled'); expect(result.records[0]).toMatchObject({provider:'youtube',viewCount:1200,likeCount:80,commentCount:12}); expect(String(fetcher.mock.calls[0][0])).toContain('regionCode=TW'); expect(String(fetcher.mock.calls[0][0])).toContain('relevanceLanguage=zh-Hant');
+    for(const call of fetcher.mock.calls){expect(String(call[0])).not.toContain(apiKey);expect(new URL(String(call[0])).searchParams.has('key')).toBe(false);expect((call[1] as RequestInit).headers).toMatchObject({'x-goog-api-key':apiKey});}
   });
   it('沒有YouTube金鑰時回報等待授權且不發出請求',async()=>{const fetcher=vi.fn();const result=await collectYouTube(fetcher as typeof fetch,undefined,['測試'],now);expect(result.state).toBe('waiting_authorization');expect(fetcher).not.toHaveBeenCalled();});
-  it('YouTube配額用完會明確標示且不建立假資料',async()=>{const fetcher=vi.fn(async()=>response({error:{errors:[{reason:'quotaExceeded'}],message:'quota'}},403));const result=await collectYouTube(fetcher as typeof fetch,'secret',['測試'],now);expect(result.state).toBe('quota_exceeded');expect(result.records).toHaveLength(0);});
+  it('YouTube配額用完會明確標示且不建立假資料',async()=>{const fetcher=vi.fn(async()=>response({error:{errors:[{reason:'quotaExceeded'}],message:'quota'}},403));const result=await collectYouTube(fetcher as typeof fetch,'EXAMPLE_NOT_A_SECRET',['測試'],now);expect(result.state).toBe('quota_exceeded');expect(result.records).toHaveLength(0);});
 });
 
 const record=(overrides:Partial<RealSourceRecord>={}):RealSourceRecord=>({provider:'gdelt',originalId:'one',title:'台灣午餐價格變化引發討論',publisher:'a.example',url:'https://a.example/one',publishedAt:'2026-08-28T23:00:00Z',fetchedAt:now.toISOString(),viewCount:null,likeCount:null,commentCount:null,reportCount:null,language:'Chinese',sourceCountry:'Taiwan',...overrides});

@@ -16,6 +16,7 @@ import { LocalVideoCandidateRepository, VIDEO_CANDIDATE_STORAGE_KEY } from '../i
 import appSource from '../../../app/App.tsx?raw';
 import servicesSource from '../../../app/services.ts?raw';
 import buildVerifier from '../../../../scripts/verify-public-build.mjs?raw';
+import { PRIVATE_URL_WARNING_EN, PRIVATE_URL_WARNING_ZH } from '../../../shared/security/PublicUrlSafety';
 
 const clock = (() => {
   const times = ['2026-08-29T01:00:00.000Z', '2026-08-29T02:00:00.000Z', '2026-08-29T03:00:00.000Z'];
@@ -108,6 +109,20 @@ describe('影音網址安全與正規化', () => {
   ])('拒絕危險或偽造網址：%s', (url) => {
     expect(() => normalizeVideoUrl(url)).toThrow(VideoUrlValidationError);
   });
+
+  it.each([
+    'https://youtu.be/abcDEF123?token=NOT_A_REAL_TOKEN',
+    'https://youtu.be/abcDEF123?ACCESS_TOKEN=NOT_A_REAL_TOKEN',
+    'https://youtu.be/abcDEF123?refresh_token=NOT_A_REAL_TOKEN',
+    'https://youtu.be/abcDEF123?api_key=NOT_A_REAL_KEY',
+    'https://youtu.be/abcDEF123?apikey=NOT_A_REAL_KEY',
+    'https://youtu.be/abcDEF123?signature=NOT_A_REAL_SIGNATURE',
+    'https://youtu.be/abcDEF123?sig=NOT_A_REAL_SIGNATURE',
+    'https://youtu.be/abcDEF123?X-Amz-Credential=NOT_A_REAL_CREDENTIAL',
+    'https://youtu.be/abcDEF123#NOT_A_REAL_FRAGMENT',
+  ])('平台網址含私人存取資訊時拒絕且不回顯：%s', (url) => {
+    expect(() => normalizeVideoUrl(url)).toThrow(PRIVATE_URL_WARNING_ZH);
+  });
 });
 
 describe('本機影音候選保存與增速保護', () => {
@@ -144,11 +159,60 @@ describe('本機影音候選保存與增速保護', () => {
     expect(storage.getItem(VIDEO_CANDIDATE_STORAGE_KEY)).toContain('ABC_123');
   });
 
+  it('敏感網址不會寫入瀏覽器儲存', () => {
+    const storage = new MemoryStorage();
+    const setItem = vi.spyOn(storage, 'setItem');
+    const { service } = createService(storage);
+    expect(() => service.importCandidate({ url:'https://youtu.be/abcDEF123?access_token=NOT_A_REAL_TOKEN', title:'候選', acquisitionMethod:'user_shared' })).toThrow(PRIVATE_URL_WARNING_ZH);
+    expect(setItem).not.toHaveBeenCalled();
+    expect(storage.getItem(VIDEO_CANDIDATE_STORAGE_KEY)).toBeNull();
+  });
+
+  it('影片標題、作者與備註中的敏感賦值在儲存前遮蔽', () => {
+    const marker='NOT_A_REAL_SECRET'; const storage=new MemoryStorage(); const {service}=createService(storage);
+    const result=service.importCandidate({url:'https://youtu.be/abcDEF123',title:`token=${marker}`,author:`Bearer ${marker}`,notes:`https://example.com/file?signature=${marker}`,acquisitionMethod:'user_shared'});
+    expect(JSON.stringify(result)).not.toContain(marker);
+    expect(storage.getItem(VIDEO_CANDIDATE_STORAGE_KEY)).not.toContain(marker);
+  });
+
+  it('舊儲存中的敏感候選會在顯示前移除', () => {
+    const storage = new MemoryStorage();
+    const marker = 'NOT_A_REAL_TOKEN';
+    storage.setItem(VIDEO_CANDIDATE_STORAGE_KEY, JSON.stringify([{ id:'unsafe', platform:'youtube', originalUrl:`https://youtu.be/abcDEF123?token=${marker}`, normalizedUrl:`https://youtu.be/abcDEF123?token=${marker}`, title:'unsafe', author:'', acquiredAt:'2026-08-30T00:00:00Z', updatedAt:'2026-08-30T00:00:00Z', acquisitionMethod:'user_shared', evidenceConfidence:'low', verified:false, notes:'', snapshots:[] }]));
+    const repository = new LocalVideoCandidateRepository(storage);
+    expect(repository.list()).toEqual([]);
+    expect(storage.getItem(VIDEO_CANDIDATE_STORAGE_KEY)).not.toContain(marker);
+  });
+
+  it('舊儲存的文字欄位與多餘敏感欄位在顯示前清理', () => {
+    const storage=new MemoryStorage(); const marker='NOT_A_REAL_SECRET';
+    storage.setItem(VIDEO_CANDIDATE_STORAGE_KEY,JSON.stringify([{id:'legacy',platform:'youtube',originalUrl:'https://www.youtube.com/watch?v=abcDEF123',normalizedUrl:'https://www.youtube.com/watch?v=abcDEF123',title:`token=${marker}`,author:'safe',acquiredAt:'2026-08-30T00:00:00Z',updatedAt:'2026-08-30T00:00:00Z',acquisitionMethod:'user_shared',evidenceConfidence:'low',verified:false,notes:`Bearer ${marker}`,snapshots:[],authorization:marker}]));
+    const result=new LocalVideoCandidateRepository(storage).list();
+    expect(JSON.stringify(result)).not.toContain(marker);
+    expect(storage.getItem(VIDEO_CANDIDATE_STORAGE_KEY)).not.toContain(marker);
+  });
+
   it('頁面對偽造網域顯示中文錯誤且不保存', async () => {
     render(<MemoryRouter initialEntries={['/trends/video-search']}><App /></MemoryRouter>);
     fireEvent.change(await screen.findByLabelText('影音網址（必填）'), { target:{ value:'https://tiktok.com.evil.example/video/123' } });
     fireEvent.click(screen.getByRole('button', { name:'加入影音候選' }));
     expect(await screen.findByText('只接受八個指定影音平台的官方網域。')).toBeInTheDocument();
+  });
+
+  it('頁面拒絕敏感網址後清空、回焦、雙語提示且不洩漏至Console', async () => {
+    const marker='NOT_A_REAL_TOKEN'; const consoleSpy=vi.spyOn(console,'error').mockImplementation(()=>undefined);
+    render(<MemoryRouter initialEntries={['/trends/video-search']}><App /></MemoryRouter>);
+    const input=await screen.findByLabelText('影音網址（必填）');
+    fireEvent.change(input,{target:{value:`https://youtu.be/abcDEF123?access_token=${marker}`}});
+    fireEvent.click(screen.getByRole('button',{name:'加入影音候選'}));
+    expect(await screen.findByRole('alert')).toHaveTextContent(PRIVATE_URL_WARNING_ZH);
+    expect(screen.getByRole('alert')).toHaveTextContent(PRIVATE_URL_WARNING_EN);
+    expect(input).toHaveValue('');
+    await waitFor(()=>expect(input).toHaveFocus());
+    expect(document.body.textContent).not.toContain(marker);
+    expect(window.localStorage.getItem(VIDEO_CANDIDATE_STORAGE_KEY)).toBeNull();
+    expect(JSON.stringify(consoleSpy.mock.calls)).not.toContain(marker);
+    consoleSpy.mockRestore();
   });
 });
 

@@ -4,6 +4,7 @@ import { createRadarWebMcpToolDefinitions } from '../application/createRadarWebM
 import { HttpRadarBrowserGateway, type RadarBrowserGateway, type RadarGatewayResult, type RadarMarket, type RadarRankingItem, type RadarSort, type RadarSourceHealth, type RadarType } from '../application/RadarBrowserGateway';
 import { registerWebMcpTools } from '../infrastructure/registerWebMcpTools';
 import { radarLocaleFromSearch, radarPageCopy, radarToolEnglish } from './radarLocale';
+import { safePublicHttpsUrl } from '../../../shared/security/PublicUrlSafety';
 
 const defaultSearchQuery = {
   market: 'TW' as RadarMarket,
@@ -12,15 +13,6 @@ const defaultSearchQuery = {
   sort: 'rank' as RadarSort,
   limit: 5,
 };
-
-function safeSourceUrl(value: string): string | null {
-  try {
-    const url = new URL(value);
-    return url.protocol === 'https:' ? url.toString() : null;
-  } catch {
-    return null;
-  }
-}
 
 function englishDateTime(value: string): string {
   return new Intl.DateTimeFormat('en', { dateStyle: 'medium', timeStyle: 'short', timeZone: 'Asia/Taipei' }).format(new Date(value));
@@ -144,7 +136,7 @@ export function RadarToolsPage({ gateway: suppliedGateway }: { gateway?: RadarBr
       </form>
       <div id="radar-search-results"><p className={`radar-message message-${state}`} role="status" aria-live="polite">{message || c.idle}</p></div>
       {result && <div className="radar-result-list">{result.data.length ? result.data.map((item) => {
-        const sourceUrl = safeSourceUrl(item.sourceUrl);
+        const sourceUrl = safePublicHttpsUrl(item.sourceUrl);
         const visibleSources=english?item.sourceNames.map(englishSourceName):item.sourceNames;
         const creatorParams = new URLSearchParams({ title: item.traditionalTitle ?? item.originalTitle, summary: `來源：${item.sourceNames.join('、') || '來源不足'}；取得時間：${item.acquiredAt}`, sources: String(item.sourceNames.length) });
         return <article key={item.topicId}><div><span>#{item.rank}</span><span>{item.marketCode}</span><span>{c.dataConfidence} {Math.round(item.confidence * 100)}%</span></div><h3>{item.traditionalTitle ?? item.originalTitle}</h3><p>{c.sources}: {visibleSources.join(english?', ':'、') || c.limitedSource}</p><p>{item.searchGrowth === null && item.videoGrowth === null && item.newsGrowth === null ? c.baseline : `${c.growth}: ${item.searchGrowth ?? item.videoGrowth ?? item.newsGrowth}%`}</p><p>{result.delayed || item.delayed ? `${c.latest}: ${formatTime(item.acquiredAt)}` : `${c.retrieved}: ${formatTime(item.acquiredAt)}`}</p><div className="radar-result-actions">{sourceUrl ? <a href={sourceUrl} target="_blank" rel="noopener noreferrer">{c.original}</a> : <span className="radar-source-unavailable">{c.originalUnavailable}</span>}<Link to={`/trends/${encodeURIComponent(item.topicId)}/create?${creatorParams.toString()}`}>{c.create}</Link></div></article>;

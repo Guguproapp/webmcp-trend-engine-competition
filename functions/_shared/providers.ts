@@ -1,3 +1,5 @@
+import { safePublicHttpsUrl } from '../../src/shared/security/PublicUrlSafety';
+
 export interface RealSourceRecord {
   provider: 'gdelt' | 'youtube';
   originalId: string;
@@ -85,9 +87,9 @@ export async function collectGdelt(fetcher: typeof fetch, now = new Date()): Pro
     const publishedAt = parseGdeltDate(article.seendate);
     const title = article.title?.replace(/\s+/gu, ' ').trim();
     if (!article.url || !title || !publishedAt) return [];
-    const parsedUrl = new URL(article.url);
-    if (parsedUrl.protocol !== 'https:' && parsedUrl.protocol !== 'http:') return [];
-    const canonicalUrl = parsedUrl.toString();
+    const canonicalUrl = safePublicHttpsUrl(article.url);
+    if (!canonicalUrl) return [];
+    const parsedUrl = new URL(canonicalUrl);
     if (seen.has(canonicalUrl)) return [];
     seen.add(canonicalUrl);
     return [{
@@ -111,8 +113,8 @@ interface YouTubeVideoResponse {
 
 function count(value: string | undefined) { const parsed = Number(value); return Number.isFinite(parsed) ? parsed : null; }
 
-async function youtubeJson<T extends { error?: { errors?: Array<{ reason?: string }>; message?: string } }>(fetcher: typeof fetch, url: URL) {
-  const response = await fetcher(url, { headers: { accept: 'application/json' } });
+async function youtubeJson<T extends { error?: { errors?: Array<{ reason?: string }>; message?: string } }>(fetcher: typeof fetch, url: URL, apiKey: string) {
+  const response = await fetcher(url, { headers: { accept: 'application/json', 'x-goog-api-key': apiKey } });
   const length = Number(response.headers.get('content-length') ?? '0');
   if (length > MAX_PROVIDER_BYTES) throw new Error('YouTube回應超過安全大小限制');
   const payload = await response.json() as T;
@@ -132,14 +134,14 @@ export async function collectYouTube(fetcher: typeof fetch, apiKey: string | und
     const videoIds = new Set<string>();
     for (const query of queries.slice(0, 3)) {
       const url = new URL('https://www.googleapis.com/youtube/v3/search');
-      url.search = new URLSearchParams({ key:apiKey, part:'snippet', q:query, type:'video', regionCode:'TW', relevanceLanguage:'zh-Hant', publishedAfter:new Date(now.getTime()-24*3600000).toISOString(), maxResults:'10', order:'date' }).toString();
-      const payload = await youtubeJson<YouTubeSearchResponse>(fetcher, url);
+      url.search = new URLSearchParams({ part:'snippet', q:query, type:'video', regionCode:'TW', relevanceLanguage:'zh-Hant', publishedAfter:new Date(now.getTime()-24*3600000).toISOString(), maxResults:'10', order:'date' }).toString();
+      const payload = await youtubeJson<YouTubeSearchResponse>(fetcher, url, apiKey);
       payload.items?.forEach((item) => { if (item.id?.videoId) videoIds.add(item.id.videoId); });
     }
     if (!videoIds.size) return { provider:'youtube', state:'enabled', message:'YouTube官方資料運作正常，本次沒有符合條件的新影片。', records:[], attemptedAt, completedAt:new Date().toISOString(), nextRetryAt:null, errorType:null };
     const detailsUrl = new URL('https://www.googleapis.com/youtube/v3/videos');
-    detailsUrl.search = new URLSearchParams({ key:apiKey, part:'snippet,statistics', id:[...videoIds].join(',') }).toString();
-    const details = await youtubeJson<YouTubeVideoResponse>(fetcher, detailsUrl);
+    detailsUrl.search = new URLSearchParams({ part:'snippet,statistics', id:[...videoIds].join(',') }).toString();
+    const details = await youtubeJson<YouTubeVideoResponse>(fetcher, detailsUrl, apiKey);
     const records = (details.items ?? []).flatMap((video): RealSourceRecord[] => video.id && video.snippet?.title && video.snippet.publishedAt ? [{
       provider:'youtube', originalId:video.id, title:video.snippet.title, publisher:video.snippet.channelTitle ?? 'YouTube頻道',
       url:`https://www.youtube.com/watch?v=${encodeURIComponent(video.id)}`, publishedAt:new Date(video.snippet.publishedAt).toISOString(), fetchedAt:attemptedAt,

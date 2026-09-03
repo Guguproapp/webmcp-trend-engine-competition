@@ -97,6 +97,7 @@ const forbiddenProductionData = [
   'MockTrendSourceProvider',
   'YOUTUBE_API_KEY',
   'REFRESH_ADMIN_TOKEN',
+  'RADAR_PROGRAM_API_TOKEN',
   'BEGIN PRIVATE KEY',
   'PRIVATE KEY',
   '四平台全部自動搜尋',
@@ -104,6 +105,15 @@ const forbiddenProductionData = [
   '八平台全部自動搜尋',
   '八大平台全部自動搜尋',
   'YouTube 需完成官方金鑰設定後才會啟用',
+];
+
+const highConfidenceSecretPatterns = [
+  /-----BEGIN [A-Z ]*PRIVATE KEY-----/u,
+  /\bAIza[0-9A-Za-z_-]{30,}\b/u,
+  /\bgh[opusr]_[0-9A-Za-z]{30,}\b/u,
+  /\bAKIA[0-9A-Z]{16}\b/u,
+  /\beyJ[A-Za-z0-9_-]{12,}\.[A-Za-z0-9_-]{12,}\.[A-Za-z0-9_-]{12,}\b/u,
+  /https:\/\/[^\s"'<>]+[?&](?:token|access_token|refresh_token|api_key|apikey|secret|password|authorization|cookie|session_id|signature|sig|x-amz-[^=]*)=[^\s&"'<>]+/iu,
 ];
 
 async function filesUnder(directory) {
@@ -187,6 +197,9 @@ const builtAssets = (await Promise.all(files.filter((file)=>/\.(?:html|js)$/u.te
 const publicBuiltText = builtAssets.replaceAll('isMock', '');
 for (const phrase of forbiddenProductionData) {
   if (builtAssets.includes(phrase)) throw new Error(`公開Build包含展示資料或秘密識別：${phrase}`);
+}
+for (const pattern of highConfidenceSecretPatterns) {
+  if (pattern.test(builtAssets)) throw new Error(`公開Build疑似包含密密值或私人簽名網址：${pattern.source}`);
 }
 for (const phrase of forbiddenPublicProductCopy) {
   if (publicBuiltText.includes(phrase)) throw new Error(`公開Build包含非正式產品文字：${phrase}`);

@@ -8,6 +8,16 @@
 4. 真人授權：觀察或排除的最終確認，只能由網站 UI 觸發。
 5. 本機資料：個別瀏覽器命名空間，沒有正式 D1、客戶資料或個資。
 
+## 2026-09-04 封關後敏感網址防護
+
+- 所有使用者匯入與外部來源網址共用 `PublicUrlSafety`：只允許不含帳密、Fragment、自訂連接埠或敏感 Query 的公開 HTTPS 網址。
+- 含 Token、API Key、Session、Cookie、簽名參數、`X-Amz-*`、`X-Goog-*` 或私人存取資訊的網址在儲存、快取、顯示與 WebMCP 輸出前被拒絕或清理。
+- Radar Adapter 依端點使用 Runtime 欄位白名單，Cache namespace 升為 `radar:v2`，讀取快取時仍再次清理。
+- YouTube API Key 只透過伺服器端 `x-goog-api-key` Header 傳送，不放在 URL Query；此做法依循 [Google API Key 安全建議](https://docs.cloud.google.com/docs/authentication/api-keys-best-practices)。
+- 錯誤記錄只保留固定事件與安全錯誤代碼，不記錄原始例外文字。
+- 區域搜尋偏好及各 Trend Repository 的新寫入會先清理；舊 Topics、Filters、Watchlist、Exclusions、Refresh、Audit 與 WebMCP audit 在讀取時只遷移其自有 key。敏感搜尋 query 直接清空，WebMCP audit 只保留既定八個欄位。
+- 原風險已由假值測試重現，但未發現真實 Secret 已洩漏。本次只完成本機修正與 Commit，沒有 Push、部署、讀取 Secret 或清理 Production D1／Cache。
+
 ## 寫入保護
 
 - 代理呼叫只建立 `pending`；`perform()` 只存在於真人確認處理路徑。

@@ -1,9 +1,10 @@
-import { useEffect, useMemo, useState, type FormEvent } from 'react';
+import { useEffect, useMemo, useRef, useState, type FormEvent } from 'react';
 import { Link } from 'react-router-dom';
 import { regionalSearchPreferencesRepository, trendDiscoveryService, videoDiscoveryService } from '../../../app/services';
 import {
   buildPlatformSearchLinks, SOURCE_ACQUISITION_LABELS, VIDEO_CONFIDENCE_LABELS, VIDEO_PLATFORM_LABELS,
   VIDEO_PLATFORMS, type SourceAcquisitionMethod, type VideoCandidate, type VideoPlatform,
+  SensitiveVideoUrlValidationError, VideoUrlValidationError,
 } from '../domain/VideoDiscovery';
 import {
   classifyIntelligence, inferYouTubeContentForm, INTELLIGENCE_TYPES, INTELLIGENCE_TYPE_LABELS,
@@ -13,6 +14,9 @@ import {
 } from '../domain/RegionalDiscovery';
 import { resolveDiscoverySources, type DiscoverySourceState } from '../application/PlatformSourceRegistry';
 import { formatDateTime, formatNumber, growthPresentation } from './formatters';
+import {
+  PRIVATE_URL_WARNING_EN, PRIVATE_URL_WARNING_ZH, safePublicHttpsUrl,
+} from '../../../shared/security/PublicUrlSafety';
 
 type ImportMethod = Extract<SourceAcquisitionMethod, 'official_site_assisted' | 'user_shared' | 'search_engine_candidate'>;
 const importMethods: ImportMethod[] = ['user_shared', 'official_site_assisted', 'search_engine_candidate'];
@@ -33,6 +37,7 @@ export function VideoSearchPage() {
   const [ready,setReady]=useState(Boolean(trendDiscoveryService.listAll().length)); const [,setRevision]=useState(0);
   const [referenceNow] = useState(() => Date.now());
   const [url,setUrl]=useState(''); const [title,setTitle]=useState(''); const [author,setAuthor]=useState(''); const [notes,setNotes]=useState('');
+  const urlInputRef=useRef<HTMLInputElement>(null); const [urlError,setUrlError]=useState(''); const [privateUrlRejected,setPrivateUrlRejected]=useState(false);
   const [candidateRegion,setCandidateRegion]=useState<SpecificMarketRegion>(initial.region==='all'?'taiwan':initial.region);
   const [candidateContentForm,setCandidateContentForm]=useState<VideoContentForm>('unknown');
   const [method,setMethod]=useState<ImportMethod>('user_shared'); const [metrics,setMetrics]=useState(emptyMetric); const [notice,setNotice]=useState(''); const [error,setError]=useState('');
@@ -71,13 +76,19 @@ export function VideoSearchPage() {
   }
 
   function submitImport(event:FormEvent) {
-    event.preventDefault(); setError(''); setNotice('');
+    event.preventDefault(); setError(''); setUrlError(''); setPrivateUrlRejected(false); setNotice('');
     try {
       const numeric=Object.fromEntries(Object.entries(metrics).map(([key,value])=>[key,value===''?null:Number(value)]));
       const result=videoDiscoveryService.importCandidate({url,title,author,notes,acquisitionMethod:method,metrics:numeric,region:candidateRegion,contentForm:candidateContentForm});
       setNotice(result.merged?'已合併重複網址並更新候選資料。':'已加入影音候選；尚未驗證，不會直接計算爆紅增速。');
       setUrl('');setTitle('');setAuthor('');setNotes('');setMetrics(emptyMetric);setCandidateContentForm('unknown');setRevision((value)=>value+1);
-    } catch (caught) { setError(caught instanceof Error?caught.message:'影音網址匯入失敗。'); }
+    } catch (caught) {
+      if (caught instanceof SensitiveVideoUrlValidationError) {
+        setUrl(''); setPrivateUrlRejected(true); setUrlError(PRIVATE_URL_WARNING_ZH);
+      } else if (caught instanceof VideoUrlValidationError) setUrlError(caught.message);
+      else setUrlError('影音網址匯入失敗。');
+      requestAnimationFrame(()=>urlInputRef.current?.focus());
+    }
   }
 
   return <section className="trend-page video-search-page">
@@ -101,11 +112,11 @@ export function VideoSearchPage() {
 
     <details className="web-search-assist"><summary>使用搜尋引擎尋找候選影音</summary><div><p>尚未啟用自動網頁搜尋。本功能只開啟限定官方網域的搜尋頁，不讀取或爬取搜尋結果。</p>{applied.platforms.map((code)=><a key={code} className="button secondary small" href={links.webSearch[code]} target="_blank" rel="noopener noreferrer">搜尋{VIDEO_PLATFORM_LABELS[code]}候選 ↗</a>)}</div></details>
 
-    {applied.platforms.includes('youtube')&&<section className="youtube-official-results"><div className="section-heading"><div><h2>YouTube官方自動搜尋結果</h2><p>目前正式自動查詢以台灣為主；長影音與Shorts短影音只在內容形式已確認時分開比較。</p></div><span>{ready?`${youtubeEvidence.length} 筆`:'讀取中'}</span></div>{ready&&youtubeEvidence.length?<div className="video-result-grid">{youtubeEvidence.map(({source,region,intelligenceType,contentForm})=>{const growth=growthPresentation(source.growthStatus,source.growthDelta,source.heatHistory);return <article key={source.id}><div className="candidate-label-row"><span>{MARKET_REGION_LABELS[region]}</span><span>{INTELLIGENCE_TYPE_LABELS[intelligenceType]}</span><span>{VIDEO_PLATFORM_LABELS.youtube}</span><span>{VIDEO_CONTENT_FORM_LABELS[contentForm]}</span></div><h3>{source.title}</h3><p>{source.publisher}</p><dl><div><dt>資料取得方式</dt><dd>{SOURCE_ACQUISITION_LABELS.official_api}</dd></div><div><dt>最後更新時間</dt><dd>{formatDateTime(source.fetchedAt)}</dd></div><div><dt>資料可信度</dt><dd>{source.confidence}%</dd></div><div><dt>觀看</dt><dd>{source.viewCount===null?'來源未提供':formatNumber(source.viewCount)}</dd></div><div><dt>增速</dt><dd>{growth.label}</dd></div></dl><a className="source-link" href={source.originalUrl} target="_blank" rel="noopener noreferrer">查看原始來源 ↗</a></article>;})}</div>:ready?<div className="trend-no-results"><h3>目前沒有符合三維條件的YouTube資料</h3><p>若選擇熱搜上升或雙重爆紅，因目前沒有可靠搜尋量，系統不會用假結果補滿畫面。</p></div>:<div className="trend-loading">正在讀取YouTube官方資料…</div>}</section>}
+    {applied.platforms.includes('youtube')&&<section className="youtube-official-results"><div className="section-heading"><div><h2>YouTube官方自動搜尋結果</h2><p>目前正式自動查詢以台灣為主；長影音與Shorts短影音只在內容形式已確認時分開比較。</p></div><span>{ready?`${youtubeEvidence.length} 筆`:'讀取中'}</span></div>{ready&&youtubeEvidence.length?<div className="video-result-grid">{youtubeEvidence.map(({source,region,intelligenceType,contentForm})=>{const growth=growthPresentation(source.growthStatus,source.growthDelta,source.heatHistory);const sourceUrl=safePublicHttpsUrl(source.originalUrl);return <article key={source.id}><div className="candidate-label-row"><span>{MARKET_REGION_LABELS[region]}</span><span>{INTELLIGENCE_TYPE_LABELS[intelligenceType]}</span><span>{VIDEO_PLATFORM_LABELS.youtube}</span><span>{VIDEO_CONTENT_FORM_LABELS[contentForm]}</span></div><h3>{source.title}</h3><p>{source.publisher}</p><dl><div><dt>資料取得方式</dt><dd>{SOURCE_ACQUISITION_LABELS.official_api}</dd></div><div><dt>最後更新時間</dt><dd>{formatDateTime(source.fetchedAt)}</dd></div><div><dt>資料可信度</dt><dd>{source.confidence}%</dd></div><div><dt>觀看</dt><dd>{source.viewCount===null?'來源未提供':formatNumber(source.viewCount)}</dd></div><div><dt>增速</dt><dd>{growth.label}</dd></div></dl>{sourceUrl?<a className="source-link" href={sourceUrl} target="_blank" rel="noopener noreferrer">查看原始來源 ↗</a>:<span className="radar-source-unavailable">原始來源網址不可用</span>}</article>;})}</div>:ready?<div className="trend-no-results"><h3>目前沒有符合三維條件的YouTube資料</h3><p>若選擇熱搜上升或雙重爆紅，因目前沒有可靠搜尋量，系統不會用假結果補滿畫面。</p></div>:<div className="trend-loading">正在讀取YouTube官方資料…</div>}</section>}
 
     <section className="video-import-section" aria-labelledby="video-import-title"><div className="section-heading"><div><h2 id="video-import-title">貼上八平台影音網址</h2><p>只接受指定平台官方HTTPS網址；資料保存在此瀏覽器的B版專用命名空間。</p></div></div>
       <form onSubmit={submitImport} className="video-import-form" noValidate>
-        <label className="wide"><span>影音網址（必填）</span><input type="url" required value={url} onChange={(event)=>setUrl(event.target.value)} placeholder="https://www.youtube.com/watch?v=..." /></label>
+        <label className="wide"><span>影音網址（必填）</span><input ref={urlInputRef} type="url" required value={url} onChange={(event)=>{setUrl(event.target.value);setUrlError('');setPrivateUrlRejected(false);}} placeholder="https://www.youtube.com/watch?v=..." aria-label="影音網址（必填）" aria-describedby="video-url-safety video-url-error" aria-invalid={Boolean(urlError)} /><small id="video-url-safety">請只貼上公開影音網址；不得包含 Token、API Key、簽名參數或私人存取資訊。<br />Public video URLs only. Do not include tokens, API keys, signatures, or private access information.</small>{urlError&&<span id="video-url-error" className="form-error" role="alert">{urlError}{privateUrlRejected&&<><br />{PRIVATE_URL_WARNING_EN}</>}</span>}</label>
         <label><span>地區</span><select value={candidateRegion} onChange={(event)=>setCandidateRegion(event.target.value as SpecificMarketRegion)}>{specificRegions.map((region)=><option key={region} value={region}>{MARKET_REGION_LABELS[region]}</option>)}</select></label>
         <label><span>YouTube內容形式</span><select value={candidateContentForm} onChange={(event)=>setCandidateContentForm(event.target.value as VideoContentForm)}><option value="unknown">尚待分類</option><option value="long_video">長影音</option><option value="shorts">Shorts短影音</option></select></label>
         <label><span>題目或標題</span><input value={title} onChange={(event)=>setTitle(event.target.value)} placeholder="尚未提供時可稍後補上" /></label>

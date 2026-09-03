@@ -7,6 +7,7 @@ import {
   validateRadarTopicId,
   type RadarAdapterEnvironment,
 } from '../../../../functions/_shared/radar/RadarAdapter';
+import trendsApiSource from '../../../../functions/api/trends/index.ts?raw';
 
 const now = '2026-09-02T08:00:00.000Z';
 const testToken = ['competition', 'only', 'test', 'value'].join('-');
@@ -64,6 +65,32 @@ describe('熱門雷達伺服器轉接器', () => {
     expect(fetcher).toHaveBeenCalledTimes(1);
   });
 
+  it('上游多餘敏感欄位與簽名網址不進入回應或Cache', async () => {
+    const marker='NOT_A_REAL_SECRET'; const cache=new Map<string,unknown>();
+    const result=await new RadarAdapter(environment(),{cache,now:()=>now,fetcher:async()=>upstream([{topicId:'topic-1',originalTitle:`safe https://example.com/file?token=${marker}`,sourceUrl:`https://example.com/file?X-Amz-Signature=${marker}`,token:marker}])}).trends();
+    expect(result.data[0]).not.toHaveProperty('token');
+    expect(result.data[0].sourceUrl).toBe('');
+    expect(JSON.stringify(result)).not.toContain(marker);
+    expect(JSON.stringify([...cache.entries()])).not.toContain(marker);
+  });
+
+  it('Radar白名單不接受巢狀物件偽裝成文字或來源名稱', async () => {
+    const marker='NOT_A_REAL_SECRET'; const cache=new Map<string,unknown>();
+    const result=await new RadarAdapter(environment(),{cache,now:()=>now,fetcher:async()=>upstream([{topicId:'topic-1',originalTitle:{token:marker},sourceNames:[{authorization:marker},'safe source'],sourceUrl:'https://example.com/public'}])}).trends();
+    expect(result.data[0]).not.toHaveProperty('originalTitle');
+    expect(result.data[0].sourceNames).toEqual(['safe source']);
+    expect(JSON.stringify(result)).not.toContain(marker);
+    expect(JSON.stringify([...cache.entries()])).not.toContain(marker);
+  });
+
+  it('舊Cache內容在使用前再次白名單化與清理', async () => {
+    const marker='NOT_A_REAL_SECRET'; const cache=new Map<string,unknown>();
+    cache.set('radar:v2:/trends',{data:[{topicId:'topic-1',sourceUrl:`https://example.com/file?access_token=${marker}`,authorization:marker}],acquiredAt:now,cachedAt:now,actualCount:1});
+    const result=await new RadarAdapter(environment(),{cache,now:()=>now,fetcher:vi.fn()}).trends();
+    expect(JSON.stringify(result)).not.toContain(marker);
+    expect(result.data[0].sourceUrl).toBe('');
+  });
+
   it('未設定Token時安全失敗且不發出上游請求', async () => {
     const fetcher = vi.fn();
     await expect(new RadarAdapter(environment({ RADAR_PROGRAM_API_TOKEN: '' }), { fetcher }).markets())
@@ -113,5 +140,11 @@ describe('熱門雷達伺服器轉接器', () => {
     const adapter = new RadarAdapter(environment(), { fetcher: vi.fn() });
     expect(adapter.allowedPaths()).toEqual(['/trends', '/trends/:topicId', '/videos', '/sources', '/markets', '/categories']);
     expect(JSON.stringify(adapter.allowedPaths())).not.toMatch(/admin|POST|PUT|PATCH|DELETE/i);
+  });
+
+  it('一般趨勢API在回應前清理外部資料且Console不記錄原始例外', () => {
+    expect(trendsApiSource).toContain('sanitizeUntrustedPublicData(await trendResponse');
+    expect(trendsApiSource).not.toContain('error.message');
+    expect(trendsApiSource).toContain("code:'safe_upstream_failure'");
   });
 });

@@ -1,3 +1,5 @@
+import { redactSensitiveText, safePublicHttpsUrl } from '../../../src/shared/security/PublicUrlSafety';
+
 const STABLE_RADAR_API_BASE_URL = 'https://asia-trend-radar.gugupro-app.workers.dev/api/v1';
 
 export const RADAR_MARKETS = ['TW', 'HK', 'MO', 'JP', 'KR', 'SG', 'MY', 'TH', 'ID', 'VN', 'PH', 'IN', 'US', 'GB', 'AU', 'CN'] as const;
@@ -221,6 +223,33 @@ function cachePath(path: string): RadarCachePath {
   return path.startsWith('/trends/') ? '/trends/:topicId' : path as RadarCachePath;
 }
 
+const rankingFields = ['topicId','rank','originalTitle','traditionalTitle','marketCode','categoryId','trendType','searchHeat','searchGrowth','videoHeat','videoGrowth','newsGrowth','resonance','freshness','confidence','sourceNames','sourceUrl','publishedAt','acquiredAt','delayed'] as const;
+const sourceFields = ['sourceCode','sourceName','status','lastAttemptAt','lastSuccessAt','lastRecordCount','message','sourceTrack','sourceFamily','fallbackFor'] as const;
+const marketFields = ['code','nameZh','group','enabled','newsOnly'] as const;
+const categoryFields = ['id','nameZh'] as const;
+
+function sanitizeRadarRecord(value: unknown, fields: readonly string[]): Record<string, unknown> {
+  if (!value || typeof value !== 'object' || Array.isArray(value)) throw new RadarAdapterError('invalid_upstream_response', '熱門雷達回應格式不完整。', 502);
+  const source = value as Record<string, unknown>;
+  const clean: Record<string, unknown> = {};
+  for (const field of fields) {
+    if (!(field in source)) continue;
+    const item = source[field];
+    if (field === 'sourceUrl') clean[field] = safePublicHttpsUrl(item) ?? '';
+    else if (field === 'sourceNames') clean[field] = Array.isArray(item) ? item.filter((entry): entry is string => typeof entry === 'string').map(redactSensitiveText) : [];
+    else if (typeof item === 'string') clean[field] = redactSensitiveText(item);
+    else if ((typeof item === 'number' && Number.isFinite(item)) || typeof item === 'boolean' || item === null) clean[field] = item;
+  }
+  return clean;
+}
+
+function sanitizeRadarData(path: string, value: unknown): unknown {
+  const fields = path === '/sources' ? sourceFields : path === '/markets' ? marketFields : path === '/categories' ? categoryFields : rankingFields;
+  if (path.startsWith('/trends/') && path !== '/trends') return sanitizeRadarRecord(value, fields);
+  if (!Array.isArray(value)) throw new RadarAdapterError('invalid_upstream_response', '熱門雷達回應格式不完整。', 502);
+  return value.map((item) => sanitizeRadarRecord(item, fields));
+}
+
 export class RadarAdapter {
   private readonly baseUrl: string;
   private readonly token: string;
@@ -263,8 +292,8 @@ export class RadarAdapter {
       if (value !== undefined) search.set(key, String(value));
     }
     const url = `${this.baseUrl}${path}${search.size ? `?${search.toString()}` : ''}`;
-    const cacheKey = `radar:v1:${path}${search.size ? `?${search.toString()}` : ''}`;
-    const cached = await this.readCache<T>(cacheKey);
+    const cacheKey = `radar:v2:${path}${search.size ? `?${search.toString()}` : ''}`;
+    const cached = await this.readCache<T>(cacheKey, path);
     const requestedAt = this.now();
     const ttl = cacheTtlMilliseconds[cachePath(path)];
     if (cached && Date.parse(requestedAt) - Date.parse(cached.cachedAt) <= ttl) return { ...cached, requestedAt, delayed: false };
@@ -280,11 +309,12 @@ export class RadarAdapter {
       if (!response.ok) throw new RadarAdapterError('upstream_unavailable', '熱門雷達目前無法讀取，請稍後再試。', response.status >= 500 ? 503 : response.status);
       const body = await response.json() as unknown;
       if (!isEnvelope(body)) throw new RadarAdapterError('invalid_upstream_response', '熱門雷達回應格式不完整。', 502);
+      const sanitizedData = sanitizeRadarData(path, body.data) as T;
       const entry: RadarCacheEntry<T> = {
-        data: body.data as T,
-        acquiredAt: body.meta?.acquiredAt ?? null,
+        data: sanitizedData,
+        acquiredAt: typeof body.meta?.acquiredAt === 'string' && Number.isFinite(Date.parse(body.meta.acquiredAt)) ? body.meta.acquiredAt : null,
         cachedAt: requestedAt,
-        actualCount: actualCount(body.data, body.meta),
+        actualCount: actualCount(sanitizedData, body.meta),
       };
       await this.cache?.set(cacheKey, entry);
       return { data: entry.data, acquiredAt: entry.acquiredAt, actualCount: entry.actualCount, requestedAt, delayed: false };
@@ -322,10 +352,16 @@ export class RadarAdapter {
     return response as Response;
   }
 
-  private async readCache<T>(key: string): Promise<RadarCacheEntry<T> | undefined> {
+  private async readCache<T>(key: string, path: string): Promise<RadarCacheEntry<T> | undefined> {
     const value = await this.cache?.get(key);
     if (!value || typeof value !== 'object' || !('cachedAt' in value) || !('data' in value)) return undefined;
-    return value as RadarCacheEntry<T>;
+    const entry = value as RadarCacheEntry<unknown>;
+    return {
+      data: sanitizeRadarData(path, entry.data) as T,
+      acquiredAt: typeof entry.acquiredAt === 'string' && Number.isFinite(Date.parse(entry.acquiredAt)) ? entry.acquiredAt : null,
+      cachedAt: typeof entry.cachedAt === 'string' && Number.isFinite(Date.parse(entry.cachedAt)) ? entry.cachedAt : this.now(),
+      actualCount: Number.isFinite(entry.actualCount) ? Math.max(0, Math.trunc(entry.actualCount)) : actualCount(entry.data),
+    };
   }
 }
 

@@ -205,3 +205,14 @@
 - Safari：英文一般 UI、5 筆網站搜尋與深層刷新 `PASS`；Safari 原生 WebMCP `NOT RUN`，因瀏覽器顯示不支援。
 - 是否影響正式 B 版：否。
 - 備註與限制：英文範圍是 Radar Tools 網頁；原生 WebMCP metadata 維持既有雙語契約。沒有 Push、沒有新建 Pages 專案、沒有讀寫或輪替 Secret。報名尚未執行。
+
+### 2026-09-04｜封關後 Token 與私人網址安全修正
+
+- Commit：本紀錄所在的單一安全修正 Commit（以 `git rev-parse HEAD` 為準）。
+- 新增功能：不新增產品功能；增加公開 HTTPS 網址安全門檻、敏感欄位遮蔽、Radar Runtime 白名單、Cache 讀寫再清理、安全錯誤紀錄及 YouTube Header 金鑰傳遞。
+- 使用的 WebMCP 工具：沿用六個既有唯讀雷達工具；名稱、Schema、數量與唯讀註記不變。
+- 測試指令與結果：`PASS`；`npm ci`、20 個測試檔／305 項測試、TypeScript、ESLint、Production Build、`npm audit --audit-level=high`（0 漏洞）與 `git diff --check` 全數通過。
+- 本機資料防護：區域搜尋關鍵字、趨勢 Topics／Filters／Watchlist／Exclusions／Refresh／Audit 與 WebMCP legacy audit 均在新寫入前清理；舊資料讀取時只遷移各 Repository 自有 key，不清除其他命名空間。
+- 畫面或影片證據：本機實測 `/trends/video-search`的1440×900、768×1024、390×844；中英文警告、清空、回焦、無水平溢出與行動導覽不遮擋均通過。`/radar-tools` 中英文各三尺寸無溢出，六張工具卡保留。
+- 是否影響正式 B 版：否；未讀取或修改 A 版、原版 B、管理端、Secret 或 Production 資料。
+- 備註與限制：只建立本地 Commit，不 Push、不部署、不修改 Devpost。因此現行正式 Live 仍是舊部署，不得宣稱線上已套用修正。

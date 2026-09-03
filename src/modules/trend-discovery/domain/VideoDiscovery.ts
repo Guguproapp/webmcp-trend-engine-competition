@@ -1,4 +1,5 @@
 import type { IntelligenceType, SpecificMarketRegion, VideoContentForm } from './RegionalDiscovery';
+import { parsePublicHttpsUrl, PRIVATE_URL_WARNING_ZH, PublicUrlSafetyError } from '../../../shared/security/PublicUrlSafety';
 
 export const VIDEO_PLATFORMS = ['youtube', 'tiktok', 'instagram', 'facebook', 'douyin', 'kuaishou', 'xiaohongshu', 'bilibili'] as const;
 export type VideoPlatform = (typeof VIDEO_PLATFORMS)[number];
@@ -80,6 +81,10 @@ export class VideoUrlValidationError extends Error {
   constructor(message: string) { super(message); this.name = 'VideoUrlValidationError'; }
 }
 
+export class SensitiveVideoUrlValidationError extends VideoUrlValidationError {
+  constructor() { super(PRIVATE_URL_WARNING_ZH); this.name = 'SensitiveVideoUrlValidationError'; }
+}
+
 const TRACKING_PARAMETERS = new Set(['fbclid', 'igshid', 'si', 'feature', 'share_app_id', 'share_link_id', 'is_from_webapp', 'sender_device']);
 const allowedHost = (host: string, domain: string) => host === domain || host.endsWith(`.${domain}`);
 
@@ -91,8 +96,8 @@ function cleanTracking(url: URL) {
 }
 
 function ensureSafeHttps(url: URL) {
-  if (url.protocol !== 'https:') throw new VideoUrlValidationError('只接受使用HTTPS加密連線的官方影音網址。');
-  if (url.username || url.password || url.port) throw new VideoUrlValidationError('網址不得包含帳號、密碼或自訂連接埠。');
+  try { parsePublicHttpsUrl(url.toString()); }
+  catch (error) { if (error instanceof PublicUrlSafetyError) throw new SensitiveVideoUrlValidationError(); throw error; }
 }
 
 function normalizeYouTube(url: URL): NormalizedVideoUrl | null {
@@ -199,7 +204,7 @@ export function normalizeVideoUrl(input: string): NormalizedVideoUrl {
   const normalized = normalizeYouTube(url) ?? normalizeFacebook(url) ?? normalizeInstagram(url) ?? normalizeTikTok(url)
     ?? normalizeDouyin(url) ?? normalizeKuaishou(url) ?? normalizeXiaohongshu(url) ?? normalizeBilibili(url);
   if (!normalized) throw new VideoUrlValidationError('只接受八個指定影音平台的官方網域。');
-  return { ...normalized, originalUrl: trimmed };
+  return { ...normalized, originalUrl: normalized.normalizedUrl };
 }
 
 export interface PlatformSearchLinks {
