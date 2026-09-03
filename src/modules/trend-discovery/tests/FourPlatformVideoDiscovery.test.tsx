@@ -164,11 +164,13 @@ describe('產品、建置與A版隔離', () => {
     expect(buildVerifier).toContain('四平台全部自動搜尋');
   });
 
-  it('手機主要導覽仍固定四項，影音搜尋位於更多選單', async () => {
+  it('手機主要導覽固定四項且雷達直接可見，影音搜尋與觀察清單位於更多選單', async () => {
     render(<MemoryRouter initialEntries={['/trends/video-search']}><App /></MemoryRouter>);
     const navigation = screen.getByRole('navigation', { name:'手機主要導覽' });
     expect(navigation.querySelectorAll(':scope > a, :scope > button')).toHaveLength(4);
+    expect(screen.getByRole('link', { name:'雷達' })).toHaveAttribute('href', '/radar-tools');
     fireEvent.click(screen.getByRole('button', { name:'更多' }));
     await waitFor(() => expect(screen.getByRole('menuitem', { name:/爆款影音搜尋/ })).toHaveAttribute('href', '/trends/video-search'));
+    expect(screen.getByRole('menuitem', { name:/觀察清單/ })).toHaveAttribute('href', '/trends/watchlist');
   });
 });

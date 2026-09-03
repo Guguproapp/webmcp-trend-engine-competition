@@ -18,21 +18,5 @@ PASS - 429 retries are bounded; timeout, stale-cache marking and safe no-cache e
 PASS - npm audit --audit-level=high reports 0 vulnerabilities.
 PASS - Canonical native WebMCP call returned 5 real Taiwan search-rising records; videos returned a successful honest empty result.
 
-Historical snapshot: 2026-09-02 Asia/Taipei
-The historical BLOCKED line below describes the pre-Secret state and is superseded by the current closeout above.
-
-HISTORICAL PASS - The 2026-09-02 Browser Production Build scan found no RADAR_PROGRAM_API_TOKEN identifier or common credential pattern; comparison against the real Secret value was not performed.
-PASS - WebMCP outputs and browser Console contain no Authorization header, Bearer token, Cookie, stack trace, D1 details or local paths.
-PASS - Server adapter accepts only the stable Asia Trend Radar API base URL.
-PASS - Server adapter exposes only GET /trends, /trends/:topicId, /videos, /sources, /markets and /categories.
-PASS - /admin/settings is absent from adapter and WebMCP tools.
-PASS - topicId traversal and unsafe formats are rejected.
-PASS - unknown query keys, unsafe facets, limit > 50 and unsupported markets/types/sorts are rejected.
-PASS - 429 retries are bounded to two retries; timeout is 8 seconds; no infinite retry.
-PASS - stale cache is marked delayed with original acquired time; no cache returns a safe error.
-PASS - external source links are clickable only when HTTPS.
-PASS - npm audit --audit-level=high reports 0 vulnerabilities.
-PASS - private-key, common secret-pattern and tracked-customer-data scans report no findings in first-party files.
-HISTORICAL BLOCKED - production Radar data was not yet verifiable on 2026-09-02; superseded by the 2026-09-03 current closeout.
-
+The superseded 2026-09-02 environment snapshot remains auditable in Git history and is intentionally omitted from this current-state report.
 This evidence file intentionally records no credential value. Comparison against the real Secret value was NOT RUN because reading it is prohibited.

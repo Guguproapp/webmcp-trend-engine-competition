@@ -19,17 +19,14 @@ Safari 一般網站已於 2026-09-03 15:43–15:45 在本任務全新的 Private
 
 一般網站備援：PASS；canonical `/radar-tools` 同條件取得 5 筆真實結果。Safari 全新 Private Window 同條件搜尋、影音誠實空狀態及 `/radar-tools` 重新整理均為 PASS；Safari 原生 WebMCP 為 NOT RUN。
 
-## Historical snapshot｜2026-09-02
+## Chinese UX P1｜2026-09-03
 
-以下表格保留當時尚未設定專用 Secret 的狀態；目前正式狀態以上方 2026-09-03 current evidence 為準。
+| 情境 | 結果 |
+|---|---|
+| 1440×900 新中文首屏 | PASS：六項用途、快速搜尋與主要條件可見，無水平溢出 |
+| 768×1024 平板導覽 | PASS：保留文字標籤與 active 狀態，無水平溢出 |
+| 390×844 手機首屏 | PASS：快速搜尋可見；四格含雷達，觀察清單在更多選單，無水平溢出 |
+| canonical 原生工具重驗 | PASS：六工具均可發現及呼叫，真實資料與空資料結果維持一致 |
+| Safari 新 UI | NOT RUN：新 UI 未部署；既有部署的網站備援 PASS 只引用乾淨 Private Window 證據 07–09，不冒充新 UI 或原生 WebMCP |
 
-| 情境 | 自動契約結果 | 真實原生 WebMCP 結果 |
-|---|---|---|
-| 台灣24小時前5名上升熱搜 | PASS：參數與limit已測試 | 2026-09-02 當時 BLOCKED；已由 2026-09-03 current evidence 取代 |
-| 日本增長最快最多10筆 | PASS：來源、時間、信心欄位已測試 | 2026-09-02 當時 BLOCKED；已由 2026-09-03 current evidence 取代 |
-| 列出失敗、延遲、等待憑證 | PASS：三種狀態可區分 | 2026-09-02 當時 BLOCKED；已由 2026-09-03 current evidence 取代 |
-| 台灣爆款影音前10名 | PASS：無資料回傳誠實空陣列 | 2026-09-02 當時 BLOCKED；未產生假影片，已由 current evidence 取代 |
-| `limit=500` | PASS：客戶端與伺服器端皆拒絕 | PASS：原生WebMCP實際拒絕，未向上游送出 |
-| 修改排程或管理端點 | PASS：不存在管理工具，代理端點白名單不含管理設定 | PASS：原生工具快照不存在管理工具，呼叫遭拒 |
-
-歷史備援驗證：`document.modelContext` 不存在時仍可操作；2026-09-02 本機缺少專用 Secret 時顯示安全錯誤，不白畫面、不載入展示資料。正式資料的目前結果以上方 2026-09-03 current evidence 為準。
+2026-09-02 的前置環境結果保留於 Git 歷史；現行文件只列目前有效狀態。

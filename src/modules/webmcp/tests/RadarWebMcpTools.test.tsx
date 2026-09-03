@@ -115,6 +115,15 @@ describe('熱門雷達唯讀WebMCP工具', () => {
     expect(screen.getByRole('link', { name: '建立影音創作稿' })).toHaveAttribute('href', expect.stringMatching(/^\/trends\/topic-1\/create\?/));
   });
 
+  it('首屏說明六類唯讀用途並提供台灣24小時前5名快速搜尋', async () => {
+    const source = gateway();
+    render(<MemoryRouter><RadarToolsPage gateway={source} /></MemoryRouter>);
+    expect(screen.getByText(/利用真實熱門訊號找出值得關注的內容機會/)).toBeInTheDocument();
+    for (const label of ['搜尋熱門趨勢', '查看主題詳情', '搜尋爆款影音', '查看資料來源', '查看支援市場', '查看主題分類']) expect(screen.getByText(label)).toBeInTheDocument();
+    fireEvent.click(screen.getByRole('button', { name: '立即搜尋台灣近24小時前5名' }));
+    await waitFor(() => expect(source.trends).toHaveBeenCalledWith({ market: 'TW', type: 'search_rising', hours: 24, sort: 'rank', limit: 5 }));
+  });
+
   it('一般網站不把非HTTPS外部網址渲染為可點擊連結', async () => {
     const source = gateway();
     vi.mocked(source.trends).mockResolvedValueOnce({

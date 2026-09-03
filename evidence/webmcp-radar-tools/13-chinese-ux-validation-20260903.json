@@ -1,0 +1,59 @@
+{
+  "workPackage": "WP-WEBMCP-CHINESE-UX-P1-2026-09-03-03",
+  "validatedAt": "2026-09-03T16:38:00+08:00",
+  "localProductionBuild": {
+    "deployed": false,
+    "route": "http://127.0.0.1:4173/radar-tools",
+    "viewports": [
+      {
+        "size": "1440x900",
+        "bodyScrollWidth": 1440,
+        "bodyClientWidth": 1440,
+        "result": "PASS",
+        "notes": "Value proposition, six tool uses, quick search, and primary filters are visible in the first viewport."
+      },
+      {
+        "size": "768x1024",
+        "bodyScrollWidth": 768,
+        "bodyClientWidth": 768,
+        "result": "PASS",
+        "notes": "Sidebar retains visible text labels and active state."
+      },
+      {
+        "size": "390x844",
+        "bodyScrollWidth": 390,
+        "bodyClientWidth": 390,
+        "result": "PASS",
+        "notes": "Quick search is visible; mobile navigation is Radar, Trends, Search, More; Watchlist remains in More."
+      }
+    ]
+  },
+  "canonicalNativeWebMcp": {
+    "url": "https://webmcp-trend-engine-competition.pages.dev/radar-tools",
+    "toolsDiscovered": 6,
+    "searchRadarTrends": "PASS - TW/search_rising/24h/rank/limit5 returned 5 real records",
+    "getRadarTrend": "PASS - Chinese topicId TW:何妤玟 returned 1 record",
+    "searchRadarVideos": "PASS - honest empty result with 0 records",
+    "listRadarSources": "PASS - 14 records",
+    "listRadarMarkets": "PASS - 16 records",
+    "listRadarCategories": "PASS - 16 records",
+    "limit500": "PASS - rejected because limit must be between 1 and 50",
+    "managementTool": "PASS - not available"
+  },
+  "safariExistingCanonicalDeployment": {
+    "result": "PASS",
+    "evidence": [
+      "07-safari-private-search-20260903.jpeg",
+      "08-safari-private-video-empty-20260903.jpeg",
+      "09-safari-private-deep-reload-20260903.jpeg"
+    ],
+    "realTrendCount": 5,
+    "deepLinkReload": "PASS",
+    "nativeWebMcp": "NOT RUN"
+  },
+  "safariCurrentWorkPackageUi": {
+    "result": "NOT RUN",
+    "reason": "The current local Chinese UX changes were not deployed."
+  },
+  "secretsRecorded": false
+}

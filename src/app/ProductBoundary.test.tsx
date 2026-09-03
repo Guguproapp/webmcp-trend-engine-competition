@@ -1,4 +1,4 @@
-import { render, screen } from '@testing-library/react';
+import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
 import { App } from './App';
 
@@ -43,6 +43,16 @@ describe('B版公開產品邊界', () => {
     expect(screen.getByRole('link', { name: '搜尋熱門情報' })).toHaveAttribute('href', '/trends/search');
     expect(screen.getAllByRole('link', { name: '爆款影音搜尋' }).some((link) => link.getAttribute('href') === '/trends/video-search')).toBe(true);
     expect(screen.getByRole('link', { name: '查看使用說明' })).toHaveAttribute('href', '/guide');
+  });
+
+  it('手機四格主要導覽直接包含雷達且觀察清單保留在更多選單', async () => {
+    render(<MemoryRouter initialEntries={['/radar-tools']}><App /></MemoryRouter>);
+    const navigation = screen.getByRole('navigation', { name: '手機主要導覽' });
+    expect(navigation.querySelectorAll(':scope > a, :scope > button')).toHaveLength(4);
+    expect(screen.getByRole('link', { name: '雷達' })).toHaveAttribute('href', '/radar-tools');
+    expect(screen.getByRole('link', { name: '雷達' })).toHaveClass('active');
+    fireEvent.click(screen.getByRole('button', { name: '更多' }));
+    await waitFor(() => expect(screen.getByRole('menuitem', { name: /觀察清單/ })).toHaveAttribute('href', '/trends/watchlist'));
   });
 
   it('/review會導向正式產品首頁', async () => {

@@ -1,6 +1,6 @@
 {
   "currentRun": {
-    "date": "2026-09-03T09:43:00+08:00",
+    "date": "2026-09-03T16:38:00+08:00",
     "environment": "ChatGPT Codex in-app browser",
     "canonicalUrl": "https://webmcp-trend-engine-competition.pages.dev/radar-tools",
     "snapshotUrl": "https://50ed96a4.webmcp-trend-engine-competition.pages.dev/radar-tools",
@@ -15,7 +15,7 @@
     ],
     "nativeCalls": {
       "searchRadarTrends": "PASS - TW/search_rising/24h/rank/limit5 returned actualCount=5",
-      "getRadarTrend": "PASS - Chinese topicId TW:南電 returned actualCount=1",
+      "getRadarTrend": "PASS - Chinese topicId TW:何妤玟 returned actualCount=1",
       "searchRadarVideos": "PASS - successful honest empty result, actualCount=0",
       "listRadarSources": "PASS - actualCount=14",
       "listRadarMarkets": "PASS - actualCount=16",
@@ -25,14 +25,24 @@
       "directManagementApi": "NOT RUN - prohibited by the approved scope"
     },
     "websiteValidation": {
-      "safariFallback": "PASS - clean Private Window verified Taiwan 24h top 5 real search, honest video empty state, and /radar-tools deep-link reload",
+      "safariFallback": "PASS - existing canonical deployment only; retained from clean Private Window evidence 07-09",
+      "safariNewUi": "NOT RUN - local Chinese UX changes are not deployed",
       "safariNativeWebMcp": "NOT RUN",
       "safariDeveloperConsole": "NOT RUN - Safari developer menu is not enabled; browser settings were not changed",
-      "desktop1440x900": "PASS - no horizontal overflow, minimum visible control 44px",
-      "tablet768x1024": "PASS - no horizontal overflow, minimum visible control 44px",
-      "mobile390x844": "PASS - no horizontal overflow, minimum visible control 44px",
+      "desktop1440x900": "PASS - local production build; value, six uses, quick search and main fields visible; no horizontal overflow",
+      "tablet768x1024": "PASS - local production build; readable sidebar labels and active state; no horizontal overflow",
+      "mobile390x844": "PASS - local production build; quick search visible, Radar in four-item nav, Watchlist in More; no horizontal overflow",
       "consoleErrors": 0,
       "consoleWarnings": 0
+    },
+    "chineseUxWorkPackage": {
+      "id": "WP-WEBMCP-CHINESE-UX-P1-2026-09-03-03",
+      "deploymentStatus": "NOT DEPLOYED - local production-build evidence only",
+      "screenshots": [
+        "evidence/webmcp-radar-tools/10-chinese-ux-desktop-local-20260903.png",
+        "evidence/webmcp-radar-tools/11-chinese-ux-tablet-local-20260903.png",
+        "evidence/webmcp-radar-tools/12-chinese-ux-mobile-local-20260903.png"
+      ]
     },
     "governanceRecovery": {
       "incidentId": "INC-2026-09-03-BROWSER-SCOPE-001",
@@ -57,17 +67,5 @@
     },
     "secretValuesRecorded": false,
     "secretValueComparison": "NOT RUN - real Secret value was not read"
-  },
-  "previousRun": {
-    "date": "2026-09-02T19:00:00+08:00",
-    "environment": "ChatGPT in-app browser",
-    "url": "http://127.0.0.1:8792/radar-tools",
-    "nativeWebMcpDiscovered": true,
-    "nativeCalls": {
-      "limit500": "PASS - rejected before upstream request",
-      "adminWriteTool": "PASS - tool not available",
-      "realData": "BLOCKED at that time - competition-only server Secret was not configured"
-    },
-    "supersededBy": "currentRun"
   }
 }

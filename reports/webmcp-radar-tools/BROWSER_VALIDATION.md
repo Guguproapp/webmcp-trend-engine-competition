@@ -1,5 +1,22 @@
 # WebMCP 雷達工具瀏覽器驗收
 
+## Chinese UX P1｜2026-09-03 16:35–16:40
+
+- 驗證基準：`WP-WEBMCP-CHINESE-UX-P1-2026-09-03-03`；本機重新執行 `npm run build` 後，以同一份 `dist` Production Build 驗收三尺寸。這批新 UI 尚未部署，不冒充 canonical 已上線畫面。
+- 1440×900：PASS；首屏可見價值主張、六項工具用途、台灣近 24 小時前 5 名快速搜尋與主要條件，`scrollWidth=clientWidth=1440`。
+- 768×1024：PASS；側欄保留可辨識文字與 active 狀態，主要搜尋條件在首屏，`scrollWidth=clientWidth=768`。
+- 390×844：PASS；首屏可見價值主張、六項用途及快速搜尋，底部固定為「雷達／熱門／搜尋／更多」，觀察清單可由更多選單一鍵到達，`scrollWidth=clientWidth=390`。
+- 深層網址：PASS；本機與 canonical 均直接開啟 `/radar-tools`，重新整理後仍回到六工具頁。
+- 原生 WebMCP：PASS；canonical 在 Codex 內建瀏覽器發現六工具並逐一呼叫。`TW/search_rising/24h/rank/limit=5` 回傳 5 筆；中文 `topicId=TW:何妤玟` 回傳 1 筆；影音回傳誠實空資料 0 筆；來源／市場／分類為 14／16／16 筆；`limit=500` 被拒絕；管理工具不存在。
+- Safari 新 UI：`NOT RUN`；本輪新 UI 未部署，不以既有 canonical 畫面冒充新介面。既有部署的 Safari 網站備援仍以本任務先前保存的乾淨 Private Window 證據 07–09 為 `PASS`；Safari 原生 WebMCP 維持 `NOT RUN`。
+
+新證據（未覆蓋舊圖）：
+
+- `evidence/webmcp-radar-tools/10-chinese-ux-desktop-local-20260903.png` — SHA-256 `e5c25fa818f4d96c20c00ecb326235c6f38e25144d4e6107df6f40b4120c1f08`
+- `evidence/webmcp-radar-tools/11-chinese-ux-tablet-local-20260903.png` — SHA-256 `488b934c81cf3676b673ec666574745b34b4044bba36475dd9a4fa6ed38957df`
+- `evidence/webmcp-radar-tools/12-chinese-ux-mobile-local-20260903.png` — SHA-256 `5230100ea5a4e35750efcf528554b86439ff1dad61340235dbc7583e4911ebc3`
+- `evidence/webmcp-radar-tools/13-chinese-ux-validation-20260903.json` — SHA-256 `49b9e621e04300f91073e533c7baab3507eb823f76eb150675e0669924808d85`
+
 ## Recovery status｜2026-09-03
 
 - 恢復工作包：`WP-WEBMCP-CLOSEOUT-RECOVERY-2026-09-03-02`。
@@ -61,42 +78,6 @@ Canonical：`https://webmcp-trend-engine-competition.pages.dev/radar-tools`
 - `evidence/webmcp-radar-tools/08-safari-private-video-empty-20260903.jpeg` — 1102×768；SHA-256 `d967d5cd96307bd0a0b95c65bc5c6ef04eab1b55833092eace79954ba22e7d0b`
 - `evidence/webmcp-radar-tools/09-safari-private-deep-reload-20260903.jpeg` — 1102×768；SHA-256 `ca02975f5cf998a67d48f2aa4e21179902c617ae59cdd27a4400821c8541f052`
 
-## Historical snapshot｜2026-09-02 本機驗收
+## 過往快照
 
-以下內容保留當時的本機狀態；其中「Secret 未設定／真實資料 BLOCKED／Safari NOT RUN」已由上方 2026-09-03 current evidence 取代，不代表目前狀態。
-
-日期：2026-09-02（台北時間）  
-入口：`http://127.0.0.1:8792/radar-tools`
-
-## 原生 WebMCP
-
-- ChatGPT 內建瀏覽器真正發現六個唯讀工具：PASS。
-- 頁面狀態顯示「6 個唯讀工具已就緒」：PASS。
-- `limit=500` 原生工具呼叫遭拒：PASS。
-- 嘗試呼叫未註冊的排程管理工具遭拒：PASS。
-- 真實資料呼叫：2026-09-02 當時為 BLOCKED；當時尚未設定比賽版專用伺服器 Secret，且未借用原版 B 或雷達管理秘密。此限制已由 2026-09-03 current evidence 解除。
-
-## 一般網站備援
-
-- 搜尋表單可操作：PASS。
-- 缺少Secret時顯示安全中文錯誤，不白畫面、不顯示假資料：PASS。
-- 深層路由直接載入及重新整理：PASS。
-- Console：0 error、0 warning。
-
-## 響應式
-
-| 尺寸 | 水平溢出 | 最小可見控制高度 | WebMCP狀態 | 結果 |
-|---|---:|---:|---|---|
-| 1440×900 | 無 | 44px | 6工具就緒 | PASS |
-| 768×1024 | 無 | 44px | 6工具就緒 | PASS |
-| 390×844 | 無 | 44px | 6工具就緒 | PASS |
-
-手機底部導覽固定於畫面底部；「更多」選單完整顯示在導覽上方，未遮住選單內容。
-
-截圖：
-
-- `evidence/webmcp-radar-tools/01-radar-desktop.png`
-- `evidence/webmcp-radar-tools/02-radar-tablet.png`
-- `evidence/webmcp-radar-tools/03-radar-mobile.png`
-
-Safari：2026-09-02 當時為 NOT RUN；沒有用一般瀏覽器自動化冒充原生 WebMCP。2026-09-03 已完成 Safari 一般 UI 安全降級驗證，Safari 原生 WebMCP 仍為 NOT RUN。
+2026-09-02 的前置環境快照仍可由 Git 歷史稽核；現行驗收文件只保留已完成真實連線後的有效結果，避免舊環境狀態被誤認為目前狀態。

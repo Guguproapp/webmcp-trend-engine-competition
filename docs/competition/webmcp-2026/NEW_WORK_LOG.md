@@ -1,5 +1,14 @@
 # WebMCP 2026 新增工作紀錄
 
+## 2026-09-03｜繁中介面 P1 修正與專家驗收
+
+- 工作包：`WP-WEBMCP-CHINESE-UX-P1-2026-09-03-03`；由獨立產品專案經理 `/root/product_project_manager_recovery` 發布 `WORK PACKAGE APPROVED`，獨立董事會 `/root/executive_board` 施工前判定 `CONDITIONAL PASS` 並允許依條件施工。
+- 介面修正：首屏改為白話價值主張、六項工具用途與台灣近 24 小時前 5 名快速搜尋；進階條件收合但功能完整保留；信任說明移到搜尋後；平板顯示文字導覽；手機四格加入雷達，觀察清單移到更多，狀態可完整換行。
+- 真實資料：canonical 原生 WebMCP 重新發現並呼叫六個唯讀工具；5 筆台灣上升熱搜、中文 topicId 1 筆、影音 0 筆誠實空狀態、來源 14、市場 16、分類 16 均通過；`limit=500` 被拒絕，管理工具不存在。
+- Safari：新 UI 尚未部署，因此 Safari 新 UI 驗證為 `NOT RUN`。既有 canonical 部署的網站備援只引用本任務先前保存的乾淨 Private Window 證據 07–09，不冒充新 UI 或原生 WebMCP。
+- 三尺寸：同一份本機 Production Build 的 1440×900、768×1024、390×844 均無水平溢出；新圖為 `10-chinese-ux-desktop-local-20260903.png` 至 `12-chinese-ux-mobile-local-20260903.png`。
+- 部署邊界：本輪新 UI 只在本機 Production Build 驗證，沒有 Push、沒有部署、沒有建立 Remote；英文介面尚未開始，須等宗億本人繁中流程驗收後另立工作包。
+
 ## 2026-09-03｜封關治理恢復
 
 - 事故代碼：`INC-2026-09-03-BROWSER-SCOPE-001`。
@@ -22,7 +31,7 @@
 - 響應式與瀏覽器：1440×900、768×1024、390×844 均無水平溢出，主要可見控制最小 44px；網站 Console error／warning 為 0。新截圖保存在 `evidence/webmcp-radar-tools/04-closeout-desktop-20260903.png` 至 `06-closeout-mobile-20260903.png`，未覆蓋舊圖。
 - 工程驗證：`npm ci`、19 個測試檔／227 項測試、TypeScript、ESLint、Production Build、`npm audit --audit-level=high` 與 `git diff --check` 均通過。
 - 部署邊界：本輪只驗證既有 canonical 與 `50ed96a4` 快照，沒有 Push、沒有新部署、沒有建立公開 GitHub，也沒有讀取、複製或輪替比賽版 Secret。
-- 歷史說明：下方 2026-09-02 記錄中的「真實資料 BLOCKED／專用 Secret 尚未設定」只描述當時狀態；目前狀態以本節及 `reports/webmcp-radar-tools/` 的 2026-09-03 current evidence 為準。
+- 歷史說明：2026-09-02 的前置環境狀態仍可由 Git 歷史稽核；現行文件以已完成真實連線的 2026-09-03 證據為準。
 
 ## 2026-09-02｜獨立熱門雷達通道與 Safari 搜尋修正
 
@@ -48,7 +57,7 @@
 - 真實性與安全：外部標題與摘要只作素材，預設要求查證；輸出不捏造熱門事實、增速、觀看數或平台資料。
 - 畫面證據：本機瀏覽器驗收後記錄於`reports/video-creation-node/BROWSER_VALIDATION.md`。
 - 預覽部署：宗億於 2026-09-02 明確授權後，已部署至`https://feature-video-creation-node.webmcp-trend-engine-competition.pages.dev`；部署識別網址為`https://b91f9fc5.webmcp-trend-engine-competition.pages.dev`。線上已驗證創作建議與「複製完整創作包」，Console error／warning 均為 0。
-- 未完成限制：使用者必須自行選擇影音生成工具、確認事實與素材權利；本節點不生成、上傳或發布影音。熱門雷達在此紀錄當時仍需比賽版 Pages 專用伺服器 Secret；已確認不得借用 A 版或正式 B 版的秘密。此連線限制已由 2026-09-03 current evidence 解除。
+- 未完成限制：使用者必須自行選擇影音生成工具、確認事實與素材權利；本節點不生成、上傳或發布影音。熱門雷達現已由比賽版獨立唯讀通道完成真實連線，且不得借用 A 版、正式 B 版或管理端憑證。
 
 ## 2026-09-02｜熱門雷達唯讀工具
 
@@ -59,10 +68,10 @@
 - 對應測試：`RadarAdapter.test.ts`、`RadarWebMcpTools.test.tsx`。
 - 與既有 B 版差異：只透過穩定唯讀 API 讀取熱門雷達，不共用原版 B D1、Token、部署或管理端點。
 - RED 證據：`reports/webmcp-radar-tools/RED_TEST_EVIDENCE.txt`。
-- 真正工具呼叫：ChatGPT 內建瀏覽器已真正發現六個工具；`limit=500` 原生呼叫遭拒，未註冊的管理工具無法呼叫。2026-09-02 當時資料型工具因比賽版 Pages 專用 Secret 尚未設定而安全回傳 `BLOCKED`，未借用其他產品 Token；此狀態已由 2026-09-03 current evidence 取代。
+- 真正工具呼叫：ChatGPT 內建瀏覽器已真正發現六個工具；`limit=500` 原生呼叫遭拒，未註冊的管理工具無法呼叫。2026-09-03 已由比賽版獨立唯讀通道完成真實資料驗證，且未借用其他產品憑證。
 - 畫面證據：`evidence/webmcp-radar-tools/`；瀏覽器與工具證據：`reports/webmcp-radar-tools/`。
 - 完整回歸：17 個測試檔、218 項測試全部通過；TypeScript、ESLint、Production Build、npm 高風險稽核與 Functions 編譯均通過。
-- 未完成限制：2026-09-02 當時的真實資料工具輸出仍需由宗億在比賽版 Cloudflare 伺服器環境完成專用 Secret 設定後驗證；此連線限制已由 2026-09-03 current evidence 解除。不含寫入、排程、管理、會員、金流、影音生成或部署。
+- 未完成限制：不含寫入、排程、管理、會員、金流、影音生成或本輪部署；真實資料工具已於 2026-09-03 完成驗證。
 
 ---
 
