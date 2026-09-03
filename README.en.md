@@ -23,7 +23,7 @@ Watch the public 2:26 demo with English narration and English/Traditional Chines
 - `list_radar_markets`: list supported markets and their enabled state.
 - `list_radar_categories`: list normalized categories.
 
-All six tools are read-only. No management, scheduling, membership, payment, publishing, or data-mutation tools are exposed. Inputs use strict schemas; oversized requests such as `limit=500` are rejected.
+All six tools are read-only. No management, scheduling, membership, payment, publishing, or data-mutation operation is registered as a WebMCP tool. Inputs use strict schemas; oversized requests such as `limit=500` are rejected.
 
 ## Challenge-period work
 

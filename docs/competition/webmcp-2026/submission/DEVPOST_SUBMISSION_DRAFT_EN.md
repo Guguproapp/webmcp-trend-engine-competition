@@ -41,7 +41,7 @@ Asia Trend Radar exposes six browser-native, read-only tools:
 - `list_radar_markets` lists supported markets and their enabled state.
 - `list_radar_categories` lists normalized categories.
 
-A judge can request Taiwan's top five rising searches from the previous 24 hours, inspect a Chinese-language topic ID, review source status, and query markets, categories, and video signals. The product exposes no management, scheduling, membership, payment, publishing, or write tools. Oversized requests such as `limit=500` are rejected.
+A judge can request Taiwan's top five rising searches from the previous 24 hours, inspect a Chinese-language topic ID, review source status, and query markets, categories, and video signals. The six-tool WebMCP surface exposes no management, scheduling, membership, payment, publishing, or write operations. Oversized requests such as `limit=500` are rejected.
 
 ## Why WebMCP
 
@@ -71,7 +71,7 @@ Native WebMCP calls and visible website searches share one server-side Radar ada
 - Missing video data produces an empty result, not fabricated records.
 - Relative popularity is not described as an exact search or view count.
 - Credentials and upstream error details are sanitized.
-- Management tools and management routes are not exposed.
+- No management operation is registered as a WebMCP tool, and the Radar adapter allowlist excludes management routes.
 
 ## Work completed during the challenge
 
@@ -123,7 +123,7 @@ WebMCP, TypeScript, React, Vite, React Router, Cloudflare Pages, Cloudflare Page
 5. Call `list_radar_sources`, `list_radar_markets`, and `list_radar_categories`.
 6. Call `search_radar_videos`; an empty result is valid when no qualifying video signal exists.
 7. Try `limit=500` and confirm that validation rejects it.
-8. Confirm that no management or scheduling tool is exposed.
+8. Confirm that no management operation is registered as a WebMCP tool.
 9. In Safari, use the visible website search only. Safari native WebMCP was not tested and is not claimed.
 
 No login or credential is required for the public judging flow.
