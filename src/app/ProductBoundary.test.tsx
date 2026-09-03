@@ -55,6 +55,24 @@ describe('B版公開產品邊界', () => {
     await waitFor(() => expect(screen.getByRole('menuitem', { name: /觀察清單/ })).toHaveAttribute('href', '/trends/watchlist'));
   });
 
+  it('英文雷達同步切換外框、文件語言與標題，其他導覽不攜帶語言參數', async () => {
+    render(<MemoryRouter initialEntries={['/radar-tools?lang=en']}><App /></MemoryRouter>);
+    expect(await screen.findByRole('heading', { name: 'Asia Trend Radar Tools' })).toBeInTheDocument();
+    expect(document.documentElement.lang).toBe('en');
+    expect(document.title).toBe('Asia Trend Radar Tools | Trend Engine');
+    expect(screen.getByText('Trend Engine')).toBeInTheDocument();
+    expect(screen.getByRole('link', { name: 'Trend Radar Tools' })).toHaveAttribute('href', '/radar-tools?lang=en');
+    expect(screen.getByRole('link', { name: 'Product Home (ZH)' })).toHaveAttribute('href', '/');
+    expect(screen.getByRole('link', { name: 'Guide (ZH)' })).toHaveAttribute('href', '/guide');
+  });
+
+  it('未知語言參數安全回退繁體中文', async () => {
+    render(<MemoryRouter initialEntries={['/radar-tools?lang=fr']}><App /></MemoryRouter>);
+    expect(await screen.findByRole('heading', { name: '熱門雷達工具 Asia Trend Radar Tools' })).toBeInTheDocument();
+    expect(document.documentElement.lang).toBe('zh-Hant-TW');
+    expect(document.title).toBe('熱門引擎｜爆紅流量情報服務');
+  });
+
   it('/review會導向正式產品首頁', async () => {
     render(<MemoryRouter initialEntries={['/review']}><App /></MemoryRouter>);
     expect(await screen.findByRole('heading', { name: '熱門引擎｜爆紅流量情報服務' })).toBeInTheDocument();

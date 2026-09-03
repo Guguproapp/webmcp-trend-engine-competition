@@ -287,6 +287,11 @@ details summary { min-height: 44px; width: fit-content; padding-block: 10px; col
 .workspace-empty { margin: 0; padding: 18px; color: var(--muted); background: var(--page-background); border-radius: 11px; }
 .workspace-empty code { color: #174f8d; font-weight: 800; }
 .radar-workspace { display: grid; gap: 18px; }
+.radar-language-tools { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
+.radar-language-tools a { min-height: 44px; display: inline-flex; align-items: center; padding: 8px 14px; color: #174f8d; background: white; border: 1px solid #a9b4c3; border-radius: 999px; font-weight: 900; text-decoration: none; }
+.radar-language-tools a[aria-current="page"] { color: white; background: var(--brand-navy); border-color: var(--brand-navy); }
+.radar-language-tools span { flex: 1 1 280px; color: var(--muted); font-size: .78rem; }
+.radar-workspace.lang-en, .radar-workspace.lang-en * { min-width: 0; overflow-wrap: anywhere; }
 .radar-hero { display: flex; align-items: center; justify-content: space-between; gap: 24px; padding: 24px 28px; color: white; background: linear-gradient(120deg, var(--brand-navy), #243b63); border-radius: 22px; box-shadow: var(--shadow); }
 .radar-hero > div > span { color: #ffad9f; font-size: .72rem; font-weight: 900; letter-spacing: .11em; }
 .radar-hero h1 { margin: 5px 0 7px; font-size: clamp(1.8rem, 4vw, 2.55rem); }
@@ -524,6 +529,8 @@ details summary { min-height: 44px; width: fit-content; padding-block: 10px; col
   .sidebar nav a span { flex: 0 0 auto; font-size: .9rem; }
   .sidebar-note { display: none; }
   .page-container { padding-inline: 4vw; }
+  .radar-workspace.lang-en .radar-hero { align-items: stretch; flex-direction: column; }
+  .radar-workspace.lang-en .radar-native-state { max-width: none; }
 }
 
 @media (max-width: 720px) {
@@ -551,9 +558,10 @@ details summary { min-height: 44px; width: fit-content; padding-block: 10px; col
   .mobile-more-menu button { justify-content: center; color: #7f2d2d; background: var(--soft-red); }
   .topbar { min-height: 60px; height: auto; gap: 10px; padding: 9px 16px; align-items: flex-start; }
   .eyebrow { display: none; }
-  .topbar::before { content: '熱門引擎'; flex: 0 0 auto; padding-top: 3px; font-weight: 900; }
+  .topbar::before { content: attr(data-brand); flex: 0 0 auto; padding-top: 3px; font-weight: 900; }
   .mock-pill { max-width: 68%; overflow: visible; text-overflow: clip; white-space: normal; line-height: 1.35; text-align: right; font-size: .68rem; }
   .page-container { padding: 22px 16px 112px; }
+  .radar-language-tools span { flex-basis: 100%; }
   h1 { font-size: 2rem; }
   .trend-title-row, .trend-detail-hero { flex-direction: column; align-items: stretch; }
   .refresh-button { width: 100%; }

@@ -1,4 +1,4 @@
-import { fireEvent, render, screen, waitFor } from '@testing-library/react';
+import { act, fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
 import { describe, expect, it, vi } from 'vitest';
 import { createRadarWebMcpToolDefinitions } from '../application/createRadarWebMcpToolDefinitions';
@@ -122,6 +122,57 @@ describe('熱門雷達唯讀WebMCP工具', () => {
     for (const label of ['搜尋熱門趨勢', '查看主題詳情', '搜尋爆款影音', '查看資料來源', '查看支援市場', '查看主題分類']) expect(screen.getByText(label)).toBeInTheDocument();
     fireEvent.click(screen.getByRole('button', { name: '立即搜尋台灣近24小時前5名' }));
     await waitFor(() => expect(source.trends).toHaveBeenCalledWith({ market: 'TW', type: 'search_rising', hours: 24, sort: 'rank', limit: 5 }));
+  });
+
+  it('英文介面涵蓋搜尋、動態摘要、來源狀態與語言切換', async () => {
+    const source = gateway();
+    render(<MemoryRouter initialEntries={['/radar-tools?lang=en']}><RadarToolsPage gateway={source} /></MemoryRouter>);
+    expect(screen.getByRole('heading', { name: 'Asia Trend Radar Tools' })).toBeInTheDocument();
+    expect(screen.getByRole('link', { name: 'English' })).toHaveAttribute('aria-current', 'page');
+    expect(screen.getByRole('link', { name: '繁中' })).toHaveAttribute('href', '/radar-tools');
+    expect(screen.getByText('English is available on Radar Tools only. Other sections open in Traditional Chinese.')).toBeInTheDocument();
+    fireEvent.click(screen.getByRole('button', { name: 'Show Taiwan’s top 5 rising searches — last 24 hours' }));
+    expect(await screen.findByText('Found 1 trend result.')).toBeInTheDocument();
+    expect(screen.queryByText('找到1筆熱門主題。')).not.toBeInTheDocument();
+    expect(screen.getByText('Data confidence 82%')).toBeInTheDocument();
+    expect(screen.getByText('Sources: Google Trends')).toBeInTheDocument();
+    expect(screen.queryByText(/Google熱門搜尋趨勢/)).not.toBeInTheDocument();
+    fireEvent.click(screen.getByRole('button', { name: 'Source Status' }));
+    expect(await screen.findByText('Found 3 source status records.')).toBeInTheDocument();
+    expect(screen.getByText('The source is temporarily unavailable.')).toBeInTheDocument();
+    expect(screen.getByText('Showing the latest successful data.')).toBeInTheDocument();
+    expect(screen.getByText('The server-side source setup is pending.')).toBeInTheDocument();
+  });
+
+  it.each([
+    { start: '/radar-tools', search: /搜尋雷達/, switchTo: 'English', idle: /No search yet/, stale: '找到1筆熱門主題。' },
+    { start: '/radar-tools?lang=en', search: /Search Radar/, switchTo: '繁中', idle: /尚未查詢/, stale: 'Found 1 trend result.' },
+  ])('切換語言後不接受舊搜尋回應：$start', async ({ start, search, switchTo, idle, stale }) => {
+    const source=gateway();
+    const response=await source.trends({market:'TW'});
+    let resolveRequest!: (value: typeof response)=>void;
+    vi.mocked(source.trends).mockImplementationOnce(()=>new Promise((resolve)=>{resolveRequest=resolve;}));
+    render(<MemoryRouter initialEntries={[start]}><RadarToolsPage gateway={source} /></MemoryRouter>);
+    fireEvent.click(screen.getByRole('button', {name:search}));
+    fireEvent.click(screen.getByRole('link', {name:switchTo}));
+    await waitFor(()=>expect(screen.getByText(idle)).toBeInTheDocument());
+    await act(async()=>{resolveRequest(response); await Promise.resolve();});
+    expect(screen.queryByText(stale)).not.toBeInTheDocument();
+    expect(screen.queryByRole('heading', {name:'台灣熱門'})).not.toBeInTheDocument();
+  });
+
+  it('切換語言後不接受舊來源狀態回應', async () => {
+    const source=gateway();
+    const response=await source.sources();
+    let resolveRequest!: (value: typeof response)=>void;
+    vi.mocked(source.sources).mockImplementationOnce(()=>new Promise((resolve)=>{resolveRequest=resolve;}));
+    render(<MemoryRouter initialEntries={['/radar-tools?lang=en']}><RadarToolsPage gateway={source} /></MemoryRouter>);
+    fireEvent.click(screen.getByRole('button', {name:'Source Status'}));
+    fireEvent.click(screen.getByRole('link', {name:'繁中'}));
+    await waitFor(()=>expect(screen.getByText(/尚未查詢/)).toBeInTheDocument());
+    await act(async()=>{resolveRequest(response); await Promise.resolve();});
+    expect(screen.queryByText('來源狀態已更新。')).not.toBeInTheDocument();
+    expect(screen.queryByText('暫時失敗')).not.toBeInTheDocument();
   });
 
   it('一般網站不把非HTTPS外部網址渲染為可點擊連結', async () => {
