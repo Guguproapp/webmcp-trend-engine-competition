@@ -3,8 +3,8 @@
 ## Recovery status｜2026-09-03
 
 - 恢復工作包：`WP-WEBMCP-CLOSEOUT-RECOVERY-2026-09-03-02`。
-- 唯一 Safari 執行者：`/root`；`2026-09-03T14:28:44+08:00` 取得租約後嘗試建立新 Private Window，但 Mac 已鎖定，系統拒絕操作。狀態為 `WAITING FOR RESOURCE`，沒有讀取或接管既有視窗。
-- 下方 2026-09-03 Safari 一般網站結果保留為歷史紀錄，但目前不能作為最終乾淨封關證據；現況為 `WAITING FOR CLEAN SESSION`。
+- 唯一 Safari 執行者：`/root`；`2026-09-03T14:28:44+08:00` 第一次嘗試時系統回報 Mac 已鎖定，執行者立即停止。宗億確認 Mac 未上鎖後，於 15:43–15:45 成功建立本任務全新的 Private Window，全程只使用核准 hostname，沒有讀取或接管既有視窗。
+- Safari 一般網站乾淨重驗：`PASS`；正式 `/radar-tools`、台灣／上升熱搜／24 小時／前 5 筆真實搜尋、爆款影音誠實空狀態及深層網址重新整理均通過。
 - ChatGPT Codex 內建瀏覽器的原生 WebMCP、三尺寸與 Console 證據不依賴該 Safari 工作階段，維持原判定。
 - Safari 原生 WebMCP 固定為 `NOT RUN`。
 
@@ -39,7 +39,9 @@ Canonical：`https://webmcp-trend-engine-competition.pages.dev/radar-tools`
 - 來源狀態：PASS；顯示 14 筆並分開成功、等待憑證、失敗與停用。
 - `/radar-tools` 深層網址直接載入及重新整理：PASS；URL 不變、六工具頁面恢復。
 - Console：0 error、0 warning。
-- Safari 一般網站安全降級、同條件搜尋 5 筆與重新整理：`HISTORICAL PASS`；等待乾淨 Private Window 重驗後才能恢復最終 `PASS`。
+- Safari 一般網站安全降級、同條件搜尋 5 筆與重新整理：PASS；2026-09-03 15:43–15:45 於全新 Private Window 重驗。
+- Safari 爆款影音空狀態：PASS；顯示 0 筆與「目前沒有符合三維條件的 YouTube 資料」，沒有用假結果補滿。
+- Safari 專屬 Console：NOT RUN；Safari 未啟用開發者選單，沒有變更瀏覽器設定。Codex 內建瀏覽器 Console 仍為 0 error、0 warning。
 - Safari 原生 WebMCP：NOT RUN；Safari 只驗證一般網站 UI，不冒充原生工具。
 
 ### 響應式
@@ -55,6 +57,9 @@ Canonical：`https://webmcp-trend-engine-competition.pages.dev/radar-tools`
 - `evidence/webmcp-radar-tools/04-closeout-desktop-20260903.png` — SHA-256 `98fd26aa98c273fb8426b303446fb3c8406574cd7d8ebf0b77962155763c6f3b`
 - `evidence/webmcp-radar-tools/05-closeout-tablet-20260903.png` — SHA-256 `007d72b85a8d2c58f0760e3cf687c6f586ae776064010ac47adce550c8086417`
 - `evidence/webmcp-radar-tools/06-closeout-mobile-20260903.png` — SHA-256 `71d819b72cf4938c1e5b3860d62c15eb7503deaa7e5222da4b0756b6e7a4498e`
+- `evidence/webmcp-radar-tools/07-safari-private-search-20260903.jpeg` — 1102×768；SHA-256 `ca9c85eb4a26d3794899cfb8335a58edf42f8a1b5f1e8bf6215d88f5c6ee4d3e`
+- `evidence/webmcp-radar-tools/08-safari-private-video-empty-20260903.jpeg` — 1102×768；SHA-256 `d967d5cd96307bd0a0b95c65bc5c6ef04eab1b55833092eace79954ba22e7d0b`
+- `evidence/webmcp-radar-tools/09-safari-private-deep-reload-20260903.jpeg` — 1102×768；SHA-256 `ca02975f5cf998a67d48f2aa4e21179902c617ae59cdd27a4400821c8541f052`
 
 ## Historical snapshot｜2026-09-02 本機驗收
 

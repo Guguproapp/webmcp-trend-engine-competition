@@ -25,8 +25,9 @@
       "directManagementApi": "NOT RUN - prohibited by the approved scope"
     },
     "websiteValidation": {
-      "safariFallback": "HISTORICAL PASS - prior Taiwan 24h top 5 search and deep-link reload; WAITING FOR CLEAN SESSION before final closeout",
+      "safariFallback": "PASS - clean Private Window verified Taiwan 24h top 5 real search, honest video empty state, and /radar-tools deep-link reload",
       "safariNativeWebMcp": "NOT RUN",
+      "safariDeveloperConsole": "NOT RUN - Safari developer menu is not enabled; browser settings were not changed",
       "desktop1440x900": "PASS - no horizontal overflow, minimum visible control 44px",
       "tablet768x1024": "PASS - no horizontal overflow, minimum visible control 44px",
       "mobile390x844": "PASS - no horizontal overflow, minimum visible control 44px",
@@ -41,11 +42,17 @@
       "releaseTask": "/root/release_recovery",
       "preConstructionBoardTask": "/root/executive_board",
       "safariExecutor": "/root",
-      "safariStatus": "WAITING FOR RESOURCE - Mac locked; no existing Safari window was read or controlled",
+      "safariStatus": "PASS - clean single-task Private Window validation completed 2026-09-03 15:43-15:45 Asia/Taipei",
       "leaseStartedAt": "2026-09-03T14:28:44+08:00",
+      "cleanSessionCompletedAt": "2026-09-03T15:45:17+08:00",
       "allowedHosts": [
         "webmcp-trend-engine-competition.pages.dev",
         "50ed96a4.webmcp-trend-engine-competition.pages.dev"
+      ],
+      "safariEvidence": [
+        "evidence/webmcp-radar-tools/07-safari-private-search-20260903.jpeg",
+        "evidence/webmcp-radar-tools/08-safari-private-video-empty-20260903.jpeg",
+        "evidence/webmcp-radar-tools/09-safari-private-deep-reload-20260903.jpeg"
       ]
     },
     "secretValuesRecorded": false,

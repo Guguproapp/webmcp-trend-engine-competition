@@ -1,13 +1,14 @@
 # WebMCP 2026 新增工作紀錄
 
-## 2026-09-03｜封關治理恢復（進行中）
+## 2026-09-03｜封關治理恢復
 
 - 事故代碼：`INC-2026-09-03-BROWSER-SCOPE-001`。
 - 恢復工作包：`WP-WEBMCP-CLOSEOUT-RECOVERY-2026-09-03-02`；獨立產品專案經理 `/root/product_project_manager_recovery` 已發布 `WORK PACKAGE APPROVED`。
 - 獨立審查：UI／UX `/root/ui_ux_recovery`、發行總監 `/root/release_recovery`、施工前董事會 `/root/executive_board`。
-- 唯一 Safari 執行者：`/root`；資源租約於 `2026-09-03T14:28:44+08:00` 開始檢查。實際結果為 Mac 已鎖定，系統拒絕建立新 Private Window，因此 Safari 重驗維持 `WAITING FOR RESOURCE`；沒有讀取、關閉、移動或接管既有視窗。此狀態不是產品 `FAIL`。
+- 唯一 Safari 執行者：`/root`；資源租約於 `2026-09-03T14:28:44+08:00` 開始檢查。第一次嘗試時系統回報 Mac 已鎖定，因此正確停止並標示 `WAITING FOR RESOURCE`。宗億於同日確認 Mac 未上鎖後，`/root` 於 15:43–15:45 建立全新 Private Window 並完成白名單內重驗；沒有讀取、關閉、移動或接管既有 Safari 視窗。
 - Safari 白名單僅限 `webmcp-trend-engine-competition.pages.dev` 與 `50ed96a4.webmcp-trend-engine-competition.pages.dev` 的 `/radar-tools` 及同網域唯讀 API。發現其他 hostname、登入後台或敏感上下文時立即停止，不讀取、不截圖、不操作。
-- 目前狀態：六個唯讀工具、原生 WebMCP、三尺寸及工程驗證證據可保留；Safari 一般網站結果暫列歷史紀錄，等待乾淨 Private Window 重驗。Safari 原生 WebMCP 仍為 `NOT RUN`。
+- 目前狀態：六個唯讀工具、原生 WebMCP、三尺寸及工程驗證證據可保留；Safari 一般網站已在乾淨 Private Window 通過正式 `/radar-tools`、台灣／上升熱搜／24 小時／前 5 筆真實搜尋、影音誠實空狀態及深層網址重新整理。Safari 原生 WebMCP 仍為 `NOT RUN`；Safari 開發者 Console 未啟用，因此 Safari 專屬 Console 為 `NOT RUN`，既有 Codex 內建瀏覽器 Console 0 error／0 warning 證據仍有效。
+- 新 Safari 證據：`07-safari-private-search-20260903.jpeg`、`08-safari-private-video-empty-20260903.jpeg`、`09-safari-private-deep-reload-20260903.jpeg`；均只包含核准 hostname，未記錄憑證或範圍外產品識別。
 - 恢復品質閘門：`npm ci`、19 個測試檔／227 項測試、TypeScript、ESLint、Production Build、六工具 Build 安全檢查、`npm audit --audit-level=high` 與 `git diff --check` 已重新執行並全部 `PASS`；依賴掃描為 0 個漏洞。
 - 本恢復工作不新增功能、不修改產品程式、不 Push、不部署、不建立 Remote，也不接觸任何其他產品或 Secret。
 
@@ -17,7 +18,7 @@
 - 起始版本：分支 `competition/webmcp-2026`、HEAD `cb9fc8f529d435e6899b400d9729995489287301`、無 Git Remote、工作樹乾淨；基準 Tag 仍指向 `d01686d5d64c859b04e20541b6fbf934b5babf36`。
 - 原生 WebMCP：ChatGPT Codex 內建瀏覽器在 canonical `/radar-tools` 真正發現並逐一呼叫六個唯讀工具。台灣／上升熱搜／24 小時／排名／前 5 筆回傳 `actualCount=5`；中文 `topicId` `TW:南電` 詳情回傳 1 筆；來源、市場、分類分別回傳 14、16、16 筆。
 - 空資料與邊界：`search_radar_videos` 成功回傳真實空資料 `actualCount=0`，未補假影片；`limit=500` 遭原生輸入驗證拒絕；管理工具未註冊且 Adapter allowlist 不含管理路徑。真正熱門雷達管理 API 直接呼叫為 `NOT RUN`，因本輪禁止操作管理端。
-- Safari：本段保留當時一般網站安全降級、台灣 24 小時前 5 筆搜尋及 `/radar-tools` 重新整理結果，但因共用瀏覽器工作階段後續出現範圍外上下文，現僅作歷史紀錄；最終 Safari 結果為 `WAITING FOR CLEAN SESSION`。Safari 原生 WebMCP 為 `NOT RUN`。
+- Safari：本段只保留受共用瀏覽器工作階段影響前的歷史紀錄，不作為最終證據；最終 Safari 一般網站結果已由上方全新 Private Window 重驗取代並為 `PASS`。Safari 原生 WebMCP 為 `NOT RUN`。
 - 響應式與瀏覽器：1440×900、768×1024、390×844 均無水平溢出，主要可見控制最小 44px；網站 Console error／warning 為 0。新截圖保存在 `evidence/webmcp-radar-tools/04-closeout-desktop-20260903.png` 至 `06-closeout-mobile-20260903.png`，未覆蓋舊圖。
 - 工程驗證：`npm ci`、19 個測試檔／227 項測試、TypeScript、ESLint、Production Build、`npm audit --audit-level=high` 與 `git diff --check` 均通過。
 - 部署邊界：本輪只驗證既有 canonical 與 `50ed96a4` 快照，沒有 Push、沒有新部署、沒有建立公開 GitHub，也沒有讀取、複製或輪替比賽版 Secret。

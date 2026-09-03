@@ -2,7 +2,7 @@
 
 ## Recovery status｜2026-09-03
 
-Safari 一般網站結果目前為 `WAITING FOR CLEAN SESSION`。既有結果只保留為歷史紀錄；原生 WebMCP 與非 Safari 證據不受此重新分類影響。
+Safari 一般網站已於 2026-09-03 15:43–15:45 在本任務全新的 Private Window 完成乾淨重驗；原生 WebMCP 與非 Safari 證據不受影響。Safari 原生 WebMCP 與 Safari 專屬開發者 Console 均為 `NOT RUN`。
 
 ## Current evidence｜2026-09-03
 
@@ -17,7 +17,7 @@ Safari 一般網站結果目前為 `WAITING FOR CLEAN SESSION`。既有結果只
 | 修改排程或管理工具 | PASS：沒有註冊管理工具，Adapter allowlist 不含管理路徑 | 真正管理 API 直接呼叫：NOT RUN（本輪禁止操作管理端） |
 | 日本增長最快最多 10 筆 | NOT RUN：非本輪必做情境 | NOT RUN |
 
-一般網站備援：PASS；canonical `/radar-tools` 同條件取得 5 筆真實結果。Safari 一般網站為 `HISTORICAL PASS／WAITING FOR CLEAN SESSION`，等待乾淨工作階段重驗；Safari 原生 WebMCP 為 NOT RUN。
+一般網站備援：PASS；canonical `/radar-tools` 同條件取得 5 筆真實結果。Safari 全新 Private Window 同條件搜尋、影音誠實空狀態及 `/radar-tools` 重新整理均為 PASS；Safari 原生 WebMCP 為 NOT RUN。
 
 ## Historical snapshot｜2026-09-02
 
