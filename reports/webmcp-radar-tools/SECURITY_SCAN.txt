@@ -1,5 +1,21 @@
 WebMCP Radar Tools security scan
-Date: 2026-09-02 Asia/Taipei
+Current closeout: 2026-09-03 Asia/Taipei
+
+PASS - Production Build contains all six read-only radar tools and no browser-side secret identifier, Authorization/Cookie credential pattern, private-key marker or management path.
+PASS - WebMCP project outputs, website Console and committed evidence contain no Authorization header, Cookie, Secret value, stack trace, D1 detail or local path.
+PASS - This run did not read, display, copy or rotate the competition Radar Secret.
+NOT RUN - Comparison against the real Secret value; reading the real value is explicitly prohibited.
+PASS - Server adapter accepts only the fixed Asia Trend Radar API base URL and exposes only GET /trends, /trends/:topicId, /videos, /sources, /markets and /categories.
+PASS - No management tool is registered; adapter allowlist does not contain management paths.
+NOT RUN - Direct call to the real Radar management API; this run is prohibited from operating the management service.
+PASS - topicId traversal/unsafe formats, unknown keys, unsafe facets, limit > 50 and unsupported markets/types/sorts are rejected by tests.
+PASS - POST to the public read-only Radar trends route returned HTTP 405.
+PASS - 429 retries are bounded; timeout, stale-cache marking and safe no-cache errors remain covered.
+PASS - npm audit --audit-level=high reports 0 vulnerabilities.
+PASS - Canonical native WebMCP call returned 5 real Taiwan search-rising records; videos returned a successful honest empty result.
+
+Historical snapshot: 2026-09-02 Asia/Taipei
+The historical BLOCKED line below describes the pre-Secret state and is superseded by the current closeout above.
 
 PASS - Browser Production Build does not contain RADAR_PROGRAM_API_TOKEN identifier or any token value.
 PASS - WebMCP outputs and browser Console contain no Authorization header, Bearer token, Cookie, stack trace, D1 details or local paths.
@@ -13,6 +29,6 @@ PASS - stale cache is marked delayed with original acquired time; no cache retur
 PASS - external source links are clickable only when HTTPS.
 PASS - npm audit --audit-level=high reports 0 vulnerabilities.
 PASS - private-key, common secret-pattern and tracked-customer-data scans report no findings in first-party files.
-BLOCKED - production Radar data cannot be verified until the competition-only Cloudflare Secret is configured.
+HISTORICAL BLOCKED - production Radar data was not yet verifiable on 2026-09-02; superseded by the 2026-09-03 current closeout.
 
 No secret values are included in this evidence file.

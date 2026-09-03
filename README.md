@@ -42,7 +42,7 @@ npm run build
 npx wrangler pages dev dist
 ```
 
-熱門雷達正式連線另需在比賽版自己的伺服器環境設定 `RADAR_PROGRAM_API_TOKEN`。未設定時會安全失敗且不使用展示資料；不得借用正式 B 版或熱門雷達管理者憑證。
+熱門雷達正式連線使用比賽版自己的伺服器端加密 Secret；canonical 部署已於 2026-09-03 重新驗證可取得真實資料。實際值不在本程式庫、瀏覽器或證據檔中；其他或本機環境若未設定必要伺服器憑證，仍會安全失敗且不使用展示資料，也不得借用正式 B 版或熱門雷達管理者憑證。
 
 本機需要 D1 時，先執行 `npx wrangler d1 migrations apply trend-engine-b-review --local`。
 

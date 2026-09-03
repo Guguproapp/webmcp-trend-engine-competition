@@ -1,20 +1,51 @@
 {
-  "date": "2026-09-02T19:00:00+08:00",
-  "environment": "ChatGPT in-app browser",
-  "url": "http://127.0.0.1:8792/radar-tools",
-  "nativeWebMcpDiscovered": true,
-  "tools": [
-    { "name": "search_radar_trends", "readOnlyHint": true, "untrustedContentHint": true },
-    { "name": "get_radar_trend", "readOnlyHint": true, "untrustedContentHint": true },
-    { "name": "search_radar_videos", "readOnlyHint": true, "untrustedContentHint": true },
-    { "name": "list_radar_sources", "readOnlyHint": true, "untrustedContentHint": true },
-    { "name": "list_radar_markets", "readOnlyHint": true },
-    { "name": "list_radar_categories", "readOnlyHint": true }
-  ],
-  "nativeCalls": {
-    "limit500": "PASS - rejected before upstream request",
-    "adminWriteTool": "PASS - tool not available",
-    "realData": "BLOCKED - competition-only RADAR_PROGRAM_API_TOKEN is not configured"
+  "currentRun": {
+    "date": "2026-09-03T09:43:00+08:00",
+    "environment": "ChatGPT Codex in-app browser",
+    "canonicalUrl": "https://webmcp-trend-engine-competition.pages.dev/radar-tools",
+    "snapshotUrl": "https://50ed96a4.webmcp-trend-engine-competition.pages.dev/radar-tools",
+    "nativeWebMcpDiscovered": true,
+    "tools": [
+      { "name": "search_radar_trends", "readOnlyHint": true, "untrustedContentHint": true },
+      { "name": "get_radar_trend", "readOnlyHint": true, "untrustedContentHint": true },
+      { "name": "search_radar_videos", "readOnlyHint": true, "untrustedContentHint": true },
+      { "name": "list_radar_sources", "readOnlyHint": true, "untrustedContentHint": true },
+      { "name": "list_radar_markets", "readOnlyHint": true },
+      { "name": "list_radar_categories", "readOnlyHint": true }
+    ],
+    "nativeCalls": {
+      "searchRadarTrends": "PASS - TW/search_rising/24h/rank/limit5 returned actualCount=5",
+      "getRadarTrend": "PASS - Chinese topicId TW:南電 returned actualCount=1",
+      "searchRadarVideos": "PASS - successful honest empty result, actualCount=0",
+      "listRadarSources": "PASS - actualCount=14",
+      "listRadarMarkets": "PASS - actualCount=16",
+      "listRadarCategories": "PASS - actualCount=16",
+      "limit500": "PASS - rejected before upstream request",
+      "adminWriteTool": "PASS - tool not available",
+      "directManagementApi": "NOT RUN - prohibited by the approved scope"
+    },
+    "websiteValidation": {
+      "safariFallback": "PASS - Taiwan 24h top 5 search and deep-link reload",
+      "safariNativeWebMcp": "NOT RUN",
+      "desktop1440x900": "PASS - no horizontal overflow, minimum visible control 44px",
+      "tablet768x1024": "PASS - no horizontal overflow, minimum visible control 44px",
+      "mobile390x844": "PASS - no horizontal overflow, minimum visible control 44px",
+      "consoleErrors": 0,
+      "consoleWarnings": 0
+    },
+    "secretValuesRecorded": false,
+    "secretValueComparison": "NOT RUN - real Secret value was not read"
   },
-  "secretValuesRecorded": false
+  "previousRun": {
+    "date": "2026-09-02T19:00:00+08:00",
+    "environment": "ChatGPT in-app browser",
+    "url": "http://127.0.0.1:8792/radar-tools",
+    "nativeWebMcpDiscovered": true,
+    "nativeCalls": {
+      "limit500": "PASS - rejected before upstream request",
+      "adminWriteTool": "PASS - tool not available",
+      "realData": "BLOCKED at that time - competition-only server Secret was not configured"
+    },
+    "supersededBy": "currentRun"
+  }
 }

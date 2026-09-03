@@ -1,5 +1,17 @@
 # WebMCP 2026 新增工作紀錄
 
+## 2026-09-03｜比賽版技術與證據封關
+
+- 工作包：`WP-WEBMCP-COMPETITION-CLOSE-2026-09-03-01`，由獨立產品專案經理核准；施工只更新目前狀態文件與日期化證據，不修改產品程式。
+- 起始版本：分支 `competition/webmcp-2026`、HEAD `cb9fc8f529d435e6899b400d9729995489287301`、無 Git Remote、工作樹乾淨；基準 Tag 仍指向 `d01686d5d64c859b04e20541b6fbf934b5babf36`。
+- 原生 WebMCP：ChatGPT Codex 內建瀏覽器在 canonical `/radar-tools` 真正發現並逐一呼叫六個唯讀工具。台灣／上升熱搜／24 小時／排名／前 5 筆回傳 `actualCount=5`；中文 `topicId` `TW:南電` 詳情回傳 1 筆；來源、市場、分類分別回傳 14、16、16 筆。
+- 空資料與邊界：`search_radar_videos` 成功回傳真實空資料 `actualCount=0`，未補假影片；`limit=500` 遭原生輸入驗證拒絕；管理工具未註冊且 Adapter allowlist 不含管理路徑。真正熱門雷達管理 API 直接呼叫為 `NOT RUN`，因本輪禁止操作管理端。
+- Safari：一般網站安全降級、台灣 24 小時前 5 筆搜尋及 `/radar-tools` 重新整理均 `PASS`；Safari 原生 WebMCP 為 `NOT RUN`。
+- 響應式與瀏覽器：1440×900、768×1024、390×844 均無水平溢出，主要可見控制最小 44px；網站 Console error／warning 為 0。新截圖保存在 `evidence/webmcp-radar-tools/04-closeout-desktop-20260903.png` 至 `06-closeout-mobile-20260903.png`，未覆蓋舊圖。
+- 工程驗證：`npm ci`、19 個測試檔／227 項測試、TypeScript、ESLint、Production Build、`npm audit --audit-level=high` 與 `git diff --check` 均通過。
+- 部署邊界：本輪只驗證既有 canonical 與 `50ed96a4` 快照，沒有 Push、沒有新部署、沒有建立公開 GitHub，也沒有讀取、複製或輪替比賽版 Secret。
+- 歷史說明：下方 2026-09-02 記錄中的「真實資料 BLOCKED／專用 Secret 尚未設定」只描述當時狀態；目前狀態以本節及 `reports/webmcp-radar-tools/` 的 2026-09-03 current evidence 為準。
+
 ## 2026-09-02｜獨立熱門雷達通道與 Safari 搜尋修正
 
 - 基準：`b5ccaecaf93570f0499285c2c5d260f51b19785c`。
@@ -24,7 +36,7 @@
 - 真實性與安全：外部標題與摘要只作素材，預設要求查證；輸出不捏造熱門事實、增速、觀看數或平台資料。
 - 畫面證據：本機瀏覽器驗收後記錄於`reports/video-creation-node/BROWSER_VALIDATION.md`。
 - 預覽部署：宗億於 2026-09-02 明確授權後，已部署至`https://feature-video-creation-node.webmcp-trend-engine-competition.pages.dev`；部署識別網址為`https://b91f9fc5.webmcp-trend-engine-competition.pages.dev`。線上已驗證創作建議與「複製完整創作包」，Console error／warning 均為 0。
-- 未完成限制：使用者必須自行選擇影音生成工具、確認事實與素材權利；本節點不生成、上傳或發布影音。熱門雷達真實資料仍需在比賽版 Pages 專案設定獨立`RADAR_PROGRAM_API_TOKEN`；已確認不得借用 A 版或正式 B 版的秘密。
+- 未完成限制：使用者必須自行選擇影音生成工具、確認事實與素材權利；本節點不生成、上傳或發布影音。熱門雷達在此紀錄當時仍需比賽版 Pages 專用伺服器 Secret；已確認不得借用 A 版或正式 B 版的秘密。此連線限制已由 2026-09-03 current evidence 解除。
 
 ## 2026-09-02｜熱門雷達唯讀工具
 
@@ -35,7 +47,7 @@
 - 對應測試：`RadarAdapter.test.ts`、`RadarWebMcpTools.test.tsx`。
 - 與既有 B 版差異：只透過穩定唯讀 API 讀取熱門雷達，不共用原版 B D1、Token、部署或管理端點。
 - RED 證據：`reports/webmcp-radar-tools/RED_TEST_EVIDENCE.txt`。
-- 真正工具呼叫：ChatGPT 內建瀏覽器已真正發現六個工具；`limit=500` 原生呼叫遭拒，未註冊的管理工具無法呼叫。資料型工具已進入安全失敗路徑，但因比賽版 Pages 專用 Secret 尚未設定，真實雷達資料回傳為 `BLOCKED`，未借用其他產品 Token。
+- 真正工具呼叫：ChatGPT 內建瀏覽器已真正發現六個工具；`limit=500` 原生呼叫遭拒，未註冊的管理工具無法呼叫。2026-09-02 當時資料型工具因比賽版 Pages 專用 Secret 尚未設定而安全回傳 `BLOCKED`，未借用其他產品 Token；此狀態已由 2026-09-03 current evidence 取代。
 - 畫面證據：`evidence/webmcp-radar-tools/`；瀏覽器與工具證據：`reports/webmcp-radar-tools/`。
 - 完整回歸：17 個測試檔、218 項測試全部通過；TypeScript、ESLint、Production Build、npm 高風險稽核與 Functions 編譯均通過。
 - 未完成限制：真實資料工具輸出仍需宗億將比賽版專用 Token 直接設定到 Cloudflare Secret 後驗證；不含寫入、排程、管理、會員、金流、影音生成或部署。
@@ -148,4 +160,4 @@
 - 測試指令與結果：`PASS`；19 個測試檔、224 項測試、TypeScript、ESLint、Production Build、npm 高風險安全稽核與 `git diff --check` 全數通過。
 - 畫面或影片證據：正式部署 `https://webmcp-trend-engine-competition.pages.dev/trends/radar-demo/create`；本次部署識別為 `c4880014-93f2-4000-95b1-90236651481d`，已實測生成與複製完整創作包，Console 無網站錯誤或警告。
 - 是否影響正式B版：否。
-- 備註與限制：本機規則只產生可交給使用者選擇之影音工具的素材，不呼叫付費人工智慧服務。真實雷達資料仍需要比賽版專用的 `RADAR_PROGRAM_API_TOKEN` 由熱門雷達所有者安全設定，絕不借用 A 版或正式 B 版秘密。
+- 備註與限制：本機規則只產生可交給使用者選擇之影音工具的素材，不呼叫付費人工智慧服務。此紀錄當時的真實雷達資料仍需比賽版專用伺服器 Secret；絕不借用 A 版或正式 B 版秘密。該連線限制已由 2026-09-03 current evidence 解除。
