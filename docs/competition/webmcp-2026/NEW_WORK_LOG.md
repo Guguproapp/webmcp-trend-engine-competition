@@ -1,12 +1,23 @@
 # WebMCP 2026 新增工作紀錄
 
+## 2026-09-03｜封關治理恢復（進行中）
+
+- 事故代碼：`INC-2026-09-03-BROWSER-SCOPE-001`。
+- 恢復工作包：`WP-WEBMCP-CLOSEOUT-RECOVERY-2026-09-03-02`；獨立產品專案經理 `/root/product_project_manager_recovery` 已發布 `WORK PACKAGE APPROVED`。
+- 獨立審查：UI／UX `/root/ui_ux_recovery`、發行總監 `/root/release_recovery`、施工前董事會 `/root/executive_board`。
+- 唯一 Safari 執行者：`/root`；資源租約於 `2026-09-03T14:28:44+08:00` 開始檢查。實際結果為 Mac 已鎖定，系統拒絕建立新 Private Window，因此 Safari 重驗維持 `WAITING FOR RESOURCE`；沒有讀取、關閉、移動或接管既有視窗。此狀態不是產品 `FAIL`。
+- Safari 白名單僅限 `webmcp-trend-engine-competition.pages.dev` 與 `50ed96a4.webmcp-trend-engine-competition.pages.dev` 的 `/radar-tools` 及同網域唯讀 API。發現其他 hostname、登入後台或敏感上下文時立即停止，不讀取、不截圖、不操作。
+- 目前狀態：六個唯讀工具、原生 WebMCP、三尺寸及工程驗證證據可保留；Safari 一般網站結果暫列歷史紀錄，等待乾淨 Private Window 重驗。Safari 原生 WebMCP 仍為 `NOT RUN`。
+- 恢復品質閘門：`npm ci`、19 個測試檔／227 項測試、TypeScript、ESLint、Production Build、六工具 Build 安全檢查、`npm audit --audit-level=high` 與 `git diff --check` 已重新執行並全部 `PASS`；依賴掃描為 0 個漏洞。
+- 本恢復工作不新增功能、不修改產品程式、不 Push、不部署、不建立 Remote，也不接觸任何其他產品或 Secret。
+
 ## 2026-09-03｜比賽版技術與證據封關
 
-- 工作包：`WP-WEBMCP-COMPETITION-CLOSE-2026-09-03-01`，由獨立產品專案經理核准；施工只更新目前狀態文件與日期化證據，不修改產品程式。
+- 工作包：`WP-WEBMCP-COMPETITION-CLOSE-2026-09-03-01`。本段當時記載「由獨立產品專案經理核准」，但後續查無可稽核 canonical task 與完整回覆，因此該核准聲明不再作為封關依據；恢復工作改由上方新工作包治理。
 - 起始版本：分支 `competition/webmcp-2026`、HEAD `cb9fc8f529d435e6899b400d9729995489287301`、無 Git Remote、工作樹乾淨；基準 Tag 仍指向 `d01686d5d64c859b04e20541b6fbf934b5babf36`。
 - 原生 WebMCP：ChatGPT Codex 內建瀏覽器在 canonical `/radar-tools` 真正發現並逐一呼叫六個唯讀工具。台灣／上升熱搜／24 小時／排名／前 5 筆回傳 `actualCount=5`；中文 `topicId` `TW:南電` 詳情回傳 1 筆；來源、市場、分類分別回傳 14、16、16 筆。
 - 空資料與邊界：`search_radar_videos` 成功回傳真實空資料 `actualCount=0`，未補假影片；`limit=500` 遭原生輸入驗證拒絕；管理工具未註冊且 Adapter allowlist 不含管理路徑。真正熱門雷達管理 API 直接呼叫為 `NOT RUN`，因本輪禁止操作管理端。
-- Safari：一般網站安全降級、台灣 24 小時前 5 筆搜尋及 `/radar-tools` 重新整理均 `PASS`；Safari 原生 WebMCP 為 `NOT RUN`。
+- Safari：本段保留當時一般網站安全降級、台灣 24 小時前 5 筆搜尋及 `/radar-tools` 重新整理結果，但因共用瀏覽器工作階段後續出現範圍外上下文，現僅作歷史紀錄；最終 Safari 結果為 `WAITING FOR CLEAN SESSION`。Safari 原生 WebMCP 為 `NOT RUN`。
 - 響應式與瀏覽器：1440×900、768×1024、390×844 均無水平溢出，主要可見控制最小 44px；網站 Console error／warning 為 0。新截圖保存在 `evidence/webmcp-radar-tools/04-closeout-desktop-20260903.png` 至 `06-closeout-mobile-20260903.png`，未覆蓋舊圖。
 - 工程驗證：`npm ci`、19 個測試檔／227 項測試、TypeScript、ESLint、Production Build、`npm audit --audit-level=high` 與 `git diff --check` 均通過。
 - 部署邊界：本輪只驗證既有 canonical 與 `50ed96a4` 快照，沒有 Push、沒有新部署、沒有建立公開 GitHub，也沒有讀取、複製或輪替比賽版 Secret。

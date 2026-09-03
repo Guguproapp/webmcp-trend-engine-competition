@@ -25,13 +25,28 @@
       "directManagementApi": "NOT RUN - prohibited by the approved scope"
     },
     "websiteValidation": {
-      "safariFallback": "PASS - Taiwan 24h top 5 search and deep-link reload",
+      "safariFallback": "HISTORICAL PASS - prior Taiwan 24h top 5 search and deep-link reload; WAITING FOR CLEAN SESSION before final closeout",
       "safariNativeWebMcp": "NOT RUN",
       "desktop1440x900": "PASS - no horizontal overflow, minimum visible control 44px",
       "tablet768x1024": "PASS - no horizontal overflow, minimum visible control 44px",
       "mobile390x844": "PASS - no horizontal overflow, minimum visible control 44px",
       "consoleErrors": 0,
       "consoleWarnings": 0
+    },
+    "governanceRecovery": {
+      "incidentId": "INC-2026-09-03-BROWSER-SCOPE-001",
+      "workPackage": "WP-WEBMCP-CLOSEOUT-RECOVERY-2026-09-03-02",
+      "productManagerTask": "/root/product_project_manager_recovery",
+      "uiUxTask": "/root/ui_ux_recovery",
+      "releaseTask": "/root/release_recovery",
+      "preConstructionBoardTask": "/root/executive_board",
+      "safariExecutor": "/root",
+      "safariStatus": "WAITING FOR RESOURCE - Mac locked; no existing Safari window was read or controlled",
+      "leaseStartedAt": "2026-09-03T14:28:44+08:00",
+      "allowedHosts": [
+        "webmcp-trend-engine-competition.pages.dev",
+        "50ed96a4.webmcp-trend-engine-competition.pages.dev"
+      ]
     },
     "secretValuesRecorded": false,
     "secretValueComparison": "NOT RUN - real Secret value was not read"

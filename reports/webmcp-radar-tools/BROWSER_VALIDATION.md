@@ -1,5 +1,13 @@
 # WebMCP 雷達工具瀏覽器驗收
 
+## Recovery status｜2026-09-03
+
+- 恢復工作包：`WP-WEBMCP-CLOSEOUT-RECOVERY-2026-09-03-02`。
+- 唯一 Safari 執行者：`/root`；`2026-09-03T14:28:44+08:00` 取得租約後嘗試建立新 Private Window，但 Mac 已鎖定，系統拒絕操作。狀態為 `WAITING FOR RESOURCE`，沒有讀取或接管既有視窗。
+- 下方 2026-09-03 Safari 一般網站結果保留為歷史紀錄，但目前不能作為最終乾淨封關證據；現況為 `WAITING FOR CLEAN SESSION`。
+- ChatGPT Codex 內建瀏覽器的原生 WebMCP、三尺寸與 Console 證據不依賴該 Safari 工作階段，維持原判定。
+- Safari 原生 WebMCP 固定為 `NOT RUN`。
+
 ## Current evidence｜2026-09-03 技術與證據封關
 
 驗證時間：2026-09-03 09:42–09:48（Asia/Taipei）
@@ -31,7 +39,7 @@ Canonical：`https://webmcp-trend-engine-competition.pages.dev/radar-tools`
 - 來源狀態：PASS；顯示 14 筆並分開成功、等待憑證、失敗與停用。
 - `/radar-tools` 深層網址直接載入及重新整理：PASS；URL 不變、六工具頁面恢復。
 - Console：0 error、0 warning。
-- Safari 一般網站安全降級、同條件搜尋 5 筆與重新整理：PASS。
+- Safari 一般網站安全降級、同條件搜尋 5 筆與重新整理：`HISTORICAL PASS`；等待乾淨 Private Window 重驗後才能恢復最終 `PASS`。
 - Safari 原生 WebMCP：NOT RUN；Safari 只驗證一般網站 UI，不冒充原生工具。
 
 ### 響應式

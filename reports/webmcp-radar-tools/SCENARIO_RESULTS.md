@@ -1,5 +1,9 @@
 # WebMCP 雷達評審情境
 
+## Recovery status｜2026-09-03
+
+Safari 一般網站結果目前為 `WAITING FOR CLEAN SESSION`。既有結果只保留為歷史紀錄；原生 WebMCP 與非 Safari 證據不受此重新分類影響。
+
 ## Current evidence｜2026-09-03
 
 | 情境 | 原生 WebMCP／契約結果 | 真實資料結果 |
@@ -13,7 +17,7 @@
 | 修改排程或管理工具 | PASS：沒有註冊管理工具，Adapter allowlist 不含管理路徑 | 真正管理 API 直接呼叫：NOT RUN（本輪禁止操作管理端） |
 | 日本增長最快最多 10 筆 | NOT RUN：非本輪必做情境 | NOT RUN |
 
-一般網站備援：PASS；canonical `/radar-tools` 同條件取得 5 筆真實結果，Safari 一般網站亦成功。Safari 原生 WebMCP 為 NOT RUN。
+一般網站備援：PASS；canonical `/radar-tools` 同條件取得 5 筆真實結果。Safari 一般網站為 `HISTORICAL PASS／WAITING FOR CLEAN SESSION`，等待乾淨工作階段重驗；Safari 原生 WebMCP 為 NOT RUN。
 
 ## Historical snapshot｜2026-09-02
 

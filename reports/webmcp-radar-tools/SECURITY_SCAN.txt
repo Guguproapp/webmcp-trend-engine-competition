@@ -1,6 +1,9 @@
 WebMCP Radar Tools security scan
 Current closeout: 2026-09-03 Asia/Taipei
 
+RECOVERY SCOPE - This scan covers the competition repository, production build, website Console and committed evidence only. It does not prove that a shared browser profile, window, tab, login session or external account is isolated.
+WAITING - Final Safari evidence requires a clean, single-task Private Window restricted to the approved WebMCP hostnames. No credential value or out-of-scope product identifier may be recorded.
+
 PASS - Production Build contains all six read-only radar tools and no browser-side secret identifier, Authorization/Cookie credential pattern, private-key marker or management path.
 PASS - WebMCP project outputs, website Console and committed evidence contain no Authorization header, Cookie, common credential pattern, stack trace, D1 detail or local path.
 PASS - This run did not read, display, copy or rotate the competition Radar Secret.
