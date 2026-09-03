@@ -87,3 +87,30 @@ PASS - Deployment ID 1c151157-a5a3-4e39-8c11-a0155a7f7f12; Source e6d593a.
 Snapshot: https://1c151157.webmcp-trend-engine-competition.pages.dev
 Canonical ZH and EN, five Taiwan results, Unicode topic ID, empty videos, 14 sources, 16 markets, 16 categories, limit=500 rejection, six native tools discovered, and sensitive-URL UI rejection all passed.
 Safari and post-deployment native tool-by-tool invocation: NOT RUN.
+
+Secure GDELT transport and final README closeout
+Date: 2026-09-04 Asia/Taipei
+Implementation and deployment HEAD: 71f028c05fe84c8dbad34b214576899565a0e90a
+
+npm ci / npm test / npm run typecheck / npm run lint / npm run build
+PASS - 282 packages installed; 21 files and 317 tests passed; TypeScript zero errors; ESLint zero errors and zero warnings; Production Build passed.
+
+npm audit --audit-level=high / npm audit signatures / git diff --check
+PASS - 0 vulnerabilities; 282 registry signatures and 125 attestations verified; whitespace check passed.
+
+GDELT security regression
+PASS - HTTPS only; no HTTP fallback; failures create no new GDELT evidence or snapshots; delayed/failed states and exact safe messages tested; no fake rank or growth.
+
+Regional persistence fatigue
+PASS - the exact persistence test passed 50 consecutive bounded runs (50/50).
+
+Production website and API fatigue
+PASS - 10 rounds, 120/120 requests; maximum observed request time 461 ms.
+
+Native WebMCP and responsive browser
+PASS - six tools discovered and invoked; 1440x900, 768x1024, and 390x844 had no horizontal overflow; minimum main-control height 44 px; English and Chinese console errors/warnings 0/0.
+
+Cloudflare Pages deployment
+PASS - Deployment ID a121ff49-4889-4eed-8bcf-5bc79d616c43; Source 71f028c.
+Snapshot: https://a121ff49.webmcp-trend-engine-competition.pages.dev
+Safari validation of this new deployment: NOT RUN.

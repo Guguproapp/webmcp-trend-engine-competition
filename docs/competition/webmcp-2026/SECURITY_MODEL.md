@@ -18,6 +18,13 @@
 - 區域搜尋偏好及各 Trend Repository 的新寫入會先清理；舊 Topics、Filters、Watchlist、Exclusions、Refresh、Audit 與 WebMCP audit 在讀取時只遷移其自有 key。敏感搜尋 query 直接清空，WebMCP audit 只保留既定八個欄位。
 - 原風險已由假值測試重現，但未發現真實 Secret 已洩漏。修正 Commit `e6d593a` 已部署至比賽版 Cloudflare Pages；部署過程沒有讀取、顯示或輪替 Secret，也沒有清理 Production D1／Cache。
 
+## 2026-09-04 GDELT HTTPS-only 封關
+
+- GDELT 正式來源只允許 `https://api.gdeltproject.org/api/v2/doc/doc`；明文 HTTP endpoint 與 fallback 已由 Commit `71f028c` 完全移除。
+- HTTPS 失敗回傳零新紀錄，不寫入新 GDELT 證據或快照，也不建立假成功、假排名或假增速。
+- 有最近安全資料時只保留既有資料，標示 `delayed` 並顯示「目前顯示最近一次安全取得的資料。」；沒有安全資料時標示 `failed`、回傳空資料並顯示「GDELT新聞來源目前無法安全連線。」。
+- 正式部署為 `a121ff49-4889-4eed-8bcf-5bc79d616c43`（Source `71f028c`）；部署過程沒有讀取、顯示、複製或輪替 Secret。
+
 ## 寫入保護
 
 - 代理呼叫只建立 `pending`；`perform()` 只存在於真人確認處理路徑。
@@ -62,4 +69,4 @@
 
 - 瀏覽器本機隔離是以個別瀏覽器 Profile／Origin 為單位；同一 Profile 的多位真人不應共用公開 DEMO 裝置。未來公開部署前若要多人共用同一裝置，需另建比賽版匿名伺服器 Session。
 - WebMCP 是演進中的草案。瀏覽器未提供原生 `document.modelContext` 時，只能驗證安全降級，不能宣稱原生工具完成。
-- 安全修正已部署至比賽版正式 Cloudflare Pages；部署後網站、API 與原生工具發現已驗證。Safari、原生工具逐一呼叫及惡意上游注入本輪仍為 `NOT RUN`，且未讀取正式 D1、Cache、Log／Trace 或秘密值。
+- 安全修正已部署至比賽版正式 Cloudflare Pages；部署後網站、API、原生工具發現及六工具逐一呼叫已驗證。Safari 對本次新部署與惡意上游注入仍為 `NOT RUN`，且未讀取正式 D1、Cache、Log／Trace 或秘密值。

@@ -61,3 +61,20 @@ Safari 一般網站已於 2026-09-03 15:43–15:45 在本任務全新的 Private
 | 管理端 | PASS：無管理工具；相似網址只回 SPA HTML，不是管理 API |
 | 高信心秘密掃描 | NOT FOUND：正式 API 回應 0 命中 |
 | Safari 新安全版 | NOT RUN |
+
+## Secure GDELT closeout deployment｜2026-09-04
+
+| 情境 | 結果 |
+|---|---|
+| Production 部署 | PASS：Deployment `a121ff49-4889-4eed-8bcf-5bc79d616c43`，Source `71f028c` |
+| GDELT HTTPS-only | PASS：明文 HTTP endpoint 與 fallback 完全移除 |
+| GDELT HTTPS 失敗 | PASS：不新增證據／快照；有安全舊資料為 delayed，否則 failed 空狀態 |
+| 完整回歸 | PASS：21 個測試檔、317 項測試 |
+| 地區保存疲勞測試 | PASS：同一案例連續 50 次，50/50 |
+| 正式網站／API 疲勞測試 | PASS：10 輪、120/120 次，最慢約 461ms |
+| 原生 WebMCP | PASS：六工具發現並逐一唯讀呼叫 |
+| 台灣／中文 topicId／清單／影音 | PASS：5 筆／`TW:50萬日圓`／14、16、16／0 筆誠實空狀態 |
+| 三尺寸與控制高度 | PASS：1440×900、768×1024、390×844 零水平溢出；主要控制最低 44px |
+| Console | PASS：中英文 0 error、0 warning |
+| 套件與秘密掃描 | PASS：0 vulnerabilities；282 signatures、125 attestations；未發現秘密值 |
+| Safari 本次新部署 | NOT RUN：不以內建瀏覽器結果冒充 Safari |

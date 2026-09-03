@@ -218,3 +218,18 @@
 - 部署後驗證：中英文深層網址 HTTP 200；內建瀏覽器原生發現六個唯讀工具；台灣 24 小時前 5 筆、中文 topicId、來源 14、市場 16、分類 16、影音 0、`limit=500` 回傳 400、敏感影音網址清空與雙語警告均 `PASS`。部署後原生工具逐一呼叫與 Safari 本輪為 `NOT RUN`。
 - 是否影響正式 B 版：否；未讀取或修改 A 版、原版 B、管理端、Secret 或 Production 資料。
 - 備註與限制：部署由宗億於 2026-09-04 另行明確授權；沒有讀取、顯示或輪替 Secret。交件文件另以 docs Commit 同步 GitHub 與 Devpost，展示影片及圖片不變。
+
+### 2026-09-04｜GDELT HTTPS-only、疲勞測試穩定化與 README 封關部署
+
+- 起始 HEAD：`171c17023637217d16268df18615a88bf3a96a17`；修正與部署 Commit：`71f028c05fe84c8dbad34b214576899565a0e90a`。
+- 最小修正：移除 `GDELT_HTTP_ENDPOINT` 與全部明文 HTTP 降級路徑；HTTPS 失敗固定為零新紀錄，不新增 GDELT 證據或快照。有最近安全資料時保留原資料並回報 `delayed` 與「目前顯示最近一次安全取得的資料。」；沒有安全資料時回報 `failed`、空資料與「GDELT新聞來源目前無法安全連線。」。
+- 測試穩定化：地區切換保存案例改為等待明確畫面／重新掛載狀態，未修改正式保存邏輯、未刪除測試、未延長 5 秒上限；獨立連續 50 次為 `50/50 PASS`。
+- README：中英文首頁統一產品名稱、canonical 中英文入口、Devpost 與 GitHub；A／B 歷史縮成產品隔離說明；保留六工具、來源限制、安全與驗證證據。`package.json` 的歷史套件名稱 `ai-trend-video-saas` 只記錄，未改名。
+- 工程驗證：`PASS`；`npm ci`、21 個測試檔／317 項測試、TypeScript、ESLint（0 warning）、Production Build、`npm audit --audit-level=high`（0 vulnerabilities）、282 個 Registry Signatures、125 個 Attestations 及 `git diff --check` 全數通過。
+- Production Build 秘密掃描：`NOT FOUND`；命中的 token／authorization／cookie／password／secret 字樣均為敏感參數拒絕清單、雙語安全提示或 React 標準輸入型別，未發現秘密值、高熵金鑰、Private Key 或簽名私人網址。
+- 正式網站/API：canonical 10 輪共 120 次請求 `120/120 PASS`，最慢約 461ms；涵蓋中英文頁、5 筆台灣熱搜、影音 0 筆、來源 14、市場 16、分類 16、`limit=500` 400、唯讀 POST 405、未授權管理 POST 401、敏感 Query 400 不回顯及中文 topic ID 詳情。
+- 原生 WebMCP：正式站發現六個工具並逐一呼叫 `PASS`；5 筆台灣資料、中文 `TW:50萬日圓`、影音 0、來源 14、市場 16、分類 16。六工具維持 `readOnlyHint=true` 且 Schema 禁止額外欄位。
+- UI：正式英文版 1440×900、768×1024、390×844 均無水平溢出，11 個主要控制最小高度 44px；中英文頁面 Console 均為 0 error／0 warning。Safari 本次新部署為 `NOT RUN`，不以其他瀏覽器冒充；先前 Safari 一般網站證據仍保留。
+- 正式部署：`PASS`；Cloudflare Pages Production Deployment ID `a121ff49-4889-4eed-8bcf-5bc79d616c43`，Source `71f028c`，快照 `https://a121ff49.webmcp-trend-engine-competition.pages.dev`，canonical 中英文入口均 HTTP 200。
+- 隔離：只修改本比賽版；沒有讀取或修改 A 版、原版 B、其他熱門雷達、管理資料、D1 內容、Cache、Log／Trace 或 Secret；Devpost 內容與展示影片未修改。
+- 完整 35 項封關報告：`reports/webmcp-radar-tools/SECURE_GDELT_CLOSEOUT_2026-09-04.md`；機器可讀部署證據：`evidence/webmcp-radar-tools/2026-09-04-secure-gdelt-deployment.json`。

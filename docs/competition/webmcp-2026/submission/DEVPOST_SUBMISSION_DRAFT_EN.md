@@ -69,6 +69,7 @@ Native WebMCP calls and visible website searches share one server-side Radar ada
 - Unsafe topic-ID formats and traversal attempts are rejected.
 - External titles are treated as untrusted content.
 - Missing video data produces an empty result, not fabricated records.
+- GDELT news is fetched over HTTPS only; transport failure never falls back to HTTP or creates new evidence and snapshots.
 - Relative popularity is not described as an exact search or view count.
 - Credentials and upstream error details are sanitized.
 - No management operation is registered as a WebMCP tool, and the Radar adapter allowlist excludes management routes.
@@ -96,7 +97,7 @@ The central product challenge was handling uncertainty honestly. A successful qu
 - Rejection of oversized inputs and absence of management tools.
 - One shared data contract for human and agent interfaces.
 - Responsive desktop, tablet, and mobile validation.
-- 19 test files and 235 tests passing at the final implementation checkpoint, together with TypeScript, ESLint, production build, dependency audit, and whitespace checks.
+- 21 test files and 317 tests passing at the final implementation checkpoint, together with TypeScript, ESLint, production build, dependency audit, package-signature verification, and whitespace checks.
 
 ## What we learned
 
