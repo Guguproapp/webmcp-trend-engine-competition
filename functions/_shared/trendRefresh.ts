@@ -5,6 +5,29 @@ import { collectGdelt, collectYouTube, type ProviderCollectionResult } from './p
 import { buildTrendTopics, clusterSourceRecords, trendTokens } from './topicBuilder';
 import { evaluateTrendFreshness, retainedExclusiveTopicIds, retainLastSuccessfulTopics, TREND_REFRESH_INTERVAL_MS } from '../../src/modules/trend-discovery/domain/TrendFreshness';
 
+interface TrendRefreshRepository {
+  acquireRefreshLock(now: Date): Promise<boolean>;
+  releaseRefreshLock(): Promise<void>;
+  listTopics(): Promise<TrendTopic[]>;
+  listTopicsForProvider(provider: 'gdelt' | 'youtube'): Promise<TrendTopic[]>;
+  latestSnapshots(): ReturnType<D1TrendRepository['latestSnapshots']>;
+  saveProviderRun(run: ProviderCollectionResult, addedCount: number, mergedCount: number): Promise<void>;
+  saveTopics: D1TrendRepository['saveTopics'];
+  retainTopics(topicIds: string[], updatedAt: string): Promise<void>;
+}
+
+type TrendRefreshRepositoryFactory = (db: D1Database) => TrendRefreshRepository;
+
+export function applySecureGdeltAvailability(run: ProviderCollectionResult, hasLastSafeData: boolean): ProviderCollectionResult {
+  if (run.provider !== 'gdelt' || run.state === 'enabled') return run;
+  return {
+    ...run,
+    state: hasLastSafeData ? 'delayed' : 'failed',
+    message: hasLastSafeData ? '目前顯示最近一次安全取得的資料。' : 'GDELT新聞來源目前無法安全連線。',
+    records: [],
+  };
+}
+
 function failure(provider:'gdelt'|'youtube', error:unknown, now:Date):ProviderCollectionResult {
   const message=error instanceof Error?error.message:'未知來源錯誤';
   return {provider,state:'temporary_failure',message:`${provider==='gdelt'?'GDELT':'YouTube'}來源暫時失敗：${message}`,records:[],attemptedAt:now.toISOString(),completedAt:new Date().toISOString(),nextRetryAt:new Date(now.getTime()+15*60*1000).toISOString(),errorType:error instanceof Error?error.name:'unknown'};
@@ -14,8 +37,8 @@ function queriesFromRecords(records: Awaited<ReturnType<typeof collectGdelt>>['r
   return clusterSourceRecords(records).slice(0,3).map((cluster)=>[...trendTokens(cluster[0].title)].slice(0,3).join(' ')).filter(Boolean);
 }
 
-export async function refreshTrendData(env:Env, fetcher:typeof fetch=fetch, now=new Date()) {
-  const repository=new D1TrendRepository(env.TREND_DB);
+export async function refreshTrendData(env:Env, fetcher:typeof fetch=fetch, now=new Date(), createRepository:TrendRefreshRepositoryFactory=(db)=>new D1TrendRepository(db)) {
+  const repository=createRepository(env.TREND_DB);
   const acquired=await repository.acquireRefreshLock(now);
   if(!acquired) return {topics:await repository.listTopics(),refreshed:false,locked:true};
   try{
@@ -24,11 +47,13 @@ export async function refreshTrendData(env:Env, fetcher:typeof fetch=fetch, now=
     let gdelt:ProviderCollectionResult;
     try{gdelt=await collectGdelt(fetcher,now);}catch(error){gdelt=failure('gdelt',error,now);}
     const youtube=await collectYouTube(fetcher,env.YOUTUBE_API_KEY,queriesFromRecords(gdelt.records),now);
-    await repository.saveProviderRun(gdelt,gdelt.records.length,0);
-    await repository.saveProviderRun(youtube,youtube.records.length,0);
     const records=[...gdelt.records,...youtube.records];
     const missingProviders=(['gdelt','youtube'] as const).filter((provider)=>!records.some((record)=>record.provider===provider));
-    const retainedProviderTopics=(await Promise.all(missingProviders.map((provider)=>repository.listTopicsForProvider(provider)))).flat();
+    const retainedByProvider=new Map(await Promise.all(missingProviders.map(async(provider)=>[provider,await repository.listTopicsForProvider(provider)] as const)));
+    const retainedProviderTopics=[...retainedByProvider.values()].flat();
+    gdelt=applySecureGdeltAvailability(gdelt,(retainedByProvider.get('gdelt')?.length??0)>0);
+    await repository.saveProviderRun(gdelt,gdelt.records.length,0);
+    await repository.saveProviderRun(youtube,youtube.records.length,0);
     const previousCandidates=[...new Map([...previousTopics,...retainedProviderTopics].map((topic)=>[topic.id,topic])).values()];
     const updatedAt=now.toISOString();
     if(!records.length) {

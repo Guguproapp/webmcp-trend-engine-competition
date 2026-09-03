@@ -16,7 +16,7 @@ export interface RealSourceRecord {
   sourceCountry: string;
 }
 
-export type ProviderRunState = 'enabled' | 'waiting_authorization' | 'temporary_failure' | 'quota_exceeded' | 'disabled';
+export type ProviderRunState = 'enabled' | 'delayed' | 'failed' | 'waiting_authorization' | 'temporary_failure' | 'quota_exceeded' | 'disabled';
 
 export interface ProviderCollectionResult {
   provider: 'gdelt' | 'youtube';
@@ -41,7 +41,6 @@ interface GdeltArticle {
 interface GdeltResponse { articles?: GdeltArticle[]; }
 
 const GDELT_HTTPS_ENDPOINT = 'https://api.gdeltproject.org/api/v2/doc/doc';
-const GDELT_HTTP_ENDPOINT = 'http://api.gdeltproject.org/api/v2/doc/doc';
 const MAX_PROVIDER_BYTES = 2_000_000;
 
 function parseGdeltDate(value: string | undefined) {
@@ -67,19 +66,21 @@ function gdeltUrl(endpoint: string) {
 
 export async function collectGdelt(fetcher: typeof fetch, now = new Date()): Promise<ProviderCollectionResult> {
   const attemptedAt = now.toISOString();
-  let response: Response;
-  let usedTransportFallback = false;
   const requestInit = {
     headers: { accept: 'application/json' },
     cf: { cacheTtl: 900, cacheEverything: true },
   } as RequestInit;
+  let response: Response;
   try {
     response = await fetcher(gdeltUrl(GDELT_HTTPS_ENDPOINT), requestInit);
     validateProviderResponse(response);
-  } catch {
-    usedTransportFallback = true;
-    response = await fetcher(gdeltUrl(GDELT_HTTP_ENDPOINT), requestInit);
-    validateProviderResponse(response);
+  } catch (error) {
+    return {
+      provider: 'gdelt', state: 'failed', records: [], attemptedAt, completedAt: new Date().toISOString(),
+      errorType: error instanceof Error ? error.name : 'secure_transport_failure',
+      message: 'GDELT新聞來源目前無法安全連線。',
+      nextRetryAt: new Date(now.getTime() + 15 * 60 * 1000).toISOString(),
+    };
   }
   const payload = await response.json() as GdeltResponse;
   const seen = new Set<string>();
@@ -99,8 +100,8 @@ export async function collectGdelt(fetcher: typeof fetch, now = new Date()): Pro
     }];
   });
   return {
-    provider: 'gdelt', state: 'enabled', records, attemptedAt, completedAt: new Date().toISOString(), errorType: usedTransportFallback ? 'tls_fallback' : null,
-    message: usedTransportFallback ? '已取得官方公開新聞索引；官方加密憑證異常，暫由伺服器端官方備援網址取得。' : 'GDELT全球新聞資料運作正常。',
+    provider: 'gdelt', state: 'enabled', records, attemptedAt, completedAt: new Date().toISOString(), errorType: null,
+    message: 'GDELT全球新聞資料運作正常。',
     nextRetryAt: null,
   };
 }

@@ -7,7 +7,7 @@ export type DiscoverySourceCode = VideoPlatform
   | 'taiwan_news_rss' | 'trusted_news' | 'baidu_search_trends' | 'baidu_hot_search'
   | 'baidu_index' | 'weibo_hot_search' | 'douyin_hot_chart';
 export type DiscoverySourceState = 'enabled' | 'not_applied' | 'preparing' | 'waiting_review' | 'approved'
-  | 'expired' | 'unavailable' | 'waiting_authorization' | 'temporary_failure' | 'quota_exceeded'
+  | 'expired' | 'unavailable' | 'waiting_authorization' | 'delayed' | 'failed' | 'temporary_failure' | 'quota_exceeded'
   | 'disabled' | 'waiting_official_access' | 'waiting_platform_permission' | 'official_site_assisted' | 'user_shared';
 export type DiscoverySourceGroup = 'search_trend' | 'viral_video' | 'news_evidence';
 

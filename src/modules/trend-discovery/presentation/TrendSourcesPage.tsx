@@ -9,7 +9,7 @@ import { MARKET_REGION_LABELS } from '../domain/RegionalDiscovery';
 const stateLabel: Record<DiscoverySourceState, string> = {
   enabled:'已啟用', not_applied:'尚未申請', preparing:'準備申請資料', waiting_review:'等待平台審查',
   approved:'已取得官方權限', expired:'權限失效', unavailable:'暫時無法使用', waiting_authorization:'等待授權',
-  temporary_failure:'暫時失敗', quota_exceeded:'超過配額', disabled:'尚未啟用',
+  delayed:'資料延遲', failed:'安全連線失敗', temporary_failure:'暫時失敗', quota_exceeded:'超過配額', disabled:'尚未啟用',
   waiting_official_access:'等待官方資格', waiting_platform_permission:'等待平台權限',
   official_site_assisted:'官方網站輔助搜尋', user_shared:'使用者分享網址',
 };

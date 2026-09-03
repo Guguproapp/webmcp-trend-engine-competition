@@ -1,90 +1,84 @@
-# 熱門引擎｜爆紅流量情報服務
+# Asia Trend Radar Read-Only WebMCP Tools
 
-English competition documentation: [README.en.md](README.en.md)
+[English documentation](README.en.md)
 
-蒐集正在快速上升的熱門議題，依真實來源證據計算熱度、增速、社會共鳴、跨來源程度、資料信心與風險。
+這是獨立的 WebMCP 2026 比賽版，讓評審以六個唯讀工具搜尋亞洲熱門訊號、查看原始來源證據與資料可用狀態。未支援原生 WebMCP 的瀏覽器仍可使用同一頁面的一般網站搜尋。
 
-> 本程式庫是獨立的 WebMCP 2026 比賽版，不是正式 B 版工作目錄。比賽新增功能只在 `competition/webmcp-2026` 的後續分支開發，不回寫 A 版或正式 B 版。目前比賽展示入口為 `/radar-tools`，提供六個可由原生 WebMCP 發現的唯讀熱門雷達工具，以及不支援 WebMCP 時仍可使用的一般網站搜尋。
+## 公開入口
 
-目前介面以正式產品使用情境呈現。Cloudflare Pages Functions透過同網域`/api`取得GDELT與YouTube資料，並以D1保存主題、來源訊號、快照與提供者執行紀錄。搜尋介面將市場地區、情報類型與來源平台分成三個獨立維度；未取得正式權限的平台只提供官方網站輔助或使用者分享入口，不回傳假資料。
+- 英文正式版：<https://webmcp-trend-engine-competition.pages.dev/radar-tools?lang=en>
+- 中文正式版：<https://webmcp-trend-engine-competition.pages.dev/radar-tools>
+- Devpost：<https://devpost.com/software/asia-trend-radar-read-only-webmcp-tools>
+- GitHub：<https://github.com/Guguproapp/webmcp-trend-engine-competition>
+- 展示影片：<https://youtu.be/AzmVt_3NpQE>
 
-正式中性網址：<https://trend-engine-app.pages.dev/>。舊版交付網址`trend-engine-b-review.pages.dev`保留，不刪除或覆蓋。
+## 六個唯讀 WebMCP 工具
 
-## A／B 產品線
+- `search_radar_trends`：依市場、分類、時間、信心、來源與排序搜尋熱門訊號。
+- `get_radar_trend`：取得單一主題及其來源證據。
+- `search_radar_videos`：搜尋影音訊號；沒有合格資料時回傳誠實空結果。
+- `list_radar_sources`：查看來源可用性與健康狀態。
+- `list_radar_markets`：列出支援市場及啟用狀態。
+- `list_radar_categories`：列出標準化分類。
 
-| 版本 | Git 分支 | 定位 | 本分支是否包含 |
-|---|---|---|---|
-| A 版 | `internal/operator-console` | 宗億自用營運工作台，未來另行續作 | 否；由獨立分支與 Tag 保存 |
-| B 版 | `product/trend-discovery-mvp` | 對外爆紅流量情報產品 | 是 |
+六個工具全部唯讀，不提供資料修改、帳號登入、Token 存取、排程、會員、付款、發布或管理操作。輸入採嚴格 Schema，拒絕額外欄位及 `limit=500` 等超規請求；管理端點不會註冊成 WebMCP 工具。
 
-A 版封存 Tag：`account-onboarding-mock-v0.1.0`、`internal-console-v0.1.0`。本分支不包含 A 版的帳號、授權、影音、發布或金流功能。
+## 真實來源與限制
 
-## 已接入與保留邊界
-
-- GDELT全球新聞資料：已接入官方公開 DOC API，只保存標題、媒體、發布時間、原始網址、取得時間及衍生指標，不保存新聞全文。
-- YouTube影音平台：正式啟用，官方API金鑰只存在Cloudflare加密秘密`YOUTUBE_API_KEY`；目前資料量仍少，只能證明技術串接成功，不能代表熱門議題覆蓋率足夠。
-- Google熱門搜尋趨勢：只保留停用邊界，等待 Google 官方 API Alpha 存取資格。
-- Threads社群討論：只保留可插拔介面，不申請權限、不爬取網站。
-- Facebook社群平台：正式Provider邊界與Meta權限狀態已建立；尚未送審時只提供官方搜尋與公開網址匯入，不回傳假資料。
-- Instagram圖文與短影音平台：正式Provider邊界與專業帳號／公開內容權限狀態已建立；尚未取得權限時只提供官方搜尋與公開網址匯入。
-- TikTok短影音平台：提供官方搜尋、官方熱門創意中心與公開影片網址匯入；不是全平台自動API搜尋。
-- 抖音、快手、小紅書及B站：固定列入中國大陸與跨地區候選平台；本輪只提供官方網站輔助、合法限定網域搜尋與使用者分享網址，沒有官方權限時不產生平台統計。
-- 合法搜尋引擎輔助：只產生限定官方網域的搜尋連結，不爬取結果頁，也未購買付費服務。
+- 熱門雷達由比賽版自己的伺服器端唯讀通道取得真實資料；憑證只存在 Cloudflare 加密 Secret，前端與工具回應不會取得或顯示。
+- GDELT 全球新聞資料只經 HTTPS 取得，只保存標題、媒體、發布時間、公開原始網址、取得時間及衍生指標，不保存全文。HTTPS 失敗時不降級到 HTTP、不新增證據或快照；有最近安全資料時標示延遲，否則回傳誠實失敗空狀態。
+- YouTube 只使用正式伺服器端 API；資料量不足時不冒充完整熱門覆蓋率。
+- Google Trends、Threads、Meta 與其他平台只有在取得正式資格或權限時才會啟用；目前的官方網站輔助入口不等於全平台自動 API。
+- 新聞篇數不會冒充搜尋量、觀看數、按讚數或留言數；沒有第二次可靠快照時不顯示真實增速。
+- 即時資料可能變動；空資料、延遲、過期與來源失敗都會如實顯示，不以 Mock 或展示資料填補。
 
 ## 本機啟動與驗證
 
 需求：Node.js 22 以上、npm 10 以上。
 
 ```bash
-npm install
+npm ci
 npm test
 npm run typecheck
 npm run lint
 npm run build
+npm audit --audit-level=high
+npm audit signatures
+git diff --check
 npx wrangler pages dev dist
 ```
 
-熱門雷達正式連線使用比賽版自己的伺服器端加密 Secret；canonical 部署已於 2026-09-03 重新驗證可取得真實資料。本輪沒有讀取或逐值比對實際 Secret；專案規則禁止把實際值放入程式庫、瀏覽器或證據檔。其他或本機環境若未設定必要伺服器憑證，仍會安全失敗且不使用展示資料，也不得借用正式 B 版或熱門雷達管理者憑證。
+公開 Repository 只包含環境變數名稱範例。正式憑證必須存放在 Cloudflare Pages 加密 Secret 或未追蹤的本機設定，不得放入前端變數、原始碼、Commit、截圖或 Issue。
 
-本機需要 D1 時，先執行 `npx wrangler d1 migrations apply trend-engine-b-review --local`。
-
-`.dev.vars.example` 只列出秘密變數名稱。請將實際秘密放在未追蹤的 `.dev.vars` 或 Cloudflare Pages 加密秘密；不得使用 `VITE_` 前綴。
-
-## 同網域 API
-
-- `GET /api/trends`：回傳新鮮快取；過期時由單一鎖更新，其他請求可取得最近一次成功結果。
-- `GET /api/trends/:topicId`：回傳主題與完整來源證據。
-- `GET /api/sources/status`：回傳來源啟用、失敗、配額及重試狀態。
-- `POST /api/admin/refresh`：以 `Authorization: Bearer …` 驗證 `REFRESH_ADMIN_TOKEN`，只供管理更新。
-
-公開首頁為`/`，使用說明為`/guide`，舊`/review`會導向產品首頁。`/trends/video-search`可依中國大陸、台灣、香港、澳門或全部地區，搭配六種情報類型與八個影音平台搜尋。YouTube可再分長影音與Shorts短影音，兩者分開建立比較基準；網址候選只保存在瀏覽器的B版命名空間，沒有搜尋量、官方平台數據或第二次快照時，不會判定為熱搜上升、雙重爆紅或真實增速。
-
-`/trends/:topicId/create` 是比賽版獨立的影音創作交接節點。它僅把使用者方向與已選主題整理成前三秒鉤子、旁白、分鏡、通用文字／圖片轉影片指令與人工查證提醒；全部由本機規則產生，不會呼叫付費人工智慧服務、不會生成影音，也不會把來源標題當成已查證事實。
-
-## 資料與安全
+## 安全與資料邊界
 
 - `TREND_DB` 是 Cloudflare D1 綁定，不是前端環境變數。
-- `YOUTUBE_API_KEY` 與 `REFRESH_ADMIN_TOKEN` 只存在 Pages Functions 執行環境。
-- Production Build 掃描會拒絕展示題目、秘密變數名稱、A 版路由與A版專屬模組。
-- 觀察、排除與篩選偏好仍由 Infrastructure 層封裝在目前瀏覽器，外部來源證據與快照保存在 D1。
-- HTML、`robots.txt` 與安全回應標頭持續要求搜尋引擎不要建立索引；這不是登入或存取控制。
+- Production Build 會掃描秘密名稱、展示題目、範圍外路由與模組。
+- 外部網址必須是沒有帳密、Fragment、敏感 Query 或私人存取權限的公開 HTTPS 網址。
+- 公開唯讀端點收到非允許方法會拒絕；未授權管理請求會拒絕，錯誤內容不回顯憑證。
+- HTML、`robots.txt` 與安全回應標頭要求搜尋引擎不要索引；noindex 不是登入或存取控制。
 
-## 文件
+## 比賽工作與產品隔離
 
-- [架構與產品邊界](docs/ARCHITECTURE.md)
-- [模組責任](docs/MODULES.md)
-- [熱門來源 Provider](docs/ADAPTERS.md)
-- [測試方式](docs/TESTING.md)
-- [驗證結果](docs/VERIFICATION.md)
-- [未來來源接入點](docs/FUTURE-INTEGRATIONS.md)
-- [限制與停止點](docs/LIMITATIONS.md)
-- [公開測試操作指南](docs/B_REVIEW_GUIDE.md)
-- [公開測試清單](docs/B_REVIEW_CHECKLIST.md)
-- [B版最終交接](docs/B_FINAL_HANDOFF.md)
-- [公開測試計畫](docs/B_PUBLIC_TEST_PLAN.md)
-- [封存清單](docs/B_RELEASE_CHECKLIST.md)
-- [地區、熱搜與八平台來源矩陣](docs/REGIONAL_SOURCE_MATRIX.md)
-- [四平台RC1來源矩陣（歷史文件）](docs/FOUR_PLATFORM_SOURCE_MATRIX.md)
-- [Meta申請準備](docs/META_APPLICATION_CHECKLIST.md)
-- [TikTok輔助來源政策](docs/TIKTOK_ASSISTED_SOURCE_POLICY.md)
-- [合法網頁搜尋供應商決策](docs/WEB_SEARCH_PROVIDER_DECISION.md)
+基礎熱門探索產品、來源管線、證據模型、篩選及響應式介面在比賽前已存在。比賽期間新增獨立 checkout、六工具原生註冊、嚴格 Schema、唯讀 Radar Adapter、安全降級、中文 topic ID、英文評審介面及比賽專用驗證證據。
+
+本 Repository 不回寫 A 版、原版 B 或其他熱門雷達專案，也不包含其他產品的登入、會員、金流、影音生成、平台發布或管理憑證。詳細邊界見 [PREEXISTING_WORK.md](docs/competition/webmcp-2026/PREEXISTING_WORK.md) 與 [NEW_WORK_LOG.md](docs/competition/webmcp-2026/NEW_WORK_LOG.md)。
+
+## 驗證證據
+
+- 21 個測試檔、317 項測試通過。
+- TypeScript、ESLint、Production Build、高風險相依套件稽核、套件簽章及 `git diff --check` 通過。
+- 六工具已在相容的內建瀏覽器完成發現與唯讀呼叫；Safari 只驗證一般網站備援，不宣稱原生 WebMCP。
+- 台灣 24 小時前 5 筆、中文 topic ID、來源／市場／分類、影音誠實空狀態、超規 limit 與管理工具未暴露均有比賽證據。
+
+詳細文件：
+
+- [工具規格](docs/competition/webmcp-2026/RADAR_TOOLS_SPEC.md)
+- [工具契約](docs/competition/webmcp-2026/TOOL_CONTRACTS.md)
+- [安全模型](docs/competition/webmcp-2026/SECURITY_MODEL.md)
+- [瀏覽器驗證](reports/webmcp-radar-tools/BROWSER_VALIDATION.md)
+- [測試證據](reports/webmcp-radar-tools/GREEN_TEST_EVIDENCE.txt)
+
+## License
+
+[MIT License](LICENSE)

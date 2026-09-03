@@ -15,7 +15,7 @@ export function ProductHomePage() {
   const metadata = trendDiscoveryService.getApiMetadata();
   const operating = metadata?.sourceStatuses.filter((source) => source.state === 'enabled') ?? [];
   const waiting = metadata?.sourceStatuses.filter((source) => source.state === 'waiting_authorization' || source.state === 'disabled') ?? [];
-  const failed = metadata?.sourceStatuses.filter((source) => source.state === 'temporary_failure' || source.state === 'quota_exceeded') ?? [];
+  const failed = metadata?.sourceStatuses.filter((source) => source.state === 'delayed' || source.state === 'failed' || source.state === 'temporary_failure' || source.state === 'quota_exceeded') ?? [];
   const youtube = metadata?.sourceStatuses.find((source) => source.code === 'youtube');
   const freshnessLabel = metadata?.dataState === 'fresh' ? '資料已更新' : metadata?.dataState === 'waiting' ? '顯示最近一次成功資料' : metadata?.dataState === 'stale' ? '資料更新延遲' : '資料蒐集中';
 

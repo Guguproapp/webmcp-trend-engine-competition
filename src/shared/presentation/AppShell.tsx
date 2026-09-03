@@ -30,7 +30,7 @@ export function AppShell() {
     document.title=isEnglishRadar?'Asia Trend Radar Tools | Trend Engine':'熱門引擎｜爆紅流量情報服務';
   },[isEnglishRadar]);
   const metadata=trendDiscoveryService.getApiMetadata();
-  const failedSources=metadata?.sourceStatuses.filter((source)=>source.state==='temporary_failure'||source.state==='quota_exceeded')??[];
+  const failedSources=metadata?.sourceStatuses.filter((source)=>source.state==='delayed'||source.state==='failed'||source.state==='temporary_failure'||source.state==='quota_exceeded')??[];
   const formatTime=(value:string)=>isEnglishRadar?englishDateTime(value):formatDateTime(value);
   const noSuccess=isEnglishRadar?'No successful update yet':'尚無';
   const dataLabel=isEnglishRadar

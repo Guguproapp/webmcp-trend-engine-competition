@@ -1,4 +1,4 @@
-import { fireEvent, render, screen } from '@testing-library/react';
+import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
 import { App } from '../../../app/App';
 import { MemoryStorage } from '../../../shared/infrastructure/storage';
@@ -131,15 +131,19 @@ describe('保存、網址與公開介面', () => {
   it('地區切換會套用預設平台，套用後重新進入頁面仍保留', async () => {
     const first=render(<MemoryRouter initialEntries={['/trends/video-search']}><App /></MemoryRouter>);
     fireEvent.change(await screen.findByLabelText('選擇地區'),{target:{value:'hong_kong'}});
-    expect(screen.getByRole('checkbox',{name:'小紅書'})).toBeChecked();
-    expect(screen.getByRole('checkbox',{name:'TikTok'})).not.toBeChecked();
+    await waitFor(()=>{
+      expect(screen.getByRole('checkbox',{name:'小紅書'})).toBeChecked();
+      expect(screen.getByRole('checkbox',{name:'TikTok'})).not.toBeChecked();
+    });
     fireEvent.change(screen.getByLabelText('選擇情報類型'),{target:{value:'video_viral'}});
     fireEvent.click(screen.getByRole('button',{name:'套用篩選'}));
     expect(await screen.findByText(/已套用並保存/u)).toBeInTheDocument();
     first.unmount();
     render(<MemoryRouter initialEntries={['/trends/video-search']}><App /></MemoryRouter>);
-    expect(await screen.findByLabelText('選擇地區')).toHaveValue('hong_kong');
-    expect(screen.getByLabelText('選擇情報類型')).toHaveValue('video_viral');
+    await waitFor(()=>{
+      expect(screen.getByLabelText('選擇地區')).toHaveValue('hong_kong');
+      expect(screen.getByLabelText('選擇情報類型')).toHaveValue('video_viral');
+    });
   });
 
   it('來源頁分成熱搜、爆紅影音與新聞佐證三群', async () => {

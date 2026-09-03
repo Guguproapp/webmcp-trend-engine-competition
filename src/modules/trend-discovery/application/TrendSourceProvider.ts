@@ -11,7 +11,7 @@ export interface TrendSourceProvider {
   getMetadata?(): TrendApiMetadata | null;
 }
 
-export type TrendProviderState = 'enabled' | 'waiting_authorization' | 'temporary_failure' | 'quota_exceeded' | 'disabled';
+export type TrendProviderState = 'enabled' | 'delayed' | 'failed' | 'waiting_authorization' | 'temporary_failure' | 'quota_exceeded' | 'disabled';
 
 export interface TrendProviderStatus {
   code: 'gdelt' | 'youtube' | 'google_trends' | 'threads';

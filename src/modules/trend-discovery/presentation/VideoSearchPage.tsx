@@ -25,7 +25,7 @@ const emptyMetric = { viewCount:'', likeCount:'', commentCount:'', shareCount:''
 
 const sourceStateLabel = (state: DiscoverySourceState) => ({
   enabled:'官方自動取得已啟用', official_site_assisted:'官方網站輔助搜尋', waiting_platform_permission:'等待平台權限',
-  waiting_official_access:'等待官方資格', unavailable:'暫時無法取得', temporary_failure:'來源暫時失敗',
+  waiting_official_access:'等待官方資格', unavailable:'暫時無法取得', delayed:'顯示最近安全資料', failed:'安全連線失敗', temporary_failure:'來源暫時失敗',
   quota_exceeded:'超過配額', disabled:'尚未啟用', not_applied:'尚未申請', preparing:'準備申請資料',
   waiting_review:'等待平台審查', approved:'已取得官方權限', expired:'權限失效', waiting_authorization:'等待授權', user_shared:'使用者分享網址',
 }[state]);

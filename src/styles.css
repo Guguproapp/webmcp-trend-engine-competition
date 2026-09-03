@@ -231,7 +231,7 @@ details summary { min-height: 44px; width: fit-content; padding-block: 10px; col
 .state-waiting_authorization, .state-waiting_review, .state-not_applied, .state-preparing, .state-disabled { color: #684d0b; background: var(--soft-amber); }
 .state-approved { color: #0e574b; background: #e1f5ee; }
 .state-expired, .state-unavailable { color: #8c2929; background: var(--soft-red); }
-.state-temporary_failure, .state-quota_exceeded { color: #8c2929; background: var(--soft-red); }
+.state-delayed, .state-failed, .state-temporary_failure, .state-quota_exceeded { color: #8c2929; background: var(--soft-red); }
 .source-limitation { min-height: 0 !important; padding: 9px 11px; color: #4d5870 !important; background: var(--page-background); border-radius: 9px; font-size: .76rem; }
 .history-row { display: grid; grid-template-columns: 150px 1fr 45px; gap: 14px; align-items: center; margin: 13px 0; }
 .history-row > div { height: 58px; display: flex; align-items: flex-end; gap: 5px; padding: 6px; background: #f2f0eb; border-radius: 8px; }

@@ -5,6 +5,7 @@ import { collectGdelt, collectYouTube, type RealSourceRecord } from '../../../..
 import { buildTrendTopics, clusterSourceRecords, normalizeTrendTitle, titleSimilarity, type PreviousTopicSnapshot } from '../../../../functions/_shared/topicBuilder';
 import migration from '../../../../migrations/0001_real_trend_schema.sql?raw';
 import repositorySource from '../../../../functions/_shared/D1TrendRepository.ts?raw';
+import providersSource from '../../../../functions/_shared/providers.ts?raw';
 
 const now=new Date('2026-08-29T00:00:00.000Z');
 const gdeltPayload={articles:[{url:'https://news.example/tw/1',title:'快訊｜台灣午餐價格再成焦點',seendate:'20260828T230000Z',domain:'news.example',language:'Chinese',sourcecountry:'Taiwan'}]};
@@ -29,9 +30,16 @@ describe('真實來源提供者',()=>{
     expect(JSON.stringify(result)).not.toContain(marker);
   });
   it('GDELT相同網址的預設連接埠變體只保存一次',async()=>{const fetcher=vi.fn(async()=>response({articles:[gdeltPayload.articles[0],{...gdeltPayload.articles[0],url:'https://news.example:443/tw/1'}]}));const result=await collectGdelt(fetcher as typeof fetch,now);expect(result.records).toHaveLength(1);expect(result.records[0].url).toBe('https://news.example/tw/1');});
-  it('HTTPS失敗時只向GDELT官方備援網址取公開索引',async()=>{
-    const fetcher=vi.fn().mockRejectedValueOnce(new Error('certificate')).mockResolvedValueOnce(response(gdeltPayload)); const result=await collectGdelt(fetcher as typeof fetch,now);
-    expect(fetcher).toHaveBeenCalledTimes(2); expect(String(fetcher.mock.calls[1][0])).toMatch(/^http:\/\/api\.gdeltproject\.org/u); expect(result.errorType).toBe('tls_fallback');
+  it('GDELT HTTPS失敗時完全不呼叫HTTP',async()=>{
+    const fetcher=vi.fn().mockRejectedValue(new Error('certificate')); await collectGdelt(fetcher as typeof fetch,now);
+    expect(fetcher).toHaveBeenCalledTimes(1); expect(String(fetcher.mock.calls[0][0])).toMatch(/^https:\/\/api\.gdeltproject\.org/u);
+  });
+  it('GDELT HTTPS失敗時不產生任何新來源證據',async()=>{
+    const result=await collectGdelt(vi.fn().mockRejectedValue(new Error('certificate')) as typeof fetch,now);
+    expect(result.records).toEqual([]); expect(result.state).toBe('failed');
+  });
+  it('GDELT正式程式完全移除明文HTTP備援常數與網址',()=>{
+    expect(providersSource).not.toContain('GDELT_HTTP_ENDPOINT'); expect(providersSource).not.toContain('http://api.gdeltproject.org');
   });
   it('GDELT單次查詢限制100筆以控制來源負載與伺服器CPU',async()=>{const fetcher=vi.fn(async(input:RequestInfo|URL)=>{void input;return response(gdeltPayload);});await collectGdelt(fetcher as typeof fetch,now);expect(String(fetcher.mock.calls[0][0])).toContain('maxrecords=100');});
   it('YouTube先搜尋識別碼再批次取得官方統計',async()=>{
