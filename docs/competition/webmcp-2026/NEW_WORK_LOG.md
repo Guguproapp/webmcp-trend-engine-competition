@@ -1,5 +1,13 @@
 # WebMCP 2026 新增工作紀錄
 
+## 2026-09-03｜Devpost 英文交件包與雙語字幕影片
+
+- 依官方規則整理英文 Project Story、測試說明、公開 README、MIT 授權、合規清單與可重製影片腳本。
+- 示範影片採英文語音與畫面內中英文字幕，使用真實產品畫面及真實驗證摘要，不使用背景音樂、外部素材或假資料。
+- 媒體驗證：`1920×1080`、H.264、AAC 英文語音、長度約 2 分 25 秒；Devpost 封面為 `1200×800`。
+- 影片清楚區分 Safari 網站備援與原生 WebMCP，並揭露比賽前既有產品能力；不把既有趨勢引擎冒充本次新增成果。
+- 公開程式庫、YouTube 網址與 Devpost 最終 `Submitted` 狀態須在對外操作完成後另行記錄；目前不得把本地交件包冒充已正式提交。
+
 ## 2026-09-03｜繁中介面 P1 修正與專家驗收
 
 - 工作包：`WP-WEBMCP-CHINESE-UX-P1-2026-09-03-03`；由獨立產品專案經理 `/root/product_project_manager_recovery` 發布 `WORK PACKAGE APPROVED`，獨立董事會 `/root/executive_board` 施工前判定 `CONDITIONAL PASS` 並允許依條件施工。

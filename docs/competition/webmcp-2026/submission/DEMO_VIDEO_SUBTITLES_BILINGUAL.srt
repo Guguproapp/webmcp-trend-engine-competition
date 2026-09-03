@@ -1,0 +1,69 @@
+1
+00:00:00,000 --> 00:00:07,000
+Meet Asia Trend Radar, built around six safe,
+read-only WebMCP tools.
+認識 Asia Trend Radar：以六個安全、
+唯讀的 WebMCP 工具為核心。
+
+2
+00:00:07,000 --> 00:00:22,000
+Trend research is fragmented. Agents often lack
+source, freshness, and supporting evidence.
+趨勢研究通常很零散，代理往往缺少
+來源、時效與佐證資料。
+
+3
+00:00:22,000 --> 00:00:37,000
+WebMCP provides structured retrieval without
+scraping the interface or granting write access.
+WebMCP 提供結構化查詢，不必擷取介面，
+也不授予寫入權限。
+
+4
+00:00:37,000 --> 00:00:53,000
+The agent finds Taiwan's top five rising searches
+from the previous 24 hours using typed inputs.
+代理使用明確參數，找出台灣過去 24 小時
+排名前五的上升熱搜。
+
+5
+00:00:53,000 --> 00:01:07,000
+These are live radar records, not demo data.
+A Chinese topic ID opens its source evidence.
+這些是真實雷達紀錄，不是展示資料；
+中文主題識別碼也能查閱來源證據。
+
+6
+00:01:07,000 --> 00:01:21,000
+Three tools list sources, markets, and categories.
+The video tool may return an honest empty result.
+三個工具列出來源、市場與分類；
+影音工具可以誠實回傳空資料。
+
+7
+00:01:21,000 --> 00:01:37,000
+Every tool is read-only. Strict schemas reject
+limit=500, and no management tool is exposed.
+所有工具都是唯讀；嚴格結構會拒絕
+limit=500，而且沒有暴露管理工具。
+
+8
+00:01:37,000 --> 00:01:51,000
+Credentials stay on the server. Safari uses the
+website fallback—not native WebMCP.
+憑證只留在伺服器；Safari 使用網站備援，
+不宣稱支援原生 WebMCP。
+
+9
+00:01:51,000 --> 00:02:10,000
+After August 25, we added the isolated competition
+edition, six tools, safety contracts, and evidence.
+8 月 25 日後，我們新增獨立比賽版、
+六個工具、安全契約與驗證證據。
+
+10
+00:02:10,000 --> 00:02:22,500
+The human keeps every interpretation and publishing
+decision. Real signals. Read-only tools. Honest fallbacks.
+所有解讀與發布決策仍由人決定。
+真實訊號、唯讀工具、誠實備援。

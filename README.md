@@ -1,5 +1,7 @@
 # 熱門引擎｜爆紅流量情報服務
 
+English competition documentation: [README.en.md](README.en.md)
+
 蒐集正在快速上升的熱門議題，依真實來源證據計算熱度、增速、社會共鳴、跨來源程度、資料信心與風險。
 
 > 本程式庫是獨立的 WebMCP 2026 比賽版，不是正式 B 版工作目錄。比賽新增功能只在 `competition/webmcp-2026` 的後續分支開發，不回寫 A 版或正式 B 版。目前比賽展示入口為 `/radar-tools`，提供六個可由原生 WebMCP 發現的唯讀熱門雷達工具，以及不支援 WebMCP 時仍可使用的一般網站搜尋。

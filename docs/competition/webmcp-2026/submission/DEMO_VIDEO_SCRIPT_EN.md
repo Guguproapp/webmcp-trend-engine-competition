@@ -1,0 +1,29 @@
+# Demo Video Script
+
+- Maximum duration: 2 minutes 40 seconds.
+- Voice: English.
+- Captions: English and Traditional Chinese, burned into the video.
+- Music: none.
+- Visuals: actual product UI and actual validation evidence only.
+
+## Narration
+
+Meet Asia Trend Radar, a trend-discovery experience built around six safe, read-only WebMCP tools.
+
+Trend research is usually fragmented. An agent may find a popular phrase but still struggle to explain its source, freshness, or supporting evidence. This project gives compatible browser agents a structured way to retrieve that information without scraping the interface or receiving write access.
+
+I will ask the agent to find Taiwan's top five rising searches from the previous twenty-four hours. WebMCP lets the browser discover `search_radar_trends`, understand its input schema, and call it with Taiwan, rising search, twenty-four hours, rank order, and a limit of five.
+
+The response contains live radar records rather than demonstration data. I can take a Chinese-language topic ID from the response and call `get_radar_trend` to inspect its supporting source information.
+
+Three additional tools list available sources, supported markets, and normalized categories. A sixth tool searches video signals. During this validation, video search returned zero qualifying records. The product reports that honest empty state instead of inserting mock videos.
+
+Safety is part of the design. Every tool is read-only, inputs use strict schemas, external titles are marked as untrusted content, and a limit of five hundred is rejected. No management or scheduling tool is exposed, and credentials remain on the server.
+
+The same data contract powers the visible website. In Safari, where native WebMCP is not claimed, people can still use the normal website search through the same read-only path.
+
+The underlying trend product existed before this challenge. After August twenty-fifth, we built the isolated competition edition, six WebMCP tools, safety contracts, the read-only adapter, localized topic handling, browser fallback, the English judging interface, and dedicated validation evidence.
+
+The human keeps control of interpretation and every publishing decision. The agent makes evidence retrieval faster; it cannot change the system.
+
+That is Asia Trend Radar: real signals, read-only tools, and honest fallbacks.

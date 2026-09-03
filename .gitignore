@@ -17,3 +17,7 @@ tmp/
 .dev.vars*
 !.dev.vars.example
 *.local
+
+# Regenerated Devpost video intermediates; keep the final MP4 and source scripts.
+docs/competition/webmcp-2026/submission/assets/frames/
+docs/competition/webmcp-2026/submission/assets/*.aiff
