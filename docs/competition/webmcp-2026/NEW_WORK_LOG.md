@@ -50,7 +50,7 @@
 - 真正工具呼叫：ChatGPT 內建瀏覽器已真正發現六個工具；`limit=500` 原生呼叫遭拒，未註冊的管理工具無法呼叫。2026-09-02 當時資料型工具因比賽版 Pages 專用 Secret 尚未設定而安全回傳 `BLOCKED`，未借用其他產品 Token；此狀態已由 2026-09-03 current evidence 取代。
 - 畫面證據：`evidence/webmcp-radar-tools/`；瀏覽器與工具證據：`reports/webmcp-radar-tools/`。
 - 完整回歸：17 個測試檔、218 項測試全部通過；TypeScript、ESLint、Production Build、npm 高風險稽核與 Functions 編譯均通過。
-- 未完成限制：真實資料工具輸出仍需宗億將比賽版專用 Token 直接設定到 Cloudflare Secret 後驗證；不含寫入、排程、管理、會員、金流、影音生成或部署。
+- 未完成限制：2026-09-02 當時的真實資料工具輸出仍需由宗億在比賽版 Cloudflare 伺服器環境完成專用 Secret 設定後驗證；此連線限制已由 2026-09-03 current evidence 解除。不含寫入、排程、管理、會員、金流、影音生成或部署。
 
 ---
 

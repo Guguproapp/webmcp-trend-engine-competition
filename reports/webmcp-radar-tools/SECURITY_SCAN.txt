@@ -2,7 +2,7 @@ WebMCP Radar Tools security scan
 Current closeout: 2026-09-03 Asia/Taipei
 
 PASS - Production Build contains all six read-only radar tools and no browser-side secret identifier, Authorization/Cookie credential pattern, private-key marker or management path.
-PASS - WebMCP project outputs, website Console and committed evidence contain no Authorization header, Cookie, Secret value, stack trace, D1 detail or local path.
+PASS - WebMCP project outputs, website Console and committed evidence contain no Authorization header, Cookie, common credential pattern, stack trace, D1 detail or local path.
 PASS - This run did not read, display, copy or rotate the competition Radar Secret.
 NOT RUN - Comparison against the real Secret value; reading the real value is explicitly prohibited.
 PASS - Server adapter accepts only the fixed Asia Trend Radar API base URL and exposes only GET /trends, /trends/:topicId, /videos, /sources, /markets and /categories.
@@ -17,7 +17,7 @@ PASS - Canonical native WebMCP call returned 5 real Taiwan search-rising records
 Historical snapshot: 2026-09-02 Asia/Taipei
 The historical BLOCKED line below describes the pre-Secret state and is superseded by the current closeout above.
 
-PASS - Browser Production Build does not contain RADAR_PROGRAM_API_TOKEN identifier or any token value.
+HISTORICAL PASS - The 2026-09-02 Browser Production Build scan found no RADAR_PROGRAM_API_TOKEN identifier or common credential pattern; comparison against the real Secret value was not performed.
 PASS - WebMCP outputs and browser Console contain no Authorization header, Bearer token, Cookie, stack trace, D1 details or local paths.
 PASS - Server adapter accepts only the stable Asia Trend Radar API base URL.
 PASS - Server adapter exposes only GET /trends, /trends/:topicId, /videos, /sources, /markets and /categories.
@@ -31,4 +31,4 @@ PASS - npm audit --audit-level=high reports 0 vulnerabilities.
 PASS - private-key, common secret-pattern and tracked-customer-data scans report no findings in first-party files.
 HISTORICAL BLOCKED - production Radar data was not yet verifiable on 2026-09-02; superseded by the 2026-09-03 current closeout.
 
-No secret values are included in this evidence file.
+This evidence file intentionally records no credential value. Comparison against the real Secret value was NOT RUN because reading it is prohibited.
