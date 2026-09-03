@@ -12,6 +12,14 @@ Six safe WebMCP tools that turn live Asian trend signals into evidence-backed an
 
 https://webmcp-trend-engine-competition.pages.dev/radar-tools?lang=en
 
+## Source code
+
+https://github.com/Guguproapp/webmcp-trend-engine-competition
+
+## Demo video
+
+https://youtu.be/AzmVt_3NpQE
+
 ## Short description
 
 Asia Trend Radar gives browser agents a safe, structured way to discover current trend signals across Asian markets. Its six read-only WebMCP tools can search trends and videos, inspect a topic's evidence, and list available sources, markets, and categories. When native WebMCP is unavailable, the same data remains accessible through a responsive website search.

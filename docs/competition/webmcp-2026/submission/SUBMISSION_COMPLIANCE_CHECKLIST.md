@@ -9,8 +9,8 @@
 - [x] Challenge-period work distinguished from pre-existing work.
 - [x] Six read-only tools and safety boundaries documented.
 - [x] MIT license selected and added locally.
-- [ ] Public GitHub, GitLab, or Bitbucket repository created and verified.
-- [ ] Repository license detected at the top of the public repository page.
+- [x] Public GitHub repository created and verified: <https://github.com/Guguproapp/webmcp-trend-engine-competition>.
+- [x] GitHub detected the root MIT License.
 - [x] Public YouTube demo uploaded, with English voice and bilingual captions: <https://youtu.be/AzmVt_3NpQE>.
 - [x] Demo verified to be shorter than three minutes (YouTube displays 2:26).
 - [ ] Devpost thumbnail and gallery uploaded.
@@ -29,7 +29,7 @@
 - [x] Current production and committed evidence scans contain no credential values.
 - [x] No management tool or management route is part of the public tool surface.
 - [x] No background music or third-party stock media planned.
-- [ ] Public repository and full history rechecked immediately before push.
+- [x] Public repository and full history rechecked immediately before push; sensitive-value file hits: 0.
 - [x] Final video checked for unrelated tabs, notifications, personal data, credentials, and third-party material.
 - [ ] Final Devpost fields checked for confidential or internal-only information.
 
