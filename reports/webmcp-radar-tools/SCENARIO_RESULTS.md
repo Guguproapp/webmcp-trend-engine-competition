@@ -30,3 +30,17 @@ Safari 一般網站已於 2026-09-03 15:43–15:45 在本任務全新的 Private
 | Safari 新 UI | NOT RUN：新 UI 未部署；既有部署的網站備援 PASS 只引用乾淨 Private Window 證據 07–09，不冒充新 UI 或原生 WebMCP |
 
 2026-09-02 的前置環境結果保留於 Git 歷史；現行文件只列目前有效狀態。
+
+## English deployment｜2026-09-03
+
+| 情境 | 結果 |
+|---|---|
+| `/radar-tools?lang=en` 與深層刷新 | PASS：完整英文網頁殼層，`lang=en` 與英文 title 保持 |
+| 台灣／上升熱搜／24 小時／前 5 筆 | PASS：原生工具與英文一般 UI 均取得真實 5 筆 |
+| 中文 `topicId` 詳情 | PASS：`TW:退休金` 回傳 1 筆 |
+| sources／markets／categories | PASS：14／16／16 |
+| videos 無資料 | PASS：`actualCount=0`，未補展示資料 |
+| `limit=500` | PASS：原生輸入驗證拒絕 |
+| 管理端 | PASS：沒有暴露管理工具；管理 API 直接呼叫維持 NOT RUN |
+| Safari 英文一般 UI 與網站搜尋 | PASS：真實 5 筆與 reload 通過 |
+| Safari 原生 WebMCP | NOT RUN：Safari 明確顯示不支援，不冒充 PASS |

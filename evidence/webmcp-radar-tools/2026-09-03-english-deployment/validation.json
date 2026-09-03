@@ -1,0 +1,42 @@
+{
+  "validatedAt": "2026-09-03T20:13:00+08:00",
+  "branch": "competition/webmcp-2026",
+  "head": "935df99b508d3235ddc3ee12e9beb09e5eddc2a4",
+  "canonicalUrl": "https://webmcp-trend-engine-competition.pages.dev/radar-tools?lang=en",
+  "deploymentUrl": "https://dbdfe5e6.webmcp-trend-engine-competition.pages.dev/radar-tools?lang=en",
+  "quality": {
+    "testFiles": 19,
+    "tests": 235,
+    "typecheck": "PASS",
+    "lint": "PASS",
+    "build": "PASS",
+    "auditHigh": "PASS - 0 vulnerabilities",
+    "diffCheck": "PASS"
+  },
+  "responsive": {
+    "1440x900": { "result": "PASS", "horizontalOverflow": false },
+    "768x1024": { "result": "PASS", "horizontalOverflow": false, "quickSearchInFirstViewport": true },
+    "390x844": { "result": "PASS", "horizontalOverflow": false, "quickSearchInFirstViewport": true }
+  },
+  "nativeWebMcp": {
+    "browser": "Codex in-app browser",
+    "discoveredReadOnlyTools": 6,
+    "taiwanRising24Hours": { "actualCount": 5, "result": "PASS" },
+    "traditionalChineseTopicId": { "topicId": "TW:退休金", "actualCount": 1, "result": "PASS" },
+    "videos": { "actualCount": 0, "result": "PASS - transparent empty state" },
+    "sources": { "actualCount": 14, "result": "PASS" },
+    "markets": { "actualCount": 16, "result": "PASS" },
+    "categories": { "actualCount": 16, "result": "PASS" },
+    "limit500": "PASS - rejected",
+    "adminTools": "PASS - not exposed"
+  },
+  "safari": {
+    "englishUi": "PASS",
+    "websiteSearchActualCount": 5,
+    "deepReload": "PASS",
+    "nativeWebMcp": "NOT RUN - Safari reported WebMCP unavailable"
+  },
+  "deployment": "PASS",
+  "push": "NOT DONE",
+  "registration": "NOT DONE - no official registration target or submission data in project scope"
+}

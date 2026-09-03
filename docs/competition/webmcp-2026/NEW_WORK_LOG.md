@@ -182,3 +182,16 @@
 - 畫面或影片證據：正式部署 `https://webmcp-trend-engine-competition.pages.dev/trends/radar-demo/create`；本次部署識別為 `c4880014-93f2-4000-95b1-90236651481d`，已實測生成與複製完整創作包，Console 無網站錯誤或警告。
 - 是否影響正式B版：否。
 - 備註與限制：本機規則只產生可交給使用者選擇之影音工具的素材，不呼叫付費人工智慧服務。此紀錄當時的真實雷達資料仍需比賽版專用伺服器 Secret；絕不借用 A 版或正式 B 版秘密。該連線限制已由 2026-09-03 current evidence 解除。
+
+### 2026-09-03｜Radar Tools 網頁英文版與正式部署
+
+- Commit：`935df99b508d3235ddc3ee12e9beb09e5eddc2a4`。
+- 新增功能：以 `/radar-tools?lang=en` 提供英文 Radar Tools 網頁與該頁殼層；繁中入口維持 `/radar-tools`，其他頁面不攜帶語言參數且清楚標示為繁中。
+- 使用的 WebMCP 工具：六個既有唯讀工具；名稱、Schema、annotations、API 與後端均未修改。
+- 測試指令與結果：`PASS`；`npm ci`、19 個測試檔／235 項測試、TypeScript、ESLint、Production Build、`npm audit --audit-level=high`（0 漏洞）及 `git diff --check` 全數通過。
+- 畫面與證據：`evidence/webmcp-radar-tools/2026-09-03-english/` 與 `evidence/webmcp-radar-tools/2026-09-03-english-deployment/`。
+- 部署：`PASS`；既有 Pages 專案 `webmcp-trend-engine-competition`，快照 `https://dbdfe5e6.webmcp-trend-engine-competition.pages.dev`，canonical 已更新。
+- 線上驗證：英文深層刷新、原生發現六工具、台灣 24 小時前 5 筆、中文 `topicId=TW:退休金`、sources／markets／categories、影音 0 筆空狀態、`limit=500` 拒絕與管理工具未暴露均 `PASS`。
+- Safari：英文一般 UI、5 筆網站搜尋與深層刷新 `PASS`；Safari 原生 WebMCP `NOT RUN`，因瀏覽器顯示不支援。
+- 是否影響正式 B 版：否。
+- 備註與限制：英文範圍是 Radar Tools 網頁；原生 WebMCP metadata 維持既有雙語契約。沒有 Push、沒有新建 Pages 專案、沒有讀寫或輪替 Secret。報名尚未執行。

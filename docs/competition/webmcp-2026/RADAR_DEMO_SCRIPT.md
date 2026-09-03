@@ -4,6 +4,7 @@
 
 1. 使用 ChatGPT 內建瀏覽器或已支援原生 WebMCP 的 Chrome。
 2. 開啟比賽版 `/radar-tools`。
+   英文評審介面使用 `/radar-tools?lang=en`；其他頁面仍為繁中。
 3. 確認頁面顯示「6 個唯讀工具已就緒」。
 4. 比賽版 Cloudflare 專案已各自設定 `RADAR_API_BASE_URL` 與加密 Secret `RADAR_PROGRAM_API_TOKEN`。
 

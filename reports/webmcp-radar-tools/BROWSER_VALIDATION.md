@@ -81,3 +81,14 @@ Canonical：`https://webmcp-trend-engine-competition.pages.dev/radar-tools`
 ## 過往快照
 
 2026-09-02 的前置環境快照仍可由 Git 歷史稽核；現行驗收文件只保留已完成真實連線後的有效結果，避免舊環境狀態被誤認為目前狀態。
+
+## English interface deployment｜2026-09-03 20:04–20:13
+
+- 驗證基準：`935df99b508d3235ddc3ee12e9beb09e5eddc2a4`；Branch `competition/webmcp-2026`。
+- Canonical：`https://webmcp-trend-engine-competition.pages.dev/radar-tools?lang=en`。
+- 部署快照：`https://dbdfe5e6.webmcp-trend-engine-competition.pages.dev/radar-tools?lang=en`。
+- 英文深層網址與 reload：`PASS`；URL、`<html lang="en">` 與 `Asia Trend Radar Tools | Trend Engine` 均保持。
+- 原生 WebMCP：`PASS`；Codex 內建瀏覽器發現六工具並逐一呼叫。台灣 24 小時前 5 筆為 5；中文 `TW:退休金` 詳情為 1；影音為誠實空資料 0；來源／市場／分類為 14／16／16；`limit=500` 被拒絕；無管理工具。
+- Safari：英文 UI、同條件 5 筆網站搜尋、深層 reload 均 `PASS`；Safari 顯示 `WebMCP unavailable — website search still works`，原生 WebMCP 因此為 `NOT RUN`。
+- 1440×900、768×1024、390×844：`PASS`；均無水平溢出，平板與手機 CTA 位於首屏。
+- 截圖 SHA-256：desktop results `918c425de37bc75997e24033585f5ef8e616dc8e852fc7dd83ccf91959869add`；tablet `a7e2c7038c1a64efb7f90409554251b26ba6a6512a0d61bf0a09e79e7cca7852`；mobile `457e1f76bc4358d06ec67b0bfc601af810d9c066efd475b6d0b91e6dab846aea`；Safari `b787c67bab872c3c92ed38937526a738b1d7ae91a7be4daea49bd25d597345ee`。
